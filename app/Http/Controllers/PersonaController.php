@@ -24,7 +24,7 @@ class PersonaController extends Controller
         // Filtrar personas solo por el user_id del usuario autenticado
         $personas = Persona::where('user_id', auth()->id())  // Filtra solo las personas del usuario actual
             ->orderBy('id')  // Aplica el orden antes de obtener los resultados
-            ->paginate(8)  // Paginación
+            ->paginate(10)  // Paginación
             ->withQueryString();  // Mantener los parámetros de la URL
 
         return Inertia::render("Persona/Index", [

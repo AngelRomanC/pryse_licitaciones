@@ -47,14 +47,12 @@ class EmpresaController extends Controller
     {
         // Validar los datos recibidos
         $validated = $request->validate([
-            'nombre' => 'nullable|string|max:50',
-            'descripcion' => 'nullable|string|max:50',
-            'direccion' => 'nullable|string|max:50',
-            'telefono' => 'nullable|string|max:50',
-            'email' => 'nullable|string|max:50',
+            'nombre' => 'required|string|max:50',
+            'descripcion' => 'required|string|max:50',
+            'direccion' => 'required|string|max:50',
+            'telefono' => 'required|string|max:50',
+            'email' => 'required|email|max:50', 
         ]);
-
-
 
         Empresa::create($validated);
         return redirect()->route($this->routeName . 'index')->with('success', 'Empresa creada con éxito.');
@@ -69,8 +67,9 @@ class EmpresaController extends Controller
 
     public function edit(Empresa $empresa)
     {
-        return Inertia::render("Persona/Edit", [
-            'titulo' => 'Editar Empresa',
+        return Inertia::render("Empresa/Edit", [
+            'titulo' => 'Editar Empresaaaaa',
+            'empresa' => $empresa,
             'routeName' => $this->routeName
         ]);
     }

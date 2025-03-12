@@ -36,7 +36,7 @@ export default [
   {
     label: "Catalogo",
     icon: mdiViewListOutline,
-    role: "Admin",
+    role: "Alumno",
     menu: [
  
       {
@@ -60,7 +60,7 @@ export default [
     href:"/grupo",
     label: "Grupos",
     icon: mdiBookshelf,
-    role: "Admin",
+    role: "Alumno",
   }, 
   {
     label: "Usuarios",
@@ -94,7 +94,7 @@ export default [
     href:"/recursamiento",
     label: "Recursamiento",
     icon: mdiBookshelf,
-    role: "Admin",
+    role: "Alumno",
   }, 
 
 
@@ -146,13 +146,13 @@ export default [
     href:"/pregunta",
     label: "Formatos",
     icon: mdiBookshelf,
-    role: "Admin",
+    role: "Alumno",
   }, 
   {
     href:"/respaldo",
     label: "Respaldo DB",
     icon: mdiBookshelf,
-    role: "Admin",
+    role: "Admin-",
   },
   {
     href:"/observaciones",

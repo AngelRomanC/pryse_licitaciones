@@ -15,6 +15,7 @@ import { mdiBallotOutline, mdiAccount, mdiMail, mdiGithub } from "@mdi/js"; //ag
 
 
 const props = defineProps(['titulo', 'persona', 'routeName']); //Recibir la persona por id
+
 const form = useForm({ ...props.persona });
 
 const guardar = () => {

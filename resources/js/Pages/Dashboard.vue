@@ -58,7 +58,7 @@ const props = defineProps({
   <Head title="Dashboard" />
   <LayoutDashboard>
     <SectionMain>
-      <SectionTitleLineWithButton  title="Bienvenido" main>
+      <SectionTitleLineWithButton  title="Bienvenidoooooooooooooo" main>
       </SectionTitleLineWithButton>
 
     </SectionMain>
