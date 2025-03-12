@@ -183,31 +183,10 @@ export default [
    
   },  
 
-  {
-    href:"/documento",
-    label: "Cargar Documentos ",
-    icon: mdiBookshelf,
-    role: "Admin",
-  }, 
-  {
-    href:"/canpe",
-    label: "Información Canpe ",
-    icon: mdiBookshelf,
-    role: "Admin",
-  }, 
-  {
-    href:"/canpe",
-    label: "Información Canpe ",
-    icon: mdiBookshelf,
-    role: "Alumno",
-  }, 
+
+
   
-  {
-    href:"/cuip",
-    label: "Información Cuip--------------- ",
-    icon: mdiBookshelf,
-    role: "Admin",
-  }, 
+ 
 
   {
     label: "Catálogos",
@@ -220,7 +199,18 @@ export default [
         icon: mdiBookshelf,
         role: "Admin",
       }, 
-      
+      {
+        href:"/empresa",
+        label: "Documento",
+        icon: mdiBookshelf,
+        role: "Admin",
+      }, 
+      {
+        href:"/empresa",
+        label: "Departamento",
+        icon: mdiBookshelf,
+        role: "Admin",
+      }, 
     ]
   },
 

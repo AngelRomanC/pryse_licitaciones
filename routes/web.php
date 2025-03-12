@@ -156,9 +156,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('persona', PersonaController::class);
 
 
-    Route::resource('documento', controller: DocumentoController::class);
-    Route::resource('canpe', CanpeController::class);
-    Route::resource('cuip', controller: CuipController::class);
+    //Route::resource('documento', controller: DocumentoController::class);
+    //Route::resource('canpe', CanpeController::class);
+    //Route::resource('cuip', controller: CuipController::class);
 
     Route::resource('empresa', controller: EmpresaController::class);
 
