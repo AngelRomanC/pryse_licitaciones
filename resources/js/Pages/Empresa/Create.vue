@@ -31,9 +31,8 @@ const handleSubmit = () => {
 
 <template>
     <LayoutMain :title="titulo">
-        <SectionTitleLineWithButton :icon="mdiBallotOutline" :title="titulo" main>
-
-        </SectionTitleLineWithButton>
+        <SectionTitleLineWithButton :icon="mdiBallotOutline" :title="titulo" main />    
+         
 
         <CardBox form @submit.prevent="handleSubmit">
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">

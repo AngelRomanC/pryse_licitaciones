@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             PeriodoSeeder::class,
            
             GrupoSeeder::class,
+            EstadosSeeder::class,
            
         ]);
     }

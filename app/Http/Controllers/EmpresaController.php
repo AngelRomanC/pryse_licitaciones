@@ -78,11 +78,11 @@ class EmpresaController extends Controller
     public function update(Request $request, Empresa $empresa)
     {
         $validated = $request->validate([
-            'nombre' => 'nullable|string|max:50',
-            'descripcion' => 'nullable|string|max:50',
-            'direccion' => 'nullable|string|max:50',
-            'telefono' => 'nullable|string|max:50',
-            'email' => 'nullable|string|max:50',
+            'nombre' => 'required|string|max:50',
+            'descripcion' => 'required|string|max:50',
+            'direccion' => 'required|string|max:50',
+            'telefono' => 'required|string|max:50',
+            'email' => 'required|string|max:50',
         ]);
         $empresa->update($validated);
 

@@ -13,8 +13,9 @@ import NotificationBar from "@/components/NotificationBar.vue";
 
 
 const props = defineProps({
-    empresas: Object,
-    titulo: String //
+    tipoDeDocumentos: Object,
+    titulo: String, //
+    routeName:String
 });
 
 const destroy = (id) => {
@@ -28,7 +29,9 @@ const destroy = (id) => {
         confirmButtonText: "Sí, eliminar registro!",
     }).then((res) => {
         if (res.isConfirmed) {
-            router.delete(route("empresa.destroy", id));
+           // router.delete(route("tipo-de-documento.destroy", id));
+            router.delete(route(`${props.routeName}destroy`, id));
+
         }
     });
 };
@@ -39,7 +42,7 @@ const titulo = "Lista de Empresas";
 <template>
     <LayoutMain>
         <SectionTitleLineWithButton :title="props.titulo" main>
-            <BaseButton :href="route('empresa.create')" color="warning" label="Crear" />
+            <BaseButton :href="route(`${props.routeName}create`)" color="warning" label="Crear" />
         </SectionTitleLineWithButton>
 
         <NotificationBar v-if="$page.props.flash.success" color="success" :icon="'mdi-information'" :outline="false">
@@ -50,7 +53,7 @@ const titulo = "Lista de Empresas";
             {{ $page.props.flash.error }}
         </NotificationBar>
 
-        <CardBox v-if="empresas.data.length < 1">
+        <CardBox v-if="tipoDeDocumentos.data.length < 1">
             <CardBoxComponentEmpty />
         </CardBox>
 
@@ -59,35 +62,28 @@ const titulo = "Lista de Empresas";
                 <thead>
                     <tr>
                         <th />
-                        <th class="border p-2">Nombre</th>
-                        <th class="border p-2">Descripción</th>
-                        <th class="border p-2">Dirección</th>
-                        <th class="border p-2">Teléfono</th>
-                        <th class="border p-2">Email</th>
-                        <th class="border p-2">Acciones</th>
+                        <th class="border p-2">Nombre de Documento</th>  
+                        <th class="border p-2">Acciones</th>               
                         <th />
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="empresa in empresas.data" :key="empresa.id">
+                    <tr v-for="tipoDeDocumento in tipoDeDocumentos.data" :key="tipoDeDocumento.id">
                         <td class="align-items-center">
                         </td>
-                        <td class="border p-2">{{ empresa.nombre }}</td>
-                        <td class="border p-2">{{ empresa.descripcion }}</td>
-                        <td class="border p-2">{{ empresa.direccion }}</td>
-                        <td class="border p-2">{{ empresa.telefono }}</td>
-                        <td class="border p-2">{{ empresa.email }}</td>
+                        <td class="border p-2">{{ tipoDeDocumento.nombre_documento }}</td>
+                       
                         <td class="before:hidden lg:w-1 whitespace-nowrap">
                             <BaseButtons type="justify-start lg:justify-end" no-wrap>
                                 <BaseButton color="warning" :icon="mdiTagEdit" small
-                                    :href="route('empresa.edit', empresa.id)" />
-                                <BaseButton color="danger" :icon="mdiDeleteOutline" small @click="destroy(empresa.id)" />
+                                     :href="route(`${props.routeName}edit`,tipoDeDocumento.id)" />                             
+                                <BaseButton color="danger" :icon="mdiDeleteOutline" small @click="destroy(tipoDeDocumento.id)" />
                             </BaseButtons>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <Pagination :currentPage="empresas.current_page" :links="empresas.links" :total="empresas.links.length - 2" />
+            <Pagination :currentPage="tipoDeDocumentos.current_page" :links="tipoDeDocumentos.links" :total="tipoDeDocumentos.links.length - 2" />
         </CardBox>
     </LayoutMain>
 </template>

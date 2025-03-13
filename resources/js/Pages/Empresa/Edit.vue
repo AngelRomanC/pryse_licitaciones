@@ -29,9 +29,8 @@ const guardar = () => {
 
 <template>
     <LayoutMain :title="titulo">
-        <SectionTitleLineWithButton :icon="mdiBallotOutline" :title="titulo" main>
-           
-        </SectionTitleLineWithButton>
+        <SectionTitleLineWithButton :icon="mdiBallotOutline" :title="titulo" main />
+ 
 
         <CardBox form @submit.prevent="guardar">
 

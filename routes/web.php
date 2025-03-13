@@ -3,17 +3,20 @@
 use App\Http\Controllers\AcademicoController;
 use App\Http\Controllers\CanpeController;
 use App\Http\Controllers\CuipController;
+use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\InteligenciaController;
 use App\Http\Controllers\HabitoController;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\AgencyController;
+use App\Http\Controllers\ModalidadController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\ModuloController;
 use App\Http\Controllers\PerfilesController;
 use App\Http\Controllers\MateriaController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TipoDeDocumentoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\AlumnoController;
@@ -30,6 +33,7 @@ use App\Http\Controllers\FormatoEvaluacionController;
 use App\Http\Controllers\RespaldoController;
 
 use App\Models\Module;
+use App\Models\TipoDeDocumento;
 use App\Models\User;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -161,6 +165,12 @@ Route::middleware('auth')->group(function () {
     //Route::resource('cuip', controller: CuipController::class);
 
     Route::resource('empresa', controller: EmpresaController::class);
+    
+    Route::resource('tipo-de-documento', controller: TipoDeDocumentoController::class);
+
+    Route::resource('departamento', controller: DepartamentoController::class);
+    Route::resource('modalidad', ModalidadController::class);         
+
 
 
 

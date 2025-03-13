@@ -17,7 +17,14 @@ import {
   mdiAccount,
   mdiBedClock,
   mdiEmoticonHappyOutline ,
-  mdiFileDocumentEditOutline,mdiHumanMaleBoard,mdiAccountSchool
+  mdiFileDocumentOutline,
+  mdiFileDocumentEditOutline,mdiHumanMaleBoard,mdiAccountSchool,
+  mdiAccountGroup,
+  mdiScaleBalance,
+  mdiFileSign,
+  mdiLibrary,
+  mdiFormatListChecks,
+  
 
 } from "@mdi/js";
 
@@ -64,7 +71,7 @@ export default [
   }, 
   {
     label: "Usuarios",
-    icon: mdiFileDocumentEditOutline ,
+    icon: mdiAccountGroup ,
     role: "Admin",
     menu: [
       {
@@ -190,7 +197,7 @@ export default [
 
   {
     label: "Catálogos",
-    icon: mdiFileDocumentEditOutline ,
+    icon: mdiLibrary ,
     role: "Admin",
     menu: [
       {
@@ -200,15 +207,21 @@ export default [
         role: "Admin",
       }, 
       {
-        href:"/empresa",
+        href:"/tipo-de-documento",
         label: "Documento",
-        icon: mdiBookshelf,
+        icon: mdiFileDocumentOutline,
         role: "Admin",
       }, 
       {
-        href:"/empresa",
+        href:"/departamento",
         label: "Departamento",
-        icon: mdiBookshelf,
+        icon: mdiAccountGroup,
+        role: "Admin",
+      }, 
+      {
+        href:"/modalidad",
+        label: "Modalidades",
+        icon: mdiFormatListChecks,
         role: "Admin",
       }, 
     ]
@@ -218,13 +231,13 @@ export default [
   {
     href:"/tecnico",
     label: "Documentos Técnicos ",
-    icon: mdiBookshelf,
+    icon: mdiFileSign,
     role: "Admin",
   }, 
   {
     href:"/tecnico",
     label: "Documentos Legales ",
-    icon: mdiBookshelf,
+    icon: mdiScaleBalance,
     role: "Admin",
   }, 
 
