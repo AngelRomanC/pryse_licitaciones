@@ -14,9 +14,14 @@ import { mdiBallotOutline, mdiHomeCity, mdiFormatListChecks, mdiMapMarker,mdiPho
 //const props = defineProps(['titulo', 'empresa', 'routeName']); //Recibir la persona por id
 
  const props = defineProps({
-     titulo: String,       
-     routeName: String,    
-     modalidad: Object       
+    titulo: String, // Título enviado desde el backend
+    documento: Object,
+    routeName: String, // Nombre de la ruta base
+    empresas: String,
+    tipos_documento: String,
+    estados: String,
+    departamentos: String,
+    modalidades: String     
  });
 
 const form = useForm({ ...props.modalidad});

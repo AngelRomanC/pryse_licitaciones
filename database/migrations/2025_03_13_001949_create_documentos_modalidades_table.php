@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('documentos_modalidades', function (Blueprint $table) {
-            $table->id();
+            //$table->id();
               // Definir las claves foráneas
-              $table->foreignId('id_documento')->constrained('documentos')->onDelete('cascade');
-              $table->foreignId('id_modalidad')->constrained('modalidades')->onDelete('cascade');
+              $table->foreignId('tipo_de_documento_id')->constrained('tipo_de_documentos')->onDelete('cascade');
+              $table->foreignId('modalidad_id')->constrained('modalidads')->onDelete('cascade');
   
               // Establecer una clave primaria compuesta
-              $table->primary(['id_documento', 'id_modalidad']);
+              $table->primary(['tipo_de_documento_id', 'modalidad_id']);
 
 
 

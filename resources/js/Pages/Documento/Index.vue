@@ -13,7 +13,7 @@ import NotificationBar from "@/components/NotificationBar.vue";
 
 
 const props = defineProps({
-    modalidades: Object,
+    documentos: Object,
     titulo: String, //
     routeName:String
 });
@@ -52,7 +52,7 @@ const destroy = (id) => {
             {{ $page.props.flash.error }}
         </NotificationBar>
 
-        <CardBox v-if="modalidades.data.length < 1">
+        <CardBox v-if="documentos.data.length < 1">
             <CardBoxComponentEmpty />
         </CardBox>
 
@@ -67,22 +67,22 @@ const destroy = (id) => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="modalidad in modalidades.data" :key="modalidad.id">
+                    <tr v-for="documento in documentos.data" :key="documento.id">
                         <td class="align-items-center">
                         </td>
-                        <td class="border p-2">{{ modalidad.nombre_modalidad}}</td>
+                        <td class="border p-2">{{ documento.nombre_documento}}</td>
                        
                         <td class="before:hidden lg:w-1 whitespace-nowrap">
                             <BaseButtons type="justify-start lg:justify-end" no-wrap>
                                 <BaseButton color="warning" :icon="mdiTagEdit" small
-                                     :href="route(`${props.routeName}edit`,modalidad.id)" />                             
-                                <BaseButton color="danger" :icon="mdiDeleteOutline" small @click="destroy(modalidad.id)" />
+                                     :href="route(`${props.routeName}edit`,documento.id)" />                             
+                                <BaseButton color="danger" :icon="mdiDeleteOutline" small @click="destroy(documento.id)" />
                             </BaseButtons>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <Pagination :currentPage="modalidades.current_page" :links="modalidades.links" :total="modalidades.links.length - 2" />
+            <Pagination :currentPage="documentos.current_page" :links="documentos.links" :total="documentos.links.length - 2" />
         </CardBox>
     </LayoutMain>
 </template>

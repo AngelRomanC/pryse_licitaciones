@@ -30,6 +30,14 @@ class Documento extends Model
     {
         return $this->belongsTo(TipoDeDocumento::class);
     }
+    public function estado()
+    {
+        return $this->belongsTo(Estado::class); //falto
+    }
+    public function departamento()
+    {
+        return $this->belongsTo(Departamento::class); //falto
+    }
 
     public function fechas()
     {
@@ -38,7 +46,7 @@ class Documento extends Model
 
     public function modalidades()
     {
-        return $this->belongsToMany(Modalidad::class, 'documentos_modalidades', 'documento_id', 'modalidad_id');
+        return $this->belongsToMany(Modalidad::class, 'documentos_modalidades');
 
     }
 

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre_documento');
             $table->foreignId('empresa_id')->constrained('empresas')->onDelete('cascade'); // Clave foránea
-            $table->foreignId('tipo_documento_id')->constrained('tipo_de_documentos')->onDelete('cascade'); // Clave foránea
+            $table->foreignId('tipo_de_documento_id')->constrained('tipo_de_documentos')->onDelete('cascade'); // Clave foránea
             $table->foreignId('estado_id')->nullable()->constrained('estados')->onDelete('set null'); // Clave foránea // Estado opcional
             $table->foreignId('departamento_id')->constrained(table: 'departamentos')->onDelete('cascade'); // Clave foránea
             $table->date('fecha_revalidacion')->nullable();
