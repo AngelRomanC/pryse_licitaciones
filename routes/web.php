@@ -169,7 +169,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('tipo-de-documento', controller: TipoDeDocumentoController::class);
 
     Route::resource('departamento', controller: DepartamentoController::class);
-    Route::resource('modalidad', ModalidadController::class);         
+    Route::resource('modalidad', ModalidadController::class);   
+    Route::resource('documento', controller: DocumentoController::class);
+      
 
 
 

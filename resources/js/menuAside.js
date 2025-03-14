@@ -229,13 +229,13 @@ export default [
 
 
   {
-    href:"/tecnico",
+    href:"/documento",
     label: "Documentos Técnicos ",
     icon: mdiFileSign,
     role: "Admin",
   }, 
   {
-    href:"/tecnico",
+    href:"/documento",
     label: "Documentos Legales ",
     icon: mdiScaleBalance,
     role: "Admin",
