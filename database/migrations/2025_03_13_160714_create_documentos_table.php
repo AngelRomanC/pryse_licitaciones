@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignId('departamento_id')->constrained(table: 'departamentos')->onDelete('cascade'); // Clave foránea
             $table->date('fecha_revalidacion')->nullable();
             $table->date('fecha_vigencia')->nullable();
-            $table->foreignId('modalidad_id')->nullable()->constrained(table: 'departamentos')->onDelete('set null'); // Clave foránea
+            $table->foreignId('modalidad_id')->nullable()->constrained(table: 'modalidads')->onDelete('set null'); // Clave foránea
             $table->string('ruta_documento')->nullable();
             $table->string('ruta_documento_anexo')->nullable();
             $table->timestamps();

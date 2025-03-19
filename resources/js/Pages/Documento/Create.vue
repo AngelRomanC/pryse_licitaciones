@@ -29,10 +29,14 @@ const form = useForm({
     fecha_revalidacion: '',
     fecha_vigencia: '',
     modalidad_id: '',
-    ruta_documento: '',
-    ruta_documento_anexo: ''
+    ruta_documento: null,
+    ruta_documento_anexo: null
 });
-
+console.log('Empresas:', JSON.parse(JSON.stringify(props.empresas)));
+console.log('Tipos de documento:', props.tipos_documento);
+console.log('Estados:', props.estados);
+console.log('Departamentos:', props.departamentos);
+console.log('Modalidades:', props.modalidades);
 const handleSubmit = () => {    
     //form.post(route(`${props.routeName}store`)); // Corregida sintaxis de ruta
     form.post(route(`${props.routeName}store`));
@@ -44,7 +48,8 @@ const handleSubmit = () => {
     <LayoutMain :title="titulo">
         <SectionTitleLineWithButton :icon="mdiBallotOutline" :title="titulo" main/>
 
-        <CardBox form @submit.prevent="handleSubmit">
+        <CardBox form @submit.prevent="handleSubmit" enctype="multipart/form-data">
+
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <!-- Nombre del Documento -->
                 <FormField label="Nombre del documento" :error="form.errors.nombre_documento">
@@ -66,17 +71,19 @@ const handleSubmit = () => {
                         label-key="nombre"
                         value-key="id"
                         :icon="mdiOfficeBuilding"
+                        placeholder="Selecciona una empresa"
                         required
-                    />
+                    />                
                 </FormField>
+                
 
                 <!-- Selector de Tipo de Documento -->
-                <FormField label="Tipo de documento" :error="form.errors.tipo_documento_id">
+                <FormField label="Tipo de documento" :error="form.errors.tipo_de_documento_id">
                     <FormControl
                         v-model="form.tipo_de_documento_id"
                         :options="tipos_documento"
                         type="select"
-                        label-key="tipo_de_documento_id"
+                        label-key="nombre_documento"
                         value-key="id"
                         :icon="mdiFileDocument"
                         required
@@ -89,7 +96,7 @@ const handleSubmit = () => {
                         v-model="form.estado_id"
                         :options="estados"
                         type="select"
-                        label-key="nombre_estado"
+                        label-key="nombre"
                         value-key="id"
                         :icon="mdiMapMarker"
                         required
@@ -102,7 +109,7 @@ const handleSubmit = () => {
                         v-model="form.departamento_id"
                         :options="departamentos"
                         type="select"
-                        label-key="nombre_area"
+                        label-key="nombre_departamento"
                         value-key="id"
                         :icon="mdiOfficeBuilding"
                         required
@@ -138,6 +145,25 @@ const handleSubmit = () => {
                         v-model="form.fecha_vigencia"
                         type="date"
                         :icon="mdiCalendar"
+                        required
+                    />
+                </FormField>
+                 <!-- Campo: Ruta Documento -->
+                 <FormField label="Documento Principal" :error="form.errors.documento">
+                    <FormControl
+                        v-model="form.documento"
+                        type="file"
+                        accept="application/pdf"
+                        required
+                    />
+                </FormField>
+
+                <!-- Campo: Ruta Documento Anexo -->
+                <FormField label="Documento Anexo" :error="form.errors.documento_anexo">
+                    <FormControl
+                        v-model="form.documento_anexo"
+                        type="file"
+                        accept="application/pdf"
                         required
                     />
                 </FormField>

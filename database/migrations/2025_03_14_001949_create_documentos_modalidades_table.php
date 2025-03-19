@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('documentos_modalidades', function (Blueprint $table) {
             //$table->id();
               // Definir las claves foráneas
-              $table->foreignId('tipo_de_documento_id')->constrained('tipo_de_documentos')->onDelete('cascade');
+              $table->foreignId('documento_id')->constrained('documentos')->onDelete('cascade');
               $table->foreignId('modalidad_id')->constrained('modalidads')->onDelete('cascade');
   
               // Establecer una clave primaria compuesta
-              $table->primary(['tipo_de_documento_id', 'modalidad_id']);
+              $table->primary(['documento_id', 'modalidad_id']);
 
 
 
