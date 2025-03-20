@@ -9,6 +9,8 @@ import BaseButtons from "@/components/BaseButtons.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 import CardBox from "@/components/CardBox.vue";
 import { mdiBallotOutline, mdiFileDocument, mdiMapMarker, mdiOfficeBuilding, mdiCalendar } from "@mdi/js"; // Íconos adicionales
+import FormControlV7 from '@/Components/FormControlV7.vue';
+
 
 const props = defineProps({
     titulo: String,
@@ -105,6 +107,16 @@ const guardar = () => {
                         value-key="id"
                         :icon="mdiMapMarker"
                         required
+                    />
+                </FormField>
+
+                   <!-- Selector de Modalidad -->
+                   <FormField label="Modalidad" :error="form.errors.modalidad_id">
+                    <FormControlV7
+                        v-model="form.modalidad_id"
+                        :options="modalidades"
+                        label-key="name"
+                        value-key="id"
                     />
                 </FormField>
 

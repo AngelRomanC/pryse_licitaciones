@@ -191,7 +191,7 @@ class DocumentoController extends Controller
             'departamento_id' => 'required|exists:departamentos,id',
             'fecha_revalidacion' => 'required|date',
             'fecha_vigencia' => 'required|date',
-            'modalidad_id' => 'nullable|exists:modalidades,id',
+            'modalidad_id' => 'nullable|exists:modalidads,id',
             'ruta_documento' => 'nullable|string|max:255',
             'ruta_documento_anexo' => 'nullable|string|max:255',
         ]);
