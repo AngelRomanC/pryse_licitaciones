@@ -8,6 +8,10 @@ import CardBox from "@/components/CardBox.vue";
 import FormField from "@/components/FormField.vue";
 import FormControl from "@/components/FormControl.vue";
 import { mdiBallotOutline, mdiFormatListChecks, mdiOfficeBuilding, mdiFileDocument, mdiMapMarker, mdiCalendar } from "@mdi/js";
+import FormControlV7 from '@/Components/FormControlV7.vue';
+
+
+
 
 const props = defineProps({
     titulo: String,
@@ -28,7 +32,7 @@ const form = useForm({
     departamento_id: '',
     fecha_revalidacion: '',
     fecha_vigencia: '',
-    modalidad_id: '',
+    modalidad_id: [],
     ruta_documento: null,
     ruta_documento_anexo: null
 });
@@ -118,16 +122,14 @@ const handleSubmit = () => {
 
                 <!-- Selector de Modalidad -->
                 <FormField label="Modalidad" :error="form.errors.modalidad_id">
-                    <FormControl
+                    <FormControlV7
                         v-model="form.modalidad_id"
                         :options="modalidades"
-                        type="select"
-                        label-key="nombre_modalidad"
+                        label-key="name"
                         value-key="id"
-                        :icon="mdiFormatListChecks"
-                        required
                     />
                 </FormField>
+                
 
                 <!-- Fecha de Revalidación -->
                 <FormField label="Fecha de Revalidación" :error="form.errors.fecha_revalidacion">
@@ -149,24 +151,25 @@ const handleSubmit = () => {
                     />
                 </FormField>
                  <!-- Campo: Ruta Documento -->
-                 <FormField label="Documento Principal" :error="form.errors.documento">
+                 <FormField label="Documento Principal" :error="form.errors.ruta_documento">
                     <FormControl
-                        v-model="form.documento"
                         type="file"
+                        @change="(e)=>form.ruta_documento = e.target.files[0]"
                         accept="application/pdf"
                         required
                     />
                 </FormField>
 
                 <!-- Campo: Ruta Documento Anexo -->
-                <FormField label="Documento Anexo" :error="form.errors.documento_anexo">
+                <FormField label="Documento Anexo" :error="form.errors.ruta_documento_anexo">
                     <FormControl
-                        v-model="form.documento_anexo"
                         type="file"
+                        @change="(e)=>form.ruta_documento_anexo = e.target.files[0]"
                         accept="application/pdf"
                         required
                     />
-                </FormField>
+         
+                </FormField>           
             </div>
 
             <template #footer>
