@@ -171,6 +171,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('departamento', controller: DepartamentoController::class);
     Route::resource('modalidad', ModalidadController::class);   
     Route::resource('documento', controller: DocumentoController::class);
+    Route::resource('documento-legal', controller: DocumentoController::class);
+
       
 
 

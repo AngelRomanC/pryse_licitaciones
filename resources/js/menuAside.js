@@ -235,7 +235,7 @@ export default [
     role: "Admin",
   }, 
   {
-    href:"/documento",
+    href:"/documento-legal",
     label: "Documentos Legales ",
     icon: mdiScaleBalance,
     role: "Admin",

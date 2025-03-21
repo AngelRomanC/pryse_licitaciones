@@ -9,6 +9,7 @@ use App\Models\Estado;
 use App\Models\Modalidad;
 use App\Models\TipoDeDocumento;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -41,13 +42,7 @@ class DocumentoController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {
-        // $empresas = Empresa::all();
-        // $tipos_documento = TipoDeDocumento::all();
-        // $estados = Estado::all();
-        // $departamentos = Departamento::all();
-        // $modalidades = Modalidad::all();
-
+    {    
         $empresas = Empresa::select('id', 'nombre as name')->get();
         $tipos_documento = TipoDeDocumento::select('id', 'nombre_documento as name')->get();
         $estados = Estado::select('id', 'nombre as name')->get();
@@ -80,8 +75,8 @@ class DocumentoController extends Controller
             'fecha_revalidacion' => 'required|date',
             'fecha_vigencia' => 'required|date',
             'modalidad_id' => 'nullable|array|exists:modalidads,id',
-            'ruta_documento' => 'nullable|file|mimes:pdf|max:5120', // Validación de archivo PDF
-            'ruta_documento_anexo' => 'nullable|file|mimes:pdf|max:5120', // Validación de archivo PDF
+            'ruta_documento' => 'nullable|file|mimes:pdf|max:5120', 
+            'ruta_documento_anexo' => 'nullable|file|mimes:pdf|max:5120', 
         ]);
 
         // Detección de tipo de documento (legal o técnico)
@@ -94,34 +89,30 @@ class DocumentoController extends Controller
         } else {
             $folder = 'otros_documentos';
         }
-
-        // Crear carpeta si no existe
+       
         Storage::disk('public')->makeDirectory("$folder");
         Storage::disk('public')->makeDirectory("$folder/documentos_anexos");
 
-        // Guardar documento principal (si existe)
         $rutaDocumento = null;
         if ($request->hasFile('ruta_documento')) {
-            // Generar nombre único y guardar el archivo
+            
             $rutaDocumento = $request->file('ruta_documento')->storeAs(
-                "$folder", // Carpeta donde se almacenará
-                time() . '_' . $request->file('ruta_documento')->getClientOriginalName(), // Nombre del archivo
+                "$folder", 
+                time() . '_' . $request->file('ruta_documento')->getClientOriginalName(), 
                 'public'
             );
         }
-
-        // Guardar documento anexo (si existe)
+        
         $rutaDocumentoAnexo = null;
         if ($request->hasFile('ruta_documento_anexo')) {
             // Generar nombre único y guardar el archivo
             $rutaDocumentoAnexo = $request->file('ruta_documento_anexo')->storeAs(
-                "$folder/documentos_anexos", // Carpeta donde se almacenará
-                time() . '_' . $request->file('ruta_documento_anexo')->getClientOriginalName(), // Nombre del archivo
+                "$folder/documentos_anexos", 
+                time() . '_' . $request->file('ruta_documento_anexo')->getClientOriginalName(), 
                 'public'
             );
         }
-
-        // Crear el registro en la base de datos
+        
         $documento = Documento::create([
             'nombre_documento' => $validated['nombre_documento'],
             'empresa_id' => $validated['empresa_id'],
@@ -133,13 +124,10 @@ class DocumentoController extends Controller
             'ruta_documento' => $rutaDocumento ?? null,
             'ruta_documento_anexo' => $rutaDocumentoAnexo ?? null,
         ]);
-
-        // Si hay modalidades seleccionadas, guardarlas en la tabla pivote
+        
         if ($validated['modalidad_id']) {
             $documento->modalidades()->attach($validated['modalidad_id']);
         }
-
-        // Redirigir con mensaje de éxito
         return redirect()->route($this->routeName . 'index')->with('success', 'Documento creado con éxito.');
     }
 
@@ -190,6 +178,11 @@ class DocumentoController extends Controller
      */
 public function update(Request $request, Documento $documento)
 {
+    logger('Archivos pdf en updateControlador:', $request->allFiles());
+    Log::info('Datos recibidos en update:', $request->all());
+
+
+    
     // Validar los datos recibidos
     $validated = $request->validate([
         'nombre_documento' => 'required|string|max:255',
@@ -203,6 +196,7 @@ public function update(Request $request, Documento $documento)
         'ruta_documento' => 'nullable|file|mimes:pdf|max:5120',
         'ruta_documento_anexo' => 'nullable|file|mimes:pdf|max:5120',
     ]);
+    Log::info('Datos recibidos en validated--------:', $validated);
 
     // Determinar el tipo de documento y carpeta
     $tipoDocumento = strtolower(trim($request->input('nombre_documento')));

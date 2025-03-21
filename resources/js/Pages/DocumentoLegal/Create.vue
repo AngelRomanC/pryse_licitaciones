@@ -1,17 +1,14 @@
 <script setup>
-import { defineProps } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import LayoutMain from '@/layouts/LayoutMain.vue';
-import FormField from "@/components/FormField.vue";
-import FormControl from "@/components/FormControl.vue";
-import BaseButton from "@/components/BaseButton.vue";
+import BaseButton from '@/components/BaseButton.vue';
 import BaseButtons from "@/components/BaseButtons.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 import CardBox from "@/components/CardBox.vue";
-import { mdiBallotOutline, mdiFileDocument, mdiMapMarker, mdiOfficeBuilding, mdiCalendar } from "@mdi/js"; // Íconos adicionales
+import FormField from "@/components/FormField.vue";
+import FormControl from "@/components/FormControl.vue";
+import { mdiBallotOutline, mdiFormatListChecks, mdiOfficeBuilding, mdiFileDocument, mdiMapMarker, mdiCalendar } from "@mdi/js";
 import FormControlV7 from '@/Components/FormControlV7.vue';
-import Swal from 'sweetalert2';
-import { Inertia } from '@inertiajs/inertia';
 
 
 
@@ -20,77 +17,43 @@ const props = defineProps({
     titulo: String,
     documento: Object,
     routeName: String,
-    empresas: Array,
-    tipos_documento: Array,
-    estados: Array,
-    departamentos: Array,
-    modalidades: Array
+    empresas: Array,       // Debe ser Array
+    tipos_documento: Array, // Debe ser Array
+    estados: Array,         // Debe ser Array
+    departamentos: Array,   // Debe ser Array
+    modalidades: Array      // Debe ser Array
 });
 
 const form = useForm({
-    nombre_documento: props.documento.nombre_documento,
-    empresa_id: props.documento.empresa_id,
-    tipo_de_documento_id: props.documento.tipo_de_documento_id,
-    estado_id: props.documento.estado_id,
-    departamento_id: props.documento.departamento_id,
-    fecha_revalidacion: props.documento.fecha_revalidacion,
-    fecha_vigencia: props.documento.fecha_vigencia,
-    modalidad_id: props.documento.modalidades.map(mod => mod.id), // Para manejar múltiples modalidades
-    //modalidad_id: props.documento.modalidades ? props.documento.modalidades.map(mod => mod.id) : [], // Asegurar que no sea undefined
-
-    ruta_documento: props.ruta_documento,
-    ruta_documento_anexo: props.ruta_documento_anexo
+    nombre_documento: 'Documento Técnico',
+    empresa_id: '',
+    tipo_de_documento_id: '',
+    estado_id: '',
+    departamento_id: '',
+    fecha_revalidacion: '',
+    fecha_vigencia: '',
+    modalidad_id: [],
+    ruta_documento: null,
+    ruta_documento_anexo: null
 });
+console.log('Empresas:', JSON.parse(JSON.stringify(props.empresas)));
+console.log('Tipos de documento:', props.tipos_documento);
+console.log('Estados:', props.estados);
+console.log('Departamentos:', props.departamentos);
+console.log('Modalidades:', props.modalidades);
+const handleSubmit = () => {    
+    //form.post(route(`${props.routeName}store`)); // Corregida sintaxis de ruta
+    form.post(route(`${props.routeName}store`));
 
-console.log("Modalidades disponibles:", props.modalidades);
-console.log("Modalidades seleccionadas:", form.modalidad_id);
-console.log('Documento a editar:', props.documento);
-
-// Función para mostrar el PDF en SweetAlert2
-const mostrarArchivo = (ruta) => {
-    if (!ruta) {
-        Swal.fire({
-            icon: 'error',
-            title: '¡Error!',
-            text: 'No se ha proporcionado una ruta válida para el archivo PDF.',
-        });
-        return;
-    }
-    Swal.fire({
-        html: `
-            <div style="width: 100%; height: 500px;">
-                <iframe src="${ruta}" style="width: 100%; height: 100%;" frameborder="0"></iframe>
-            </div>
-        `,
-        width: "80%",
-        showCloseButton: true,
-        showConfirmButton: true,
-        confirmButtonText: "Cerrar",
-        allowOutsideClick: true, 
-        allowEscapeKey: true,
-    });
 };
-
-
-const guardar1 = () => {
-    console.log('Documento a enviar------:', props.documento);
-    form.put(route(`${props.routeName}update`, props.documento.id));
-};
-const guardar = () => {
-    Inertia.post(route(`${props.routeName}update`, props.documento.id), {
-        _method: 'PATCH',
-        ...form
-    }, {
-        forceFormData: true
-    });
-};
-
 </script>
 
 <template>
     <LayoutMain :title="titulo">
-        <SectionTitleLineWithButton :icon="mdiBallotOutline" :title="titulo" main />
-        <CardBox form @submit.prevent="guardar" enctype="multipart/form-data">
+        <SectionTitleLineWithButton :icon="mdiBallotOutline" :title="titulo" main/>
+
+        <CardBox form @submit.prevent="handleSubmit" enctype="multipart/form-data">
+
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <!-- Nombre del Documento -->
                 <FormField label="Nombre del documento" :error="form.errors.nombre_documento">
@@ -98,7 +61,7 @@ const guardar = () => {
                         v-model="form.nombre_documento"
                         type="text"
                         placeholder="Nombre del documento"
-                        :icon="mdiFileDocument"
+                        :icon="mdiFormatListChecks"
                         required
                     />
                 </FormField>
@@ -109,13 +72,14 @@ const guardar = () => {
                         v-model="form.empresa_id"
                         :options="empresas"
                         type="select"
-                        label-key="name"
+                        label-key="nombre"
                         value-key="id"
                         :icon="mdiOfficeBuilding"
                         placeholder="Selecciona una empresa"
                         required
-                    />
+                    />                
                 </FormField>
+                
 
                 <!-- Selector de Tipo de Documento -->
                 <FormField label="Tipo de documento" :error="form.errors.tipo_de_documento_id">
@@ -123,7 +87,7 @@ const guardar = () => {
                         v-model="form.tipo_de_documento_id"
                         :options="tipos_documento"
                         type="select"
-                        label-key="name"
+                        label-key="nombre_documento"
                         value-key="id"
                         :icon="mdiFileDocument"
                         required
@@ -136,7 +100,7 @@ const guardar = () => {
                         v-model="form.estado_id"
                         :options="estados"
                         type="select"
-                        label-key="name"
+                        label-key="nombre"
                         value-key="id"
                         :icon="mdiMapMarker"
                         required
@@ -149,15 +113,15 @@ const guardar = () => {
                         v-model="form.departamento_id"
                         :options="departamentos"
                         type="select"
-                        label-key="name"
+                        label-key="nombre_departamento"
                         value-key="id"
-                        :icon="mdiMapMarker"
+                        :icon="mdiOfficeBuilding"
                         required
                     />
                 </FormField>
 
-                   <!-- Selector de Modalidad -->
-                   <FormField label="Modalidad" :error="form.errors.modalidad_id">
+                <!-- Selector de Modalidad -->
+                <FormField label="Modalidad" :error="form.errors.modalidad_id">
                     <FormControlV7
                         v-model="form.modalidad_id"
                         :options="modalidades"
@@ -165,7 +129,6 @@ const guardar = () => {
                         value-key="id"
                     />
                 </FormField>
-                
                 
 
                 <!-- Fecha de Revalidación -->
@@ -187,37 +150,39 @@ const guardar = () => {
                         required
                     />
                 </FormField>
-                     <!-- Campo: Ruta Documento -->
-                     <FormField label="Documento Principal" :error="form.errors.ruta_documento">
+                 <!-- Campo: Ruta Documento -->
+                 <FormField label="Documento Principal" :error="form.errors.ruta_documento">
                     <FormControl
                         type="file"
-                        @change="(e) => form.ruta_documento = e.target.files[0] "
+                        @change="(e)=>form.ruta_documento = e.target.files[0]"
                         accept="application/pdf"
                         required
                     />
-                   
                 </FormField>
 
                 <!-- Campo: Ruta Documento Anexo -->
                 <FormField label="Documento Anexo" :error="form.errors.ruta_documento_anexo">
                     <FormControl
                         type="file"
-                        @change="(e) => form.ruta_documento_anexo = e.target.files[0] "
+                        @change="(e)=>form.ruta_documento_anexo = e.target.files[0]"
                         accept="application/pdf"
                         required
                     />
          
-                </FormField>                 
-                <!-- Botón para visualizar los archivos -->                
-                <BaseButton @click="mostrarArchivo(`/storage/${documento.ruta_documento}`)" label="Ver Documento Principal" />
-                <BaseButton @click="mostrarArchivo(`/storage/${documento.ruta_documento_anexo}`)" label="Ver Documento Anexo" />             
-            
+                </FormField>           
             </div>
 
             <template #footer>
                 <BaseButtons>
-                    <BaseButton @click="guardar" type="submit" color="info" label="Actualizar" />
-                    <BaseButton :href="route(`${props.routeName}index`)" type="reset" color="danger" outline label="Cancelar" />
+                    <BaseButton @click="handleSubmit" type="submit" color="info" outline label="Crear" />
+
+                    <BaseButton 
+                        :href="route(`${routeName}index`)" 
+                        type="button" 
+                        color="danger" 
+                        outline 
+                        label="Cancelar"
+                    />
                 </BaseButtons>
             </template>
         </CardBox>
