@@ -1,6 +1,7 @@
 <script setup>
-import { defineProps, computed } from 'vue';
+import { defineProps, computed, defineEmits } from 'vue';
 
+// Definir los props
 const props = defineProps({
   modelValue: {
     type: [Array, String, Number],
@@ -20,24 +21,18 @@ const props = defineProps({
   },
 });
 
+// Definir los eventos que el componente emitirá
+const emit = defineEmits(['update:modelValue']);
+
 const selectedValues = computed({
   get() {
     return props.modelValue;
   },
   set(value) {
-    // Emit the updated value back to the parent
+    // Emitir el valor actualizado hacia el padre
     emit('update:modelValue', value);
   },
 });
-
-const handleCheckboxChange = (optionId) => {
-  const currentValue = selectedValues.value;
-  if (currentValue.includes(optionId)) {
-    selectedValues.value = currentValue.filter(id => id !== optionId);
-  } else {
-    selectedValues.value.push(optionId);
-  }
-};
 </script>
 
 <template>
@@ -52,7 +47,6 @@ const handleCheckboxChange = (optionId) => {
         :id="option[valueKey]"
         :value="option[valueKey]"
         v-model="selectedValues"
-        @change="handleCheckboxChange(option[valueKey])"
         class="mr-2"
       />
       <label :for="option[valueKey]">{{ option[labelKey] }}</label>

@@ -10,6 +10,8 @@ import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.
 import CardBox from "@/components/CardBox.vue";
 import { mdiBallotOutline, mdiFileDocument, mdiMapMarker, mdiOfficeBuilding, mdiCalendar } from "@mdi/js"; // Íconos adicionales
 import FormControlV7 from '@/Components/FormControlV7.vue';
+import Swal from 'sweetalert2';
+
 
 
 const props = defineProps({
@@ -32,9 +34,41 @@ const form = useForm({
     fecha_revalidacion: props.documento.fecha_revalidacion,
     fecha_vigencia: props.documento.fecha_vigencia,
     modalidad_id: props.documento.modalidades.map(mod => mod.id), // Para manejar múltiples modalidades
+    //modalidad_id: props.documento.modalidades ? props.documento.modalidades.map(mod => mod.id) : [], // Asegurar que no sea undefined
+
     ruta_documento: null,
     ruta_documento_anexo: null
 });
+
+console.log("Modalidades disponibles:", props.modalidades);
+console.log("Modalidades seleccionadas:", form.modalidad_id);
+console.log('Documento a editar:', props.documento);
+
+// Función para mostrar el PDF en SweetAlert2
+const mostrarArchivo = (ruta) => {
+    if (!ruta) {
+        Swal.fire({
+            icon: 'error',
+            title: '¡Error!',
+            text: 'No se ha proporcionado una ruta válida para el archivo PDF.',
+        });
+        return;
+    }
+    Swal.fire({
+        html: `
+            <div style="width: 100%; height: 500px;">
+                <iframe src="${ruta}" style="width: 100%; height: 100%;" frameborder="0"></iframe>
+            </div>
+        `,
+        width: "80%",
+        showCloseButton: true,
+        showConfirmButton: true,
+        confirmButtonText: "Cerrar",
+        allowOutsideClick: true, 
+        allowEscapeKey: true,
+    });
+};
+
 
 const guardar = () => {
     form.put(route(`${props.routeName}update`, props.documento.id));
@@ -119,6 +153,8 @@ const guardar = () => {
                         value-key="id"
                     />
                 </FormField>
+                
+                
 
                 <!-- Fecha de Revalidación -->
                 <FormField label="Fecha de Revalidación" :error="form.errors.fecha_revalidacion">
@@ -139,7 +175,36 @@ const guardar = () => {
                         required
                     />
                 </FormField>
+                     <!-- Campo: Ruta Documento -->
+                     <FormField label="Documento Principal" :error="form.errors.ruta_documento">
+                    <FormControl
+                        type="file"
+                        @change="(e)=>form.ruta_documento = e.target.files[0]"
+                        accept="application/pdf"
+                        required
+                    />
+                   
+                </FormField>
+
+                <!-- Campo: Ruta Documento Anexo -->
+                <FormField label="Documento Anexo" :error="form.errors.ruta_documento_anexo">
+                    <FormControl
+                        type="file"
+                        @change="(e)=>form.ruta_documento_anexo = e.target.files[0]"
+                        accept="application/pdf"
+                        required
+                    />
+         
+                </FormField>                 
+                <!-- Botón para visualizar los archivos -->                
+                <BaseButton @click="mostrarArchivo(`/storage/${documento.ruta_documento}`)" label="Ver Documento Principal" />
+                <BaseButton @click="mostrarArchivo(`/storage/${documento.ruta_documento_anexo}`)" label="Ver Documento Anexo" />             
+            
             </div>
+  
+
+
+
 
             <template #footer>
                 <BaseButtons>

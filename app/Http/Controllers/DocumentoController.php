@@ -96,8 +96,8 @@ class DocumentoController extends Controller
         }
 
         // Crear carpeta si no existe
-        Storage::disk('local')->makeDirectory("$folder");
-        Storage::disk('local')->makeDirectory("$folder/documentos_anexos");
+        Storage::disk('public')->makeDirectory("$folder");
+        Storage::disk('public')->makeDirectory("$folder/documentos_anexos");
 
         // Guardar documento principal (si existe)
         $rutaDocumento = null;
@@ -106,7 +106,7 @@ class DocumentoController extends Controller
             $rutaDocumento = $request->file('ruta_documento')->storeAs(
                 "$folder", // Carpeta donde se almacenará
                 time() . '_' . $request->file('ruta_documento')->getClientOriginalName(), // Nombre del archivo
-                'local'
+                'public'
             );
         }
 
@@ -117,7 +117,7 @@ class DocumentoController extends Controller
             $rutaDocumentoAnexo = $request->file('ruta_documento_anexo')->storeAs(
                 "$folder/documentos_anexos", // Carpeta donde se almacenará
                 time() . '_' . $request->file('ruta_documento_anexo')->getClientOriginalName(), // Nombre del archivo
-                'local'
+                'public'
             );
         }
 
@@ -161,9 +161,17 @@ class DocumentoController extends Controller
         $estados = Estado::select('id', 'nombre as name')->get();
         $departamentos = Departamento::select('id', 'nombre_departamento as name')->get();
         // Cargar las modalidades asociadas al documento
-        $modalidades = Modalidad::select('id', 'nombre_modalidad as name')
+        $modalidadesAsociadas  = Modalidad::select('id', 'nombre_modalidad as name')
             ->whereIn('id', $documento->modalidades->pluck('id')) // Obtener solo las modalidades asociadas
             ->get();
+        
+        $modalidades = Modalidad::select('id', 'nombre_modalidad as name')->get();
+        // Asegurar que las modalidades asociadas estén al inicio y eliminar duplicados
+        $modalidades = $modalidadesAsociadas->merge($modalidades)->unique('id');
+        $modalidades = $modalidades->sortBy('id')->values(); // Puedes cambiar 'id' por 'name' si quieres orden alfabético
+
+
+
 
         return Inertia::render('Documento/Edit', [
             'titulo' => 'Editar Documento',
@@ -180,26 +188,74 @@ class DocumentoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Documento $documento)
-    {
-        // Validar los datos recibidos
-        $validated = $request->validate([
-            'nombre_documento' => 'required|string|max:255',
-            'empresa_id' => 'required|exists:empresas,id',
-            'tipo_documento_id' => 'required|exists:tipo_de_documentos,id',
-            'estado_id' => 'nullable|exists:estados,id',
-            'departamento_id' => 'required|exists:departamentos,id',
-            'fecha_revalidacion' => 'required|date',
-            'fecha_vigencia' => 'required|date',
-            'modalidad_id' => 'nullable|exists:modalidads,id',
-            'ruta_documento' => 'nullable|string|max:255',
-            'ruta_documento_anexo' => 'nullable|string|max:255',
-        ]);
+public function update(Request $request, Documento $documento)
+{
+    // Validar los datos recibidos
+    $validated = $request->validate([
+        'nombre_documento' => 'required|string|max:255',
+        'empresa_id' => 'required|exists:empresas,id',
+        'tipo_de_documento_id' => 'required|exists:tipo_de_documentos,id',
+        'estado_id' => 'nullable|exists:estados,id',
+        'departamento_id' => 'required|exists:departamentos,id',
+        'fecha_revalidacion' => 'required|date',
+        'fecha_vigencia' => 'required|date',
+        'modalidad_id' => 'nullable|array|exists:modalidads,id',
+        'ruta_documento' => 'nullable|file|mimes:pdf|max:5120',
+        'ruta_documento_anexo' => 'nullable|file|mimes:pdf|max:5120',
+    ]);
 
-        $documento->update($validated);
+    // Determinar el tipo de documento y carpeta
+    $tipoDocumento = strtolower(trim($request->input('nombre_documento')));
+    $folder = str_contains($tipoDocumento, 'documento legal') ? 'documentos_legales' :
+             (str_contains($tipoDocumento, 'documento técnico') ? 'documentos_tecnicos' : 'otros_documentos');
 
-        return redirect()->route($this->routeName . 'index')->with('success', 'Documento actualizado con éxito.');
+    // Crear las carpetas si no existen
+    $folderPath = "public/$folder";
+    $subFolderPath = "$folderPath/documentos_anexos";
+    if (!Storage::disk('public')->exists($folderPath)) {
+        Storage::disk('public')->makeDirectory($folderPath);
     }
+    if (!Storage::disk('public')->exists($subFolderPath)) {
+        Storage::disk('public')->makeDirectory($subFolderPath);
+    }
+
+    // Actualizar documento principal si se sube un nuevo archivo
+    if ($request->hasFile('ruta_documento')) {
+        if ($documento->ruta_documento) {
+            Storage::disk('public')->delete($documento->ruta_documento);
+        }
+        $documento->ruta_documento = $request->file('ruta_documento')->storeAs($folderPath, time() . '_' . $request->file('ruta_documento')->getClientOriginalName(), 'public');
+    }
+
+    // Actualizar documento anexo si se sube un nuevo archivo
+    if ($request->hasFile('ruta_documento_anexo')) {
+        if ($documento->ruta_documento_anexo) {
+            Storage::disk('public')->delete($documento->ruta_documento_anexo);
+        }
+        $documento->ruta_documento_anexo = $request->file('ruta_documento_anexo')->storeAs($subFolderPath, time() . '_' . $request->file('ruta_documento_anexo')->getClientOriginalName(), 'public');
+    }
+
+    // Si no se sube archivo, conservar el archivo actual
+    $documento->update([
+        'nombre_documento' => $validated['nombre_documento'],
+        'empresa_id' => $validated['empresa_id'],
+        'tipo_de_documento_id' => $validated['tipo_de_documento_id'],
+        'estado_id' => $validated['estado_id'],
+        'departamento_id' => $validated['departamento_id'],
+        'fecha_revalidacion' => $validated['fecha_revalidacion'],
+        'fecha_vigencia' => $validated['fecha_vigencia'],
+    ]);
+
+    // Sincronizar las modalidades si existe alguna
+    if (isset($validated['modalidad_id'])) {
+        $documento->modalidades()->sync($validated['modalidad_id']);
+    }
+
+    // Redirigir con mensaje de éxito
+    return redirect()->route($this->routeName . 'index')->with('success', 'Documento actualizado con éxito.');
+}
+
+    
     /**
      * Remove the specified resource from storage.
      */
