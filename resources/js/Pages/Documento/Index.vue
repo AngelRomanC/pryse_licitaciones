@@ -15,7 +15,7 @@ import NotificationBar from "@/components/NotificationBar.vue";
 const props = defineProps({
     documentos: Object,
     titulo: String, //
-    routeName:String
+    routeName: String
 });
 
 const destroy = (id) => {
@@ -61,29 +61,33 @@ const destroy = (id) => {
                 <thead>
                     <tr>
                         <th />
-                        <th class="border p-2">Nombre de Documento</th>  
-                        <th class="border p-2">Acciones</th>               
+                        <th class="border p-2">Nombre de Documento</th>
+                       
                         <th />
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="documento in documentos.data" :key="documento.id">
+                        <tr v-for="documento in documentos.data.filter(doc => doc.nombre_documento === 'Documento Técnico')" :key="documento.id">
+
                         <td class="align-items-center">
                         </td>
-                        <td class="border p-2">{{ documento.nombre_documento}}</td>
+                        <td class="border p-2">{{ documento.nombre_documento }}</td>
                        
+
+
                         <td class="before:hidden lg:w-1 whitespace-nowrap">
                             <BaseButtons type="justify-start lg:justify-end" no-wrap>
                                 <BaseButton color="warning" :icon="mdiTagEdit" small
-                                     :href="route(`${props.routeName}edit`,documento.id)" />                             
-                                <BaseButton color="danger" :icon="mdiDeleteOutline" small @click="destroy(documento.id)" />
+                                    :href="route(`${props.routeName}edit`, documento.id)" />
+                                <BaseButton color="danger" :icon="mdiDeleteOutline" small
+                                    @click="destroy(documento.id)" />
                             </BaseButtons>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <Pagination :currentPage="documentos.current_page" :links="documentos.links" :total="documentos.links.length - 2" />
+            <Pagination :currentPage="documentos.current_page" :links="documentos.links"
+                :total="documentos.links.length - 2" />
         </CardBox>
     </LayoutMain>
 </template>
- 

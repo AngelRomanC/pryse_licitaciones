@@ -5,48 +5,45 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Documento extends Model
+class DocumentoLegal extends Documento
 {
     use HasFactory;
+    protected $connection = 'mysql';  // O el nombre de la conexión que estés usando
+
+    protected $table = 'documentos';
+
     protected $fillable = [
         'nombre_documento',
         'empresa_id',
         'tipo_de_documento_id',
-        'estado_id',
+        
         'departamento_id',
         'fecha_revalidacion',
         'fecha_vigencia',
-        'modalidad_id',
+        
         'ruta_documento',
         'ruta_documento_anexo'
     ];
 
     public function empresa()
     {
-        return $this->belongsTo(Empresa::class);
+        return $this->belongsTo(Empresa::class,'empresa_id');
     }
 
     public function tipoDocumento()
     {
-        return $this->belongsTo(TipoDeDocumento::class);
+        return $this->belongsTo(TipoDeDocumento::class,'tipo_de_docuemnto');
     }
-    public function estado()
-    {
-        return $this->belongsTo(Estado::class); //falto
-    }
+
     public function departamento()
     {
-        return $this->belongsTo(Departamento::class); //falto
+        return $this->belongsTo(Departamento::class,'departamento_id'); //falto
     }
 
     public function fechas()
     {
-        return $this->hasMany(Fecha::class);
-    }
-
-    public function modalidades()
-    {
-        return $this->belongsToMany(Modalidad::class, 'documentos_modalidades') ->withTimestamps();;
+        //return $this->hasMany(Fecha::class);
+        return $this->hasMany(Fecha::class, 'documento_id');
 
     }
 

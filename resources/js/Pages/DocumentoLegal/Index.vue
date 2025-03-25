@@ -67,7 +67,8 @@ const destroy = (id) => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="documento in documentos.data" :key="documento.id">
+                    <tr v-for="documento in documentos.data.filter(doc => doc.nombre_documento === 'Documento Legal')" :key="documento.id">
+
                         <td class="align-items-center">
                         </td>
                         <td class="border p-2">{{ documento.nombre_documento}}</td>

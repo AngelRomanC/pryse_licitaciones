@@ -20,30 +20,30 @@ const props = defineProps({
     titulo: String,
     documento: Object,
     routeName: String,
+
     empresas: Array,
-    tipos_documento: Array,
-    estados: Array,
+    tipos_documento: Array,    
     departamentos: Array,
-    modalidades: Array
+  
 });
 
 const form = useForm({
     nombre_documento: props.documento.nombre_documento,
     empresa_id: props.documento.empresa_id,
     tipo_de_documento_id: props.documento.tipo_de_documento_id,
-    estado_id: props.documento.estado_id,
+    //estado_id: props.documento.estado_id,
     departamento_id: props.documento.departamento_id,
     fecha_revalidacion: props.documento.fecha_revalidacion,
     fecha_vigencia: props.documento.fecha_vigencia,
-    modalidad_id: props.documento.modalidades.map(mod => mod.id), // Para manejar múltiples modalidades
+    //modalidad_id: props.documento.modalidades.map(mod => mod.id), // Para manejar múltiples modalidades
     //modalidad_id: props.documento.modalidades ? props.documento.modalidades.map(mod => mod.id) : [], // Asegurar que no sea undefined
 
     ruta_documento: props.ruta_documento,
     ruta_documento_anexo: props.ruta_documento_anexo
 });
 
-console.log("Modalidades disponibles:", props.modalidades);
-console.log("Modalidades seleccionadas:", form.modalidad_id);
+console.log("nombre doc disponibles:", props.nombre_documento);
+console.log("empresaa seleccionadas:", form.empresa_id);
 console.log('Documento a editar:', props.documento);
 
 // Función para mostrar el PDF en SweetAlert2
@@ -130,7 +130,7 @@ const guardar = () => {
                     />
                 </FormField>
 
-                <!-- Selector de Estado -->
+                <!-- Selector de Estado 
                 <FormField label="Estado" :error="form.errors.estado_id">
                     <FormControl
                         v-model="form.estado_id"
@@ -141,7 +141,7 @@ const guardar = () => {
                         :icon="mdiMapMarker"
                         required
                     />
-                </FormField>
+                </FormField> -->
 
                 <!-- Selector de Departamento -->
                 <FormField label="Departamento" :error="form.errors.departamento_id">
@@ -156,7 +156,7 @@ const guardar = () => {
                     />
                 </FormField>
 
-                   <!-- Selector de Modalidad -->
+                   <!-- Selector de Modalidad 
                    <FormField label="Modalidad" :error="form.errors.modalidad_id">
                     <FormControlV7
                         v-model="form.modalidad_id"
@@ -164,7 +164,7 @@ const guardar = () => {
                         label-key="name"
                         value-key="id"
                     />
-                </FormField>
+                </FormField> -->
                 
                 
 

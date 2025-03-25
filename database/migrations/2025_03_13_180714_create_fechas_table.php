@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('fechas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('documento_id')->constrained('documentos')->onDelete('cascade');
-            $table->date('fecha_creacion');
             $table->date('fecha_revalidacion');
             $table->date('fecha_vigencia');
             $table->timestamps();

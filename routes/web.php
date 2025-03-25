@@ -4,6 +4,7 @@ use App\Http\Controllers\AcademicoController;
 use App\Http\Controllers\CanpeController;
 use App\Http\Controllers\CuipController;
 use App\Http\Controllers\DepartamentoController;
+use App\Http\Controllers\DocumentoLegalController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\InteligenciaController;
 use App\Http\Controllers\HabitoController;
@@ -171,7 +172,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('departamento', controller: DepartamentoController::class);
     Route::resource('modalidad', ModalidadController::class);   
     Route::resource('documento', controller: DocumentoController::class);
-    Route::resource('documento-legal', controller: DocumentoController::class);
+    Route::resource('documento-legal', controller: DocumentoLegalController::class);
 
       
 

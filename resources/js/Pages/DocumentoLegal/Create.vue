@@ -25,14 +25,14 @@ const props = defineProps({
 });
 
 const form = useForm({
-    nombre_documento: 'Documento Técnico',
+    nombre_documento: 'Documento Legal',
     empresa_id: '',
     tipo_de_documento_id: '',
-    estado_id: '',
+    //estado_id: '',
     departamento_id: '',
     fecha_revalidacion: '',
     fecha_vigencia: '',
-    modalidad_id: [],
+    //modalidad_id: [],
     ruta_documento: null,
     ruta_documento_anexo: null
 });
@@ -94,7 +94,7 @@ const handleSubmit = () => {
                     />
                 </FormField>
 
-                <!-- Selector de Estado -->
+                <!-- Selector de Estado
                 <FormField label="Estado" :error="form.errors.estado_id">
                     <FormControl
                         v-model="form.estado_id"
@@ -105,7 +105,7 @@ const handleSubmit = () => {
                         :icon="mdiMapMarker"
                         required
                     />
-                </FormField>
+                </FormField> -->
 
                 <!-- Selector de Departamento -->
                 <FormField label="Departamento" :error="form.errors.departamento_id">
@@ -120,7 +120,7 @@ const handleSubmit = () => {
                     />
                 </FormField>
 
-                <!-- Selector de Modalidad -->
+                <!-- Selector de Modalidad 
                 <FormField label="Modalidad" :error="form.errors.modalidad_id">
                     <FormControlV7
                         v-model="form.modalidad_id"
@@ -128,7 +128,7 @@ const handleSubmit = () => {
                         label-key="name"
                         value-key="id"
                     />
-                </FormField>
+                </FormField>   -->
                 
 
                 <!-- Fecha de Revalidación -->
