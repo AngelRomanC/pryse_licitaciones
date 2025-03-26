@@ -182,13 +182,7 @@ export default [
     role: "Alumno",
    
   }, 
-  {
-    href:"/persona",
-    label: "Registrar Personas",
-    icon: mdiBookshelf,
-    role: "Tutor",
-   
-  },  
+
 
 
 

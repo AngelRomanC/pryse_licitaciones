@@ -42,6 +42,8 @@ use Inertia\Inertia;
 
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PersonaController;
+use App\Http\Controllers\DashboardController;
+
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -51,13 +53,17 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
-Route::get('/dashboard', function () {
+// Route::get('/dashboard', function () {
 
-    return Inertia::render('Dashboard', [
-        'users' => User::all(),
+//     return Inertia::render('Dashboard', [
+//         'users' => User::all(),
 
-    ]);
-})->middleware(['auth'])->name('dashboard');
+//     ]);
+// })->middleware(['auth'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth'])
+    ->name('dashboard');
+
 
 
 Route::middleware('auth')->group(function () {
