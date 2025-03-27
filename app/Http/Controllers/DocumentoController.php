@@ -25,7 +25,8 @@ class DocumentoController extends Controller
     public function index()
     {
 
-        $documentos = Documento::with(['empresa', 'tipoDocumento', 'estado', 'departamento', 'modalidades'])
+        $documentos = Documento::with(['empresa', 'tipoDeDocumento', 'estado', 'departamento', 'modalidades'])
+            ->where('nombre_documento', 'Documento Técnico') // Filtra solo los documentos técnicos
             ->orderBy('id')
             ->paginate(8)
             ->withQueryString();
@@ -115,6 +116,8 @@ class DocumentoController extends Controller
         if (!empty($validated['modalidad_id'])) {
             $documento->modalidades()->attach($validated['modalidad_id']);
         }
+
+    
 
         return redirect()->route($this->routeName . 'index')->with('success', 'Documento creado con éxito.');
     }

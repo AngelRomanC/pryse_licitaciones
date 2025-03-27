@@ -45,14 +45,18 @@ class DashboardController extends Controller
                 $fechaVigencia = Carbon::parse($documento->fecha_vigencia); // Convierte a Carbon
                 $documento->dias_restantes = $fechaVigencia->diffInDays(now());
 
-               
+                if ($documento->dias_restantes === 7) {
+                    //$this->enviarCorreoLicitacion($documento);
+                }
             }
 
             foreach ($documentosLegal as $documentoLegal) {
                 $fechaVigencia = Carbon::parse($documentoLegal->fecha_vigencia); // Convierte a Carbon
                 $documentoLegal->dias_restantes = $fechaVigencia->diffInDays(now());
 
-               
+                if ($documentoLegal->dias_restantes === 7) {
+                    $this->enviarCorreoLicitacion($documentoLegal);
+                }
             }       
 
           

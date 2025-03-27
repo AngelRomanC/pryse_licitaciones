@@ -8,20 +8,20 @@ import SectionTitleLineWithButton from "@/Components/SectionTitleLineWithButton.
 import LineChart from "@/Components/LineChart.vue"; // Asegúrate de que este componente existe y renderiza el gráfico
 
 // Declaramos y desestructuramos las props para tener acceso a ellas en todo el script
-const { 
-  users, 
-  documentos, 
-  documentosLegal, 
-  titulo, 
-  titulo2, 
-  latestUsers 
+const {
+  users,
+  documentos,
+  documentosLegal,
+  titulo,
+  titulo2,
+  latestUsers
 } = defineProps({
-    users: Number,
-    documentos: Object,
-    documentosLegal: Object,
-    titulo: String,
-    titulo2: String,
-    latestUsers: Object,
+  users: Number,
+  documentos: Object,
+  documentosLegal: Object,
+  titulo: String,
+  titulo2: String,
+  latestUsers: Object,
 });
 
 // Variable reactiva para almacenar los datos del gráfico
@@ -35,10 +35,10 @@ const fillChartData = () => {
     console.warn('No hay datos de documentos disponibles.');
     return;
   }
-  
+
   // Definimos los tipos de documento que vamos a mostrar
   const documentTypes = ['Documento Técnico', 'Documento Legal'];
-  
+
   // Para cada tipo, filtramos los documentos y construimos un objeto con:
   // - name: el nombre del tipo
   // - count: la cantidad de documentos
@@ -51,7 +51,7 @@ const fillChartData = () => {
       data: [filteredDocs.length]  // Usamos el conteo para el gráfico
     };
   });
-  
+
   // Actualizamos la variable reactiva
   chartData.value = chart;
 };
@@ -73,6 +73,7 @@ const transactionBarItems = computed(() => mainStore.history);
 </script>
 
 <template>
+
   <Head title="Dashboard Admin" />
   <LayoutDashboard>
     <SectionMain>
@@ -88,7 +89,7 @@ const transactionBarItems = computed(() => mainStore.history);
           <h2 class="text-xl font-semibold text-gray-800">Usuarios Registrados</h2>
           <p class="text-4xl font-bold text-indigo-600">{{ users }}</p>
         </div>
-        
+
         <!-- Gráfico de Actividad -->
         <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
           <h2 class="text-xl font-semibold text-gray-800 mb-4">Gráfico de Actividad</h2>
@@ -135,23 +136,19 @@ const transactionBarItems = computed(() => mainStore.history);
               <thead>
                 <tr class="border-b bg-gray-200">
                   <th class="px-6 py-3 text-left text-gray-600">Nombre Documento</th>
+                  <th class="px-6 py-3 text-left text-gray-600">Departamento</th>
                   <th class="px-6 py-3 text-left text-gray-600">Fecha Revalidación</th>
                   <th class="px-6 py-3 text-left text-gray-600">Fecha Vigencia</th>
                   <th class="px-6 py-3 text-left text-gray-600">Días Restantes</th>
                 </tr>
               </thead>
               <tbody>
-                <tr
-                  v-for="documento in documentos.data.filter(doc => doc.nombre_documento === 'Documento Técnico')"
-                  :key="documento.id"
-                  class="border-b"
-                >
+                <tr v-for="documento in documentos.data" :key="documento.id" class="border-b">
                   <td class="px-6 py-4 text-gray-700">{{ documento.nombre_documento }}</td>
+                  <td class="px-6 py-4 text-gray-700">{{ documento.departamento.nombre_departamento }}</td>
                   <td class="px-6 py-4 text-gray-700">{{ documento.fecha_revalidacion }}</td>
-                  <td
-                    :class="{ 'bg-red-500 text-white': documento.dias_restantes <= 7 }"
-                    class="px-6 py-4 text-gray-700"
-                  >
+                  <td :class="{ 'bg-red-500 text-white': documento.dias_restantes <= 7 }"
+                    class="px-6 py-4 text-gray-700">
                     {{ documento.fecha_vigencia }}
                   </td>
                   <td class="px-6 py-4 text-gray-700">{{ documento.dias_restantes }} días</td>
@@ -169,26 +166,25 @@ const transactionBarItems = computed(() => mainStore.history);
               <thead>
                 <tr class="border-b bg-gray-200">
                   <th class="px-6 py-3 text-left text-gray-600">Nombre Documento</th>
+                  <th class="px-6 py-3 text-left text-gray-600">Departamento</th>
                   <th class="px-6 py-3 text-left text-gray-600">Fecha Revalidación</th>
                   <th class="px-6 py-3 text-left text-gray-600">Fecha Vigencia</th>
                   <th class="px-6 py-3 text-left text-gray-600">Días Restantes</th>
                 </tr>
               </thead>
               <tbody>
-                <tr
-                  v-for="documento in documentos.data.filter(doc => doc.nombre_documento === 'Documento Legal')"
-                  :key="documento.id"
-                  class="border-b"
-                >
+                <tr v-for="documento in documentosLegal.data" :key="documento.id" class="border-b">
                   <td class="px-6 py-4 text-gray-700">{{ documento.nombre_documento }}</td>
+                  <td class="px-6 py-4 text-gray-700">{{ documento.departamento.nombre_departamento }}</td>
                   <td class="px-6 py-4 text-gray-700">{{ documento.fecha_revalidacion }}</td>
-                  <td
-                    :class="{ 'bg-red-500 text-white': documento.dias_restantes <= 7 }"
-                    class="px-6 py-4 text-gray-700"
-                  >
+                  <td :class="{ 'bg-red-500 text-white': documento.dias_restantes <= 7 }"
+                    class="px-6 py-4 text-gray-700">
                     {{ documento.fecha_vigencia }}
                   </td>
-                  <td class="px-6 py-4 text-gray-700">{{ documento.dias_restantes }} días</td>
+                  <td class="px-6 py-4 text-gray-700">
+                    <span v-if="documento.dias_restantes === 0">Vencido</span>
+                    <span v-else>{{ documento.dias_restantes }} días</span>
+                  </td>
                 </tr>
               </tbody>
             </table>

@@ -26,7 +26,8 @@ class DocumentoLegalController extends Controller
     public function index()
     {
 
-        $documentos = DocumentoLegal::with(['empresa', 'tipoDocumento',  'departamento'])
+        $documentos = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento'])
+            ->where('nombre_documento', 'Documento Legal') // Filtra solo los documentos técnicos
             ->orderBy('id')
             ->paginate(8)
             ->withQueryString();
@@ -46,7 +47,7 @@ class DocumentoLegalController extends Controller
     {
         $empresas = Empresa::select('id', 'nombre as name')->get();
         $tipos_documento = TipoDeDocumento::select('id', 'nombre_documento as name')->get();
-       // $estados = Estado::select('id', 'nombre as name')->get();
+        // $estados = Estado::select('id', 'nombre as name')->get();
         $departamentos = Departamento::select('id', 'nombre_departamento as name')->get();
         //$modalidades = Modalidad::select('id', 'nombre_modalidad as name')->get();
 
@@ -74,7 +75,7 @@ class DocumentoLegalController extends Controller
             'departamento_id' => 'required|exists:departamentos,id',
             'fecha_revalidacion' => 'required|date',
             'fecha_vigencia' => 'required|date',
-           
+
             'ruta_documento' => 'nullable|file|mimes:pdf|max:5120',
             'ruta_documento_anexo' => 'nullable|file|mimes:pdf|max:5120',
         ]);
@@ -142,7 +143,7 @@ class DocumentoLegalController extends Controller
         $empresas = Empresa::select('id', 'nombre as name')->get();
         $tipos_documento = TipoDeDocumento::select('id', 'nombre_documento as name')->get();
         $departamentos = Departamento::select('id', 'nombre_departamento as name')->get();
-  
+
 
         return Inertia::render('DocumentoLegal/Edit', [
             'titulo' => 'Editar Documento Legal',
@@ -216,7 +217,7 @@ class DocumentoLegalController extends Controller
             ]
         );
 
-       
+
 
         // Redirigir con mensaje de éxito
         return redirect()->route($this->routeName . 'index')->with('success', 'Documento actualizado con éxito.');

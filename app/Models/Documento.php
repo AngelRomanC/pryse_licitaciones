@@ -26,9 +26,9 @@ class Documento extends Model
         return $this->belongsTo(Empresa::class);
     }
 
-    public function tipoDocumento()
+    public function tipoDeDocumento()
     {
-        return $this->belongsTo(TipoDeDocumento::class);
+        return $this->belongsTo(TipoDeDocumento::class, );
     }
     public function estado()
     {

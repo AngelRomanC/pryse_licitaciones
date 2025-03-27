@@ -46,7 +46,7 @@ class CredencialesEstudianteNotification extends Notification
                     ->line('Por favor, cambia tu contraseña después de iniciar sesión.')
                     ->action('Iniciar sesión', url('/login'))
                     ->line('¡Gracias por usar nuestra aplicación!')
-                    ->salutation('Recursamientos');
+                    ->salutation('Licitaciones.com');
 
     }
 

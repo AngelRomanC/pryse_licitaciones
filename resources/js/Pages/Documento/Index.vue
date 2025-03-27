@@ -17,6 +17,9 @@ const props = defineProps({
     titulo: String, //
     routeName: String
 });
+console.log('Objeto Documenots:', props.documentos);
+console.log('Empresas:', JSON.parse(JSON.stringify(props.documentos)));
+
 
 const destroy = (id) => {
     Swal.fire({
@@ -62,16 +65,31 @@ const destroy = (id) => {
                     <tr>
                         <th />
                         <th class="border p-2">Nombre de Documento</th>
-                       
+                        <th class="border p-2">Empresa</th>
+                        <th class="border p-2">Documento</th>                        
+                        <th class="border p-2">Departamento</th>                        
+                        <th class="border p-2">Revalidación</th>
+                        <th class="border p-2">Vigencia</th>
+                        <th class="border p-2">Acciones</th>                       
                         <th />
                     </tr>
                 </thead>
                 <tbody>
-                        <tr v-for="documento in documentos.data.filter(doc => doc.nombre_documento === 'Documento Técnico')" :key="documento.id">
+                        <tr v-for="documento in documentos.data" :key="documento.id">
 
                         <td class="align-items-center">
                         </td>
                         <td class="border p-2">{{ documento.nombre_documento }}</td>
+                        <td class="border p-2">{{ documento.empresa.nombre}}</td>
+                        <td class="border p-2">{{ documento.tipo_de_documento.nombre_documento}}</td>
+                        <td class="border p-2">{{ documento.departamento.nombre_departamento}}</td>
+                        <td class="border p-2">{{ documento.fecha_revalidacion}}</td>
+                        <td class="border p-2">{{ documento.fecha_vigencia}}</td>
+
+
+
+
+
                        
 
 

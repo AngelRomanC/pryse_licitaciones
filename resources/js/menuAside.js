@@ -168,27 +168,7 @@ export default [
     role: "Alumno",
   }, 
 
-  {
-    href:"/persona",
-    label: "Registrar Personas",
-    icon: mdiBookshelf,
-    role: "Admin",
-   
-  }, 
-  {
-    href:"/persona",
-    label: "Registrar Personas",
-    icon: mdiBookshelf,
-    role: "Alumno",
-   
-  }, 
-
-
-
-
   
- 
-
   {
     label: "Catálogos",
     icon: mdiLibrary ,
