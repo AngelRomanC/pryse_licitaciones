@@ -18,13 +18,6 @@ use App\Notifications\LicitacionAvisoNotification; //notify
 
 class DashboardController extends Controller
 {
-    /* public function index(): Response
-     {
-         return Inertia::render('Dashboard', [
-             'users' => User::count(), // Número total de usuarios
-             'latestUsers' => User::latest()->take(5)->get(), // Últimos 5 usuarios registrados
-         ]);
-     } */
     public function index(): Response
     {
         $user = Auth::user();
@@ -35,56 +28,56 @@ class DashboardController extends Controller
                 ->paginate(8)
                 ->withQueryString();
 
-            $documentosLegal = DocumentoLegal::with(['empresa', 'tipoDocumento', 'departamento'])
+            $documentosLegal = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento'])
                 ->where('nombre_documento', 'Documento Legal')
                 ->orderBy('id')
                 ->paginate(8)
                 ->withQueryString();
             // Calcular los días restantes para cada documento
             foreach ($documentos as $documento) {
-                $fechaVigencia = Carbon::parse($documento->fecha_vigencia); // Convierte a Carbon
+                $fechaVigencia = Carbon::parse($documento->fecha_vigencia); 
                 $documento->dias_restantes = $fechaVigencia->diffInDays(now());
 
-               
+
             }
 
             foreach ($documentosLegal as $documentoLegal) {
-                $fechaVigencia = Carbon::parse($documentoLegal->fecha_vigencia); // Convierte a Carbon
+                $fechaVigencia = Carbon::parse($documentoLegal->fecha_vigencia); 
                 $documentoLegal->dias_restantes = $fechaVigencia->diffInDays(now());
 
-               
-            }       
+            }
 
-          
             return Inertia::render('Dashboard/Admin', [
                 'users' => User::count(),
-                'latestUsers' => User::latest()->take(5)->get(),
+                'latestUsers' => User::latest()->take(3)->get(),
                 'documentos' => $documentos,
                 'documentosLegal' => $documentosLegal,
                 'titulo' => "Documentos Técnicos",
                 'titulo2' => "Documentos Legales",
-
-
+                
             ]);
 
         } else {
-            $documentos = Documento::with(['empresa', 'tipoDocumento', 'estado', 'departamento', 'modalidades'])
+            $documentos = Documento::with(['empresa', 'tipoDeDocumento', 'estado', 'departamento', 'modalidades'])
+            ->where('nombre_documento', 'Documento Técnico')
                 ->orderBy('id')
                 ->paginate(8)
                 ->withQueryString();
 
-            $documentosLegal = DocumentoLegal::with(['empresa', 'tipoDocumento', 'departamento'])
+            $documentosLegal = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento'])
+            ->where('nombre_documento', 'Documento Legal')
                 ->orderBy('id')
                 ->paginate(8)
                 ->withQueryString();
+
             // Calcular los días restantes para cada documento
             foreach ($documentos as $documento) {
-                $fechaVigencia = Carbon::parse($documento->fecha_vigencia); // Convierte a Carbon
+                $fechaVigencia = Carbon::parse($documento->fecha_vigencia);
                 $documento->dias_restantes = $fechaVigencia->diffInDays(now());
             }
 
             foreach ($documentosLegal as $documentoLegal) {
-                $fechaVigencia = Carbon::parse($documentoLegal->fecha_vigencia); // Convierte a Carbon
+                $fechaVigencia = Carbon::parse($documentoLegal->fecha_vigencia); 
                 $documentoLegal->dias_restantes = $fechaVigencia->diffInDays(now());
             }
             return Inertia::render('Dashboard/Usuario', [
@@ -94,19 +87,6 @@ class DashboardController extends Controller
                 'titulo' => "Documentos Técnicos",
                 'titulo2' => "Documentos Legales",
             ]);
-        }
-
-    }
-    // Función para enviar correo a todos los usuarios
-    private function enviarCorreoLicitacion($documento)
-    {
-        $usuarios = User::all(); // Obtener todos los usuarios
-
-        foreach ($usuarios as $usuario) {
-            Mail::to($usuario->email)->send(new LicitacionAviso($documento));
-            $usuario->notify(new LicitacionAvisoNotification($documento));
-
-
         }
     }
 }

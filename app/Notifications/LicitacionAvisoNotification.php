@@ -30,7 +30,7 @@ class LicitacionAvisoNotification extends Notification
                     ->subject('Aviso: Licitación Próxima a Vencer')
                     ->greeting('Estimado usuario,')
                     ->line('La licitación "' . $this->documento->nombre_documento . '" está próxima a vencer en ' . $this->documento->dias_restantes . ' días.')
-                    ->action('Ver licitación', url('/licitaciones/' . $this->documento->id))
+                    ->action('Iniciar sesión', url('/login' )) 
                     ->line('Por favor, tome las acciones necesarias antes de la fecha límite.')
                     ->salutation('Atentamente, Licitaciones.com');
     }

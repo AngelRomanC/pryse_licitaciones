@@ -6,16 +6,16 @@ import LayoutDashboard from "@/Layouts/LayoutDashboard.vue";
 import SectionMain from "@/Components/SectionMain.vue";
 import SectionTitleLineWithButton from "@/Components/SectionTitleLineWithButton.vue";
 import LineChart from "@/Components/LineChart.vue"; // Asegúrate de que este componente existe y renderiza el gráfico
+import { Chart } from 'chart.js';
+import { defineComponent } from 'vue';
+import { Line } from 'vue-chartjs';  // O cualquier otro tipo de gráfico que estés usando
+import { Chart as ChartJS, CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement } from 'chart.js';
+
+// Registrar los componentes necesarios de Chart.js
+ChartJS.register(CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement);
 
 // Declaramos y desestructuramos las props para tener acceso a ellas en todo el script
-const {
-  users,
-  documentos,
-  documentosLegal,
-  titulo,
-  titulo2,
-  latestUsers
-} = defineProps({
+const props = defineProps({
   users: Number,
   documentos: Object,
   documentosLegal: Object,
@@ -24,55 +24,28 @@ const {
   latestUsers: Object,
 });
 
-// Variable reactiva para almacenar los datos del gráfico
-const chartData = ref([]);
+// Contar total de documentos
+const totalDocumentosTecnicos = computed(() => props.documentos.data.length);
+const totalDocumentosLegales = computed(() => props.documentosLegal.data.length);
 
-// Función para llenar los datos del gráfico basados en los documentos
-const fillChartData = () => {
-  // Accedemos de forma segura a la propiedad 'data'
-  const docs = documentos?.data || [];
-  if (docs.length === 0) {
-    console.warn('No hay datos de documentos disponibles.');
-    return;
-  }
-
-  // Definimos los tipos de documento que vamos a mostrar
-  const documentTypes = ['Documento Técnico', 'Documento Legal'];
-
-  // Para cada tipo, filtramos los documentos y construimos un objeto con:
-  // - name: el nombre del tipo
-  // - count: la cantidad de documentos
-  // - data: en este ejemplo, un arreglo con un solo número (la cantidad) para generar un gráfico sencillo
-  const chart = documentTypes.map(type => {
-    const filteredDocs = docs.filter(doc => doc.nombre_documento === type);
-    return {
-      name: type,
-      count: filteredDocs.length,
-      data: [filteredDocs.length]  // Usamos el conteo para el gráfico
-    };
-  });
-
-  // Actualizamos la variable reactiva
-  chartData.value = chart;
-};
-
-// Si los documentos cambian de forma reactiva, actualizamos la gráfica
-watch(() => documentos, () => {
-  fillChartData();
-}, { immediate: true });
-
-// Ejecutamos la función cuando el componente se monta
-onMounted(() => {
-  console.log('Documentos...............:', documentos);
-  fillChartData();
+const documentosTecnicosVencidos = computed(() => {
+  return props.documentos.data.filter(documento => documento.dias_restantes === 0).length;
 });
 
-const mainStore = useMainStore();
-const clientBarItems = computed(() => mainStore.clients.slice(0, 4));
-const transactionBarItems = computed(() => mainStore.history);
+const documentosLegalesVencidos = computed(() => {
+  return props.documentosLegal.data.filter(documento => documento.dias_restantes === 0).length;
+});
+
+
+//--------------------------------------------
+
+
+
+
 </script>
 
 <template>
+
 
   <Head title="Dashboard Admin" />
   <LayoutDashboard>
@@ -88,18 +61,32 @@ const transactionBarItems = computed(() => mainStore.history);
         <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
           <h2 class="text-xl font-semibold text-gray-800">Usuarios Registrados</h2>
           <p class="text-4xl font-bold text-indigo-600">{{ users }}</p>
+        </div>   
+
+       <!-- Tarjeta de Documentos Técnicos -->
+        <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
+          <h2 class="text-xl font-semibold text-gray-800">Documentos Técnicos</h2>
+          <p class="text-4xl font-bold text-indigo-600">{{ totalDocumentosTecnicos }}</p>
         </div>
 
-        <!-- Gráfico de Actividad -->
+        <!-- Mostramos los conteos de documentos vencidos -->
         <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
-          <h2 class="text-xl font-semibold text-gray-800 mb-4">Gráfico de Actividad</h2>
-          <!-- Renderizamos el gráfico solo si chartData tiene datos -->
-          <div v-if="chartData.value && chartData.value.length > 0" class="w-full">
-            <LineChart :chartData="chartData.value" />
-          </div>
-          <div v-else class="text-gray-500">No hay datos disponibles para mostrar.</div>
+          <h2 class="text-xl font-semibold text-gray-800">Licitaciones Técnicos</h2>
+          <p class="text-4xl font-bold text-indigo-600">{{ documentosTecnicosVencidos }}</p>
+        </div>
+
+        <!-- Tarjeta de Documentos Legales -->
+        <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
+          <h2 class="text-xl font-semibold text-gray-800">Documentos Legales</h2>
+          <p class="text-4xl font-bold text-indigo-600">{{ totalDocumentosLegales }}</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
+          <h2 class="text-xl font-semibold text-gray-800">Licitaciones Legales</h2>
+          <p class="text-4xl font-bold text-indigo-600">{{ documentosLegalesVencidos }}</p>
         </div>
       </div>
+
 
       <!-- Últimos usuarios registrados -->
       <div class="mt-8">
@@ -144,7 +131,7 @@ const transactionBarItems = computed(() => mainStore.history);
               </thead>
               <tbody>
                 <tr v-for="documento in documentos.data" :key="documento.id" class="border-b">
-                  <td class="px-6 py-4 text-gray-700">{{ documento.nombre_documento }}</td>
+                  <td class="px-6 py-4 text-gray-700">{{ documento.tipo_de_documento.nombre_documento }}</td>
                   <td class="px-6 py-4 text-gray-700">{{ documento.departamento.nombre_departamento }}</td>
                   <td class="px-6 py-4 text-gray-700">{{ documento.fecha_revalidacion }}</td>
                   <td :class="{ 'bg-red-500 text-white': documento.dias_restantes <= 7 }"
@@ -174,7 +161,7 @@ const transactionBarItems = computed(() => mainStore.history);
               </thead>
               <tbody>
                 <tr v-for="documento in documentosLegal.data" :key="documento.id" class="border-b">
-                  <td class="px-6 py-4 text-gray-700">{{ documento.nombre_documento }}</td>
+                  <td class="px-6 py-4 text-gray-700">{{ documento.tipo_de_documento.nombre_documento }}</td>
                   <td class="px-6 py-4 text-gray-700">{{ documento.departamento.nombre_departamento }}</td>
                   <td class="px-6 py-4 text-gray-700">{{ documento.fecha_revalidacion }}</td>
                   <td :class="{ 'bg-red-500 text-white': documento.dias_restantes <= 7 }"
