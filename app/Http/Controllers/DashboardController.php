@@ -21,6 +21,7 @@ class DashboardController extends Controller
     public function index(): Response
     {
         $user = Auth::user();
+        
         if ($user->hasRole('Admin')) {
             $documentos = Documento::with(['empresa', 'tipoDeDocumento', 'estado', 'departamento', 'modalidades'])
                 ->where('nombre_documento', 'Documento Técnico')

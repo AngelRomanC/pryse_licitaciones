@@ -38,6 +38,13 @@ export default [
     label: "Dashboard",
     role: "Admin"
   },
+  {
+    href: "/dashboard",
+    to: "/dashboard",
+    icon: mdiMonitor,
+    label: "Dashboard",
+    role: "Alumno"
+  },
 
   
   {

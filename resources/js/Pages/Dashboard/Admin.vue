@@ -25,8 +25,8 @@ const props = defineProps({
 });
 
 // Contar total de documentos
-const totalDocumentosTecnicos = computed(() => props.documentos.data.length);
-const totalDocumentosLegales = computed(() => props.documentosLegal.data.length);
+const totalDocumentosTecnicos = computed(() => props.documentos.total);
+const totalDocumentosLegales = computed(() => props.documentosLegal.total);
 
 const documentosTecnicosVencidos = computed(() => {
   return props.documentos.data.filter(documento => documento.dias_restantes === 0).length;
