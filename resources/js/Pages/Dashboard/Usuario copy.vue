@@ -26,19 +26,12 @@ const props = defineProps({
 const totalDocumentosTecnicos = computed(() => props.documentos.total);
 const totalDocumentosLegales = computed(() => props.documentosLegal.total);
 
-// const documentosTecnicosVencidos = computed(() => {
-//   return props.documentos.data.filter(documento => documento.dias_restantes === 0).length;
-// });
-
-// const documentosLegalesVencidos = computed(() => {
-//   return props.documentosLegal.data.filter(documento => documento.dias_restantes === 0).length;
-// });
 const documentosTecnicosVencidos = computed(() => {
-  return props.d1.filter(documento => documento.dias_restantes === 0).length;
+  return props.documentos.data.filter(documento => documento.dias_restantes === 0).length;
 });
 
 const documentosLegalesVencidos = computed(() => {
-  return props.d2.filter(documento => documento.dias_restantes === 0).length;
+  return props.documentosLegal.data.filter(documento => documento.dias_restantes === 0).length;
 });
 
 // Datos para el gráfico de doughnut
