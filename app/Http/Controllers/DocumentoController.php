@@ -13,14 +13,22 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
+
 class DocumentoController extends Controller
 {
     private string $routeName;
+    protected string $module = 'documento';
+
 
     public function __construct()
     {
         $this->middleware('auth');
         $this->routeName = 'documento.';
+        $this->middleware("permission:{$this->module}.index")->only(['index', 'show']);
+        $this->middleware("permission:{$this->module}.store")->only(['store', 'create']);
+        $this->middleware("permission:{$this->module}.update")->only(['edit', 'update']);
+        $this->middleware("permission:{$this->module}.delete")->only(['destroy']);
+       
     }
     public function index()
     {

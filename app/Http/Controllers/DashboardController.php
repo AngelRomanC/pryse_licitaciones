@@ -90,9 +90,7 @@ class DashboardController extends Controller
                 ->orderBy('id')
                 ->get()
                 ->map(fn($documento) => $documento->setAttribute(
-                    'dias_restantes',
-                    //Carbon::parse($documento->fecha_vigencia)->diffInDays(now())
-                   // now()->diffInDays(Carbon::parse($documento->fecha_vigencia), false) // ← También aquí
+                    'dias_restantes',                
                    now()->startOfDay()->diffInDays(Carbon::parse($documento->fecha_vigencia)->startOfDay(), false) 
 
                 ));
@@ -103,7 +101,6 @@ class DashboardController extends Controller
                 ->get()
                 ->map(fn($documentoLegal) => $documentoLegal->setAttribute(
                     'dias_restantes',
-                    //Carbon::parse($documentoLegal->fecha_vigencia)->diffInDays(now())
                     now()->startOfDay()->diffInDays(Carbon::parse($documentoLegal->fecha_vigencia)->startOfDay(), false) 
 
                 ));

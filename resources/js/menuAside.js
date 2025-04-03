@@ -1,34 +1,15 @@
 import {
-  mdiAccountCircle,
   mdiMonitor,
-  mdiGithub,
-  mdiLock,
-  mdiAlertCircle,
-  mdiSquareEditOutline,
-  mdiTable,
-  mdiViewListOutline,
-  mdiTelevisionGuide,
-  mdiResponsive,
   mdiSecurity,
-  mdiClockCheck,
   mdiBookshelf,
-  mdiCalendarAccountOutline,
-  mdiClockTimeEleven,
-  mdiAccount,
-  mdiBedClock,
-  mdiEmoticonHappyOutline ,
   mdiFileDocumentOutline,
-  mdiFileDocumentEditOutline,mdiHumanMaleBoard,mdiAccountSchool,
+ mdiHumanMaleBoard,mdiAccountSchool,
   mdiAccountGroup,
   mdiScaleBalance,
   mdiFileSign,
   mdiLibrary,
-  mdiFormatListChecks,
-  
-
+  mdiFormatListChecks,  
 } from "@mdi/js";
-
-
 
 export default [
   {
@@ -36,46 +17,17 @@ export default [
     to: "/dashboard",
     icon: mdiMonitor,
     label: "Dashboard",
-    role: "Admin"
+    role: "Admin" //Vistas 
   },
   {
     href: "/dashboard",
     to: "/dashboard",
     icon: mdiMonitor,
     label: "Dashboard",
-    role: "Alumno"
+    role: "Alumno" // Vistas 
   },
 
   
-  {
-    label: "Catalogo",
-    icon: mdiViewListOutline,
-    role: "Alumno",
-    menu: [
- 
-      {
-        label: "Materias",
-        href: "/materia",
-        to: "/materia",
-        
-        icon: mdiBookshelf,
-      },
-      {
-        label: "Periodo",
-        href: "/periodo",
-        icon: mdiBookshelf,
-       
-      },
-    ],
-  },
-
-
-  {
-    href:"/grupo",
-    label: "Grupos",
-    icon: mdiBookshelf,
-    role: "Alumno",
-  }, 
   {
     label: "Usuarios",
     icon: mdiAccountGroup ,
@@ -102,78 +54,21 @@ export default [
       
     ]
   },
-
-  
-  {
-    href:"/recursamiento",
-    label: "Recursamiento",
-    icon: mdiBookshelf,
-    role: "Alumno",
-  }, 
-
-
-  {
-    href:"/lista",
-    label: "Recursamientos disponibles",
-    icon: mdiBookshelf,
-    role: "Alumno",
-  }, 
-  {
-    label: "Formatos",
-    icon: mdiFileDocumentEditOutline ,
-    role: "Alumno",
-    menu: [
-      {
-        href:"/academico",
-        label: "Academico",
-        icon: mdiBookshelf,
-        role: "Alumno",
-      }, 
-      {
-        href:"/habito",
-        label: "Habitos",
-        icon: mdiBedClock,
-        role: "Alumno",
-      }, 
-      {
-        href:"/inteligencia",
-        label: "Inteligencia",
-        icon: mdiEmoticonHappyOutline ,
-        role: "Alumno",
-      }, 
-      {
-        href:"/encuesta",
-        label: "Encuesta recursamientos",
-        icon: mdiBookshelf,
-        role: "Alumno",
-      }, 
-    ]
-  },
-  
+ 
   {
     href:"/evaluacion",
     label: "Evaluación",
     icon: mdiBookshelf,
     role: "Tutor",
   }, 
-  {
-    href:"/pregunta",
-    label: "Formatos",
-    icon: mdiBookshelf,
-    role: "Alumno",
-  }, 
+
   {
     href:"/respaldo",
     label: "Respaldo DB",
     icon: mdiBookshelf,
-    role: "Admin-",
+    role: "Admin",
   },
-  {
-    href:"/observaciones",
-    label: "Observaciones",
-    icon: mdiBookshelf,
-    role: "Alumno",
-  }, 
+
 
   
   {
@@ -207,7 +102,37 @@ export default [
       }, 
     ]
   },
-
+  {
+    label: "Catálogos",
+    icon: mdiLibrary ,
+    role: "Alumno",
+    menu: [
+      {
+        href:"/empresa",
+        label: "Empresa",
+        icon: mdiBookshelf,
+        role: "Alumno",
+      }, 
+      {
+        href:"/tipo-de-documento",
+        label: "Documento",
+        icon: mdiFileDocumentOutline,
+        role: "Alumno",
+      }, 
+      {
+        href:"/departamento",
+        label: "Departamento",
+        icon: mdiAccountGroup,
+        role: "Alumno",
+      }, 
+      {
+        href:"/modalidad",
+        label: "Modalidades",
+        icon: mdiFormatListChecks,
+        role: "Alumno",
+      }, 
+    ]
+  },
 
   {
     href:"/documento",
@@ -222,6 +147,18 @@ export default [
     role: "Admin",
   }, 
 
+  {
+    href:"/documento",
+    label: "Documentos Técnicos ",
+    icon: mdiFileSign,
+    role: "Alumno",
+  }, 
+  {
+    href:"/documento-legal",
+    label: "Documentos Legales ",
+    icon: mdiScaleBalance,
+    role: "Alumno",
+  }, 
 
   
 ];

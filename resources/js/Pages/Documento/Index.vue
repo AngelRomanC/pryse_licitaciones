@@ -10,7 +10,7 @@ import Pagination from '@/Shared/Pagination.vue';
 import CardBoxComponentEmpty from "@/components/CardBoxComponentEmpty.vue";
 import CardBox from "@/components/CardBox.vue";
 import NotificationBar from "@/components/NotificationBar.vue";
-
+import moment from "moment";
 
 const props = defineProps({
     documentos: Object,
@@ -83,8 +83,8 @@ const destroy = (id) => {
                         <td class="border p-2">{{ documento.empresa.nombre}}</td>
                         <td class="border p-2">{{ documento.tipo_de_documento.nombre_documento}}</td>
                         <td class="border p-2">{{ documento.departamento.nombre_departamento}}</td>
-                        <td class="border p-2">{{ documento.fecha_revalidacion}}</td>
-                        <td class="border p-2">{{ documento.fecha_vigencia}}</td>
+                        <td class="border p-2">{{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }} </td>
+                        <td class="border p-2">{{ moment(documento.vigencia).format("DD/MM/YYYY") }}</td>
 
 
 

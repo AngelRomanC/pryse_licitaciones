@@ -17,11 +17,18 @@ use Inertia\Inertia;
 class DocumentoLegalController extends Controller
 {
     private string $routeName;
+    protected string $module = 'documentoLegal';
+
 
     public function __construct()
     {
         $this->middleware('auth');
         $this->routeName = 'documento-legal.';
+        $this->middleware("permission:{$this->module}.index")->only(['index', 'show']);
+        $this->middleware("permission:{$this->module}.store")->only(['store', 'create']);
+        $this->middleware("permission:{$this->module}.update")->only(['edit', 'update']);
+        $this->middleware("permission:{$this->module}.delete")->only(['destroy']);
+       
     }
     public function index()
     {
