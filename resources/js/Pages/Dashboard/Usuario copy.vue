@@ -80,33 +80,6 @@ const chartOptions2 = {
   cutout: '70%', // Para doughnut (usa 0% para pie chart)
 };
 
-const lineChartOptions = {
-  responsive: true,
-  plugins: {
-    title: {
-      display: true,
-      text: 'Tendencia de Vencimiento de Documentos',
-      font: { size: 16 }
-    },
-    tooltip: {
-      callbacks: {
-        label: (context) => {
-          const label = context.dataset.label || '';
-          const value = context.raw || 0;
-          return `${label}: ${value} documentos`;
-        }
-      }
-    }
-  },
-  scales: {
-    y: {
-      beginAtZero: true,
-      title: { display: true, text: 'Cantidad de Documentos' }
-    }
-  }
-};
-
-// ===== DATOS PARA GRÁFICA HORIZONTAL (Documentos por Departamento) =====
 // ===== DATOS PARA GRÁFICA HORIZONTAL (USANDO TODOS LOS DOCUMENTOS) =====
 
 const procesarDocumentosPorDepartamento = () => {

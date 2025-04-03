@@ -19,27 +19,27 @@ class DashboardController extends Controller
 
         if ($user->hasRole('Admin')) {
             $documentos = Documento::with(['empresa', 'tipoDeDocumento', 'estado', 'departamento', 'modalidades'])
-                ->where('nombre_documento', 'Documento Técnico')
+                -> where('nombre_documento', 'Documento Técnico')
                 ->orderBy('id')
-                ->paginate(8)
+                ->paginate(10)
+                ->through(fn($documento) => $documento->setAttribute(
+                    'dias_restantes',
+                    now()->startOfDay()->diffInDays(Carbon::parse($documento->fecha_vigencia)->startOfDay(), false) 
+
+                ))
                 ->withQueryString();
 
             $documentosLegal = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento'])
                 ->where('nombre_documento', 'Documento Legal')
                 ->orderBy('id')
-                ->paginate(8)
+                ->paginate(10)
+                ->through(fn($documentoLegal) => $documentoLegal->setAttribute(
+                    'dias_restantes',
+                    now()->startOfDay()->diffInDays(Carbon::parse($documentoLegal->fecha_vigencia)->startOfDay(), false) 
+                    
+                ))
                 ->withQueryString();
-
-            // Calcular los días restantes para cada documento
-            foreach ($documentos as $documento) {
-                $fechaVigencia = Carbon::parse($documento->fecha_vigencia);
-                $documento->dias_restantes = $fechaVigencia->diffInDays(now());
-            }
-
-            foreach ($documentosLegal as $documentoLegal) {
-                $fechaVigencia = Carbon::parse($documentoLegal->fecha_vigencia);
-                $documentoLegal->dias_restantes = $fechaVigencia->diffInDays(now());
-            }
+         
 
             return Inertia::render('Dashboard/Admin', [
                 'users' => User::count(),
@@ -52,37 +52,61 @@ class DashboardController extends Controller
             ]);
 
         } else {
-            $documentos = Documento::with(['empresa', 'tipoDeDocumento', 'estado', 'departamento', 'modalidades'])
+            // Definir relaciones comunes para cargar
+            $relacionesDocumentos = ['empresa', 'tipoDeDocumento', 'estado', 'departamento', 'modalidades'];
+            $relacionesDocumentosLegales = ['empresa', 'tipoDeDocumento', 'departamento'];
+
+            // Obtener documentos paginados con días restantes
+            $documentos = Documento::with($relacionesDocumentos)
                 ->where('nombre_documento', 'Documento Técnico')
-                ->orderBy('id')
+                ->where('fecha_vigencia', '>=', now())
+                ->orderBy('fecha_vigencia', 'asc')
                 ->paginate(8)
+                ->through(fn($documento) => $documento->setAttribute(
+                    'dias_restantes',
+                   // Carbon::parse($documento->fecha_vigencia)->diffInDays(now())
+                   now()->startOfDay()->diffInDays(Carbon::parse($documento->fecha_vigencia)->startOfDay(), false) 
+                 
+                ))
                 ->withQueryString();
 
-            $documentosLegal = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento'])
+            $documentosLegal = DocumentoLegal::with($relacionesDocumentosLegales)
                 ->where('nombre_documento', 'Documento Legal')
-                ->orderBy('id')
+                ->where('fecha_vigencia', '>=', now())
+                ->orderBy('fecha_vigencia', 'asc')
                 ->paginate(8)
+                ->through(fn($documentoLegal) => $documentoLegal->setAttribute(
+                    'dias_restantes',
+                    //Carbon::parse($documentoLegal->fecha_vigencia)->diffInDays(now())
+                    now()->startOfDay()->diffInDays(Carbon::parse($documentoLegal->fecha_vigencia)->startOfDay(), false) 
+                    
+                    
+                ))
                 ->withQueryString();
 
-            $documentosAll = Documento::with(['empresa', 'tipoDeDocumento', 'estado', 'departamento', 'modalidades'])
+            // Obtener todos los documentos (para la gráfica) y calcular días restantes
+            $documentosAll = Documento::with($relacionesDocumentos)
                 ->where('nombre_documento', 'Documento Técnico')
                 ->orderBy('id')
-                ->get();
+                ->get()
+                ->map(fn($documento) => $documento->setAttribute(
+                    'dias_restantes',
+                    //Carbon::parse($documento->fecha_vigencia)->diffInDays(now())
+                   // now()->diffInDays(Carbon::parse($documento->fecha_vigencia), false) // ← También aquí
+                   now()->startOfDay()->diffInDays(Carbon::parse($documento->fecha_vigencia)->startOfDay(), false) 
 
-            $documentosLegalAll = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento'])
+                ));
+
+            $documentosLegalAll = DocumentoLegal::with($relacionesDocumentosLegales)
                 ->where('nombre_documento', 'Documento Legal')
                 ->orderBy('id')
-                ->get();
+                ->get()
+                ->map(fn($documentoLegal) => $documentoLegal->setAttribute(
+                    'dias_restantes',
+                    //Carbon::parse($documentoLegal->fecha_vigencia)->diffInDays(now())
+                    now()->startOfDay()->diffInDays(Carbon::parse($documentoLegal->fecha_vigencia)->startOfDay(), false) 
 
-            foreach ($documentosAll as $documento) {
-                $fechaVigencia = Carbon::parse($documento->fecha_vigencia);
-                $documento->dias_restantes = $fechaVigencia->diffInDays(now());
-            }
-
-            foreach ($documentosLegalAll as $documentoLegal) {
-                $fechaVigencia = Carbon::parse($documentoLegal->fecha_vigencia);
-                $documentoLegal->dias_restantes = $fechaVigencia->diffInDays(now());
-            }
+                ));
 
             return Inertia::render('Dashboard/Usuario', [
                 'message' => 'Bienvenido al Dashboard de Usuario',
@@ -92,8 +116,8 @@ class DashboardController extends Controller
                 'titulo2' => "Documentos Legales",
                 'd1' => $documentosAll,
                 'd2' => $documentosLegalAll,
-
             ]);
         }
+
     }
 }
