@@ -85,7 +85,7 @@ const submit = () => {
           {{ status }}
         </NotificationBarInCard>
        
-        <img src="http://licitaciones.test:8080/storage/imagenes/pry.png" style="width: 200px; height: auto;display: block; margin: 0 auto;">   
+        <img src="/storage/imagenes/pry.png" style="width: 200px; height: auto;display: block; margin: 0 auto;">   
 
       
       

@@ -33,6 +33,7 @@ use App\Http\Controllers\EncuestaController;
 use App\Http\Controllers\FormatoEvaluacionController;
 use App\Http\Controllers\RespaldoController;
 
+use App\Http\Controllers\UsuarioGeneralController;
 use App\Models\Module;
 use App\Models\TipoDeDocumento;
 use App\Models\User;
@@ -79,7 +80,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('materia', controller: MateriaController::class)->names('materia');
 
     //Usuarios
-    Route::resource('usuarios', UserController::class)->parameters(['usuarios' => 'usuarios']);
+    Route::resource('usuarios', controller: UserController::class)->parameters(['usuarios' => 'usuarios']);
     Route::get('/perfil', [UserController::class, 'perfil'])->name('usuarios.perfil');
     Route::post('actualizarPerfil', [UserController::class, 'updatePerfil'])->name('usuarios.update-perfil');
 
@@ -179,6 +180,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('modalidad', ModalidadController::class);   
     Route::resource('documento', controller: DocumentoController::class);
     Route::resource('documento-legal', controller: DocumentoLegalController::class);
+
+    Route::resource('usuarios-sistema', controller: UsuarioGeneralController::class);
+
 
       
 

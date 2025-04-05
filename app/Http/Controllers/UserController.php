@@ -44,7 +44,6 @@ class UserController extends Controller
     {
 
         $alumnos = Alumno::with('user')->get();
-        $profesores = Profesor::with('user')->get();
         $admin = User::where('role', 'Admin')->get();
 
         $usuarios = $this->model::with('roles')
@@ -55,11 +54,10 @@ class UserController extends Controller
 
 
         return Inertia::render("{$this->source}Index", [
-            'titulo'   => ' Usuarios',
+            'titulo'   => ' Usuarios Admin',
             'usuarios' => $usuarios,
             'alumnos' => $alumnos,
             'admin' => $admin,
-            'profesores' => $profesores,
             'profiles' => Role::get(['id', 'name']),
             'routeName' => $this->routeName,
             'loadingResults' => false,

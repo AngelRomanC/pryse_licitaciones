@@ -3,7 +3,7 @@ import {
   mdiSecurity,
   mdiBookshelf,
   mdiFileDocumentOutline,
- mdiHumanMaleBoard,mdiAccountSchool,
+  mdiAccountTie ,mdiAccountSchool,
   mdiAccountGroup,
   mdiScaleBalance,
   mdiFileSign,
@@ -29,7 +29,7 @@ export default [
 
   
   {
-    label: "Usuarios",
+    label: "Gestión de Usuarios",
     icon: mdiAccountGroup ,
     role: "Admin",
     menu: [
@@ -39,16 +39,17 @@ export default [
         icon: mdiSecurity,
         role: "Admin",
       }, 
-      {
-        href:"/profesor",
-        label: "Profesor",
-        icon: mdiHumanMaleBoard,
-        role: "Admin",
-      }, 
+  
       {
         href:"/alumno",
         label: "Alumno",
         icon: mdiAccountSchool  ,
+        role: "Admin",
+      }, 
+      {
+        href:"/usuarios-sistema",
+        label: "Usuario",
+        icon: mdiAccountTie   ,
         role: "Admin",
       }, 
       

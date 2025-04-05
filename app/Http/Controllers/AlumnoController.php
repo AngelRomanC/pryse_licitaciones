@@ -61,8 +61,8 @@ class AlumnoController extends Controller
         return Inertia::render("Alumno/Create", [
             'titulo'      => 'Agregar alumno',
             'routeName'      => $this->routeName,
-            'usuarios'  => $usuarios,
-            'roles' => Role::pluck('name'),
+            'usuarios'  => $usuarios, //no se ocupa
+            'roles' => Role::pluck('name'), //no se ocupa
         ]);
     }
 

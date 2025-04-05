@@ -3,7 +3,7 @@ export const basic = {
   aside: "bg-blue-900", // Azul marino aún más oscuro
 
   asideScrollbars: "aside-scrollbars-gray", //color del modulos
-  asideBrand: "bg-purple-900 text-white", //color de letras
+  asideBrand: "bg-gray-300 text-white", //color de letras y color del 
   // asideBrand: "bg-blue-900 text-yellow-400", // Fondo azul y texto amarillo
 
   // asideMenuItem: "text-gray-300 hover:text-white",
@@ -16,7 +16,6 @@ export const basic = {
   navBarItemLabelHover: "hover:text-blue-500",
   navBarItemLabelActiveColor: "text-blue-600",
   overlay: "from-gray-700 via-gray-900 to-gray-700",
-
   
 };
 

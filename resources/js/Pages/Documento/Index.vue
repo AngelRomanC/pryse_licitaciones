@@ -17,9 +17,6 @@ const props = defineProps({
     titulo: String, //
     routeName: String
 });
-console.log('Objeto Documenots:', props.documentos);
-console.log('Empresas:', JSON.parse(JSON.stringify(props.documentos)));
-
 
 const destroy = (id) => {
     Swal.fire({
@@ -84,13 +81,7 @@ const destroy = (id) => {
                         <td class="border p-2">{{ documento.tipo_de_documento.nombre_documento}}</td>
                         <td class="border p-2">{{ documento.departamento.nombre_departamento}}</td>
                         <td class="border p-2">{{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }} </td>
-                        <td class="border p-2">{{ moment(documento.vigencia).format("DD/MM/YYYY") }}</td>
-
-
-
-
-
-                       
+                        <td class="border p-2">{{ moment(documento.vigencia).format("DD/MM/YYYY") }}</td>                      
 
 
                         <td class="before:hidden lg:w-1 whitespace-nowrap">
