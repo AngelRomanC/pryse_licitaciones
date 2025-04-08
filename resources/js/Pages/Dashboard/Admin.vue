@@ -24,8 +24,7 @@ const props = defineProps({
   titulo2: String,
   latestUsers: Object,
 });
-console.log(props.documentos);
-console.log('Legalll',props.documentos);
+
 
 // Contar total de documentos
 const totalDocumentosTecnicos = computed(() => props.documentos.total);

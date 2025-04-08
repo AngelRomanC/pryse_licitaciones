@@ -1,12 +1,14 @@
 <script setup>
-import { router } from '@inertiajs/vue3'
-import { ref } from 'vue'
 import LayoutMain from '@/layouts/LayoutMain.vue'
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue"
 import BaseButton from "@/components/BaseButton.vue"
+import BaseButtons from "@/components/BaseButtons.vue";
 import FormField from "@/components/FormField.vue"
 import FormControl from "@/components/FormControl.vue"
 import NotificationBar from "@/components/NotificationBar.vue"
+import CardBox from "@/components/CardBox.vue";
+import { useForm } from '@inertiajs/vue3';
+
 
 const props = defineProps({
   usuario: Object,
@@ -14,16 +16,17 @@ const props = defineProps({
   titulo: String,
 })
 
-const form = ref({
+const form = useForm({
   name: props.usuario.name,
   apellido_paterno: props.usuario.apellido_paterno,
   apellido_materno: props.usuario.apellido_materno,
   numero: props.usuario.numero,
   email: props.usuario.email,
 })
+const guardar = () => {
+  console.log(form);  // Ver los datos que se están enviando
 
-const submit = () => {
-  router.put(route(`${props.routeName}update`, props.usuario.id), form.value)
+  form.put(route(`${props.routeName}update`, props.usuario.id))
 }
 </script>
 
@@ -35,20 +38,21 @@ const submit = () => {
       {{ $page.props.flash.message }}
     </NotificationBar>
 
-    <form @submit.prevent="submit" class="space-y-4">
-      <FormField label="Nombre">
+    <CardBox form @submit.prevent="guardar">
+
+      <FormField :error="form.errors.name" label="Nombre" >
         <FormControl v-model="form.name" type="text" required />
       </FormField>
 
-      <FormField label="Apellido Paterno">
+      <FormField :error="form.errors.apellido_paterno" label="Apellido Paterno">
         <FormControl v-model="form.apellido_paterno" type="text" required />
       </FormField>
 
-      <FormField label="Apellido Materno">
+      <FormField :error="form.errors.apellido_materno" label="Apellido Materno">
         <FormControl v-model="form.apellido_materno" type="text" required />
       </FormField>
 
-      <FormField label="Número Telefónico">
+      <FormField :error="form.errors.numero" label="Número Telefónico">
         <FormControl v-model="form.numero" type="text" required />
       </FormField>
 
@@ -56,7 +60,11 @@ const submit = () => {
         <FormControl v-model="form.email" type="email" required />
       </FormField>
 
-      <BaseButton type="submit" color="info" label="Actualizar" />
-    </form>
+      <BaseButtons>
+        <BaseButton @click="guardar" type="submit" color="info" outline label="Actualizar" />
+        <BaseButton :href="route(`${routeName}index`)" type="reset" color="danger" outline label="Cancelar" />
+      </BaseButtons>
+    </CardBox>
+
   </LayoutMain>
 </template>

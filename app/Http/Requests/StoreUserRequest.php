@@ -38,7 +38,7 @@ class StoreUserRequest extends FormRequest
             'name.required' => 'El campo nombre es obligatorio.',
             'apellido_paterno.required' => 'El campo apellido paterno es obligatorio.',
             'apellido_materno' => 'El campo apellido materno es obligatorio.',
-            'telefono' => 'El campo Teléfono es obligatorio.',
+            'numero' => 'El campo Teléfono es obligatorio.',
             'email' => 'El campo Correo Electronico es obligatorio.',
             'password' => 'El campo contraseña  es obligatorio.',
 

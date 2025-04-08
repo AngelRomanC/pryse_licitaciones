@@ -72,14 +72,17 @@ class UsuarioGeneralController extends Controller
 
         return Inertia::render("{$this->source}Edit", [
             'usuario' => $usuario,
-            'titulo' => 'Editar Usuario',
+            'titulo' => 'Editar Usuario del Sistema',
             'routeName' => $this->routeName,
         ]);
     }
 
     public function update(UpdateUserRequest $request, $id)
     {
-        $usuario = User::findOrFail($id);
+        //dd($request->all());
+
+        $usuario = User::find($id);
+        
         $usuario->update($request->all());
 
         return redirect()->route($this->routeName . 'index')->with('message', 'Usuario actualizado correctamente.');

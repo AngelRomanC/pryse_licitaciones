@@ -1,12 +1,16 @@
 <script setup>
 import { router } from '@inertiajs/vue3'
 import { ref } from 'vue'
+import { Link, useForm } from '@inertiajs/vue3';
 import LayoutMain from '@/layouts/LayoutMain.vue'
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue"
 import BaseButton from "@/components/BaseButton.vue"
+import BaseButtons from "@/components/BaseButtons.vue";
 import FormField from "@/components/FormField.vue"
 import FormControl from "@/components/FormControl.vue"
 import NotificationBar from "@/components/NotificationBar.vue"
+import CardBox from "@/components/CardBox.vue";
+
 
 const props = defineProps({
   routeName: String,
@@ -14,7 +18,7 @@ const props = defineProps({
   titulo: String,
 })
 
-const form = ref({
+const form = useForm({
   name: '',
   apellido_paterno: '',
   apellido_materno: '',
@@ -25,7 +29,7 @@ const form = ref({
 })
 
 const submit = () => {
-  router.post(route(`${props.routeName}store`), form.value)
+  form.post(route(`${props.routeName}store`))
 }
 </script>
 
@@ -37,34 +41,39 @@ const submit = () => {
       {{ $page.props.flash.message }}
     </NotificationBar>
 
-    <form @submit.prevent="submit" class="space-y-4">
-      <FormField label="Nombre">
+    <CardBox form @submit.prevent="submit">
+
+      <FormField :error="form.errors.name" label="Nombre" >
         <FormControl v-model="form.name" type="text" required />
       </FormField>
 
-      <FormField label="Apellido Paterno">
+      <FormField :error="form.errors.apellido_paterno" label="Apellido Paterno">
         <FormControl v-model="form.apellido_paterno" type="text" required />
       </FormField>
 
-      <FormField label="Apellido Materno">
+      <FormField :error="form.errors.apellido_materno" label="Apellido Materno">
         <FormControl v-model="form.apellido_materno" type="text" required />
       </FormField>
 
-      <FormField label="Número Telefónico">
+      <FormField :error="form.errors.numero" label="Número Telefónico">
         <FormControl v-model="form.numero" type="text" required />
       </FormField>
 
-      <FormField label="Correo Electrónico">
+      <FormField :error="form.errors.email" label="Correo Electrónico">
         <FormControl v-model="form.email" type="email" required />
       </FormField>
 
-      <FormField label="Contraseña">
+      <FormField :error="form.errors.password" label="Contraseña">
         <FormControl v-model="form.password" type="password" required />
       </FormField>
 
       <input type="hidden" v-model="form.role" />
 
-      <BaseButton type="submit" color="success" label="Guardar" />
-    </form>
+      <BaseButtons>
+        <BaseButton @click="submit" type="submit" color="info" label="Crear" />
+        <BaseButton :href="route(`${routeName}index`)" type="reset" color="danger" outline label="Cancelar" />
+      </BaseButtons>
+    </CardBox>
+
   </LayoutMain>
 </template>

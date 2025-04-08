@@ -104,7 +104,7 @@ class UserController extends Controller
         $usuario = User::find($id);
 
         return Inertia::render("Seguridad/Usuarios/Edit", [
-            'titulo'   => 'Modificar Usuario',
+            'titulo'   => 'Modificar Usuario Admin',
             'usuario'  => $usuario,
             'routeName' => $this->routeName,
         ]);

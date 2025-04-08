@@ -59,9 +59,8 @@ export default {
         </SectionTitleLineWithButton>
 
         <CardBox form @submit.prevent="handleSubmit">
-            <FormField :error="form.errors.name">
-                <FormControl v-model="form.name" required placeholder="Nombre" />
-                
+            <FormField :error="form.errors.name" >
+                <FormControl v-model="form.name" required placeholder="Nombre" />                
             </FormField  >
             <FormField :error="form.errors.apellido_paterno">
                 <FormControl v-model="form.apellido_paterno" required placeholder="Apellido paterno" />
@@ -69,14 +68,14 @@ export default {
             <FormField :error="form.errors.apellido_materno"> 
                 <FormControl v-model="form.apellido_materno"  required placeholder="Apellido materno" />
             </FormField>
-            <FormField :error="form.errors.telefono">
+            <FormField :error="form.errors.numero">
                 <FormControl v-model="form.numero" required placeholder="Teléfono" />
             </FormField>
             <FormField :error="form.errors.email">
                 <FormControl v-model="form.email" required placeholder="email" />
             </FormField>
             <FormField :error="form.errors.password">
-                <FormControl v-model="form.password" required placeholder="password" />
+                <FormControl v-model="form.password"  type="password" required placeholder="password" />
             </FormField>
 
 
