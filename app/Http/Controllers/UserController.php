@@ -7,6 +7,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Requests\UpdateUsuarioRequest;
 
+use App\Notifications\CredencialesEstudianteNotification;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use App\Models\User;
@@ -44,7 +45,10 @@ class UserController extends Controller
     {
 
         $alumnos = Alumno::with('user')->get();
-        $admin = User::where('role', 'Admin')->get();
+        
+        //$admin = User::where('role', 'Admin')->get();
+        $admin = User::where('role', 'Admin')->paginate(5); // Puedes ajustar el 10 al número de elementos por página que desees
+
 
         $usuarios = $this->model::with('roles')
             ->orderBy('id')
@@ -67,7 +71,7 @@ class UserController extends Controller
     public function create()
     {
         return Inertia::render("Seguridad/Usuarios/Create", [
-            'titulo'      => 'Agregar Usuarios',
+            'titulo'      => 'Agregar Usuario Admin',
             'routeName'      => $this->routeName,
             'roles' => Role::pluck('name'),
         ]);
@@ -89,8 +93,9 @@ class UserController extends Controller
 
         ])->assignRole($request['role']);
 
+        $newUser->notify(instance: new CredencialesEstudianteNotification($request->email, $request->password));
 
-        return redirect()->route("usuarios.index")->with('message', 'materia generado con éxito');
+        return redirect()->route("usuarios.index")->with('message', 'Usuario Admin generado con éxito');
     }
 
 
@@ -133,7 +138,7 @@ class UserController extends Controller
             ]);
         }
 
-        return redirect()->route("usuarios.index")->with('message', 'Usuario y alumno actualizados correctamente!');
+        return redirect()->route("usuarios.index")->with('message', '¡Usuario Admin actualizado correctamente!');
     }
 
 

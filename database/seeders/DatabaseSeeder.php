@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             PermisosSeeder::class,
             AdminSeeder::class,           
             EstadosSeeder::class,
+            DatosSeeder::class,
             
            
         ]);

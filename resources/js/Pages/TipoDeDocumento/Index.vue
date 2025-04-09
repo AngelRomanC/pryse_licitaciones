@@ -75,7 +75,7 @@ const titulo = "Lista de Empresas";
                        
                         <td class="before:hidden lg:w-1 whitespace-nowrap">
                             <BaseButtons type="justify-start lg:justify-end" no-wrap>
-                                <BaseButton color="warning" :icon="mdiTagEdit" small
+                                <BaseButton color="info" :icon="mdiTagEdit" small
                                      :href="route(`${props.routeName}edit`,tipoDeDocumento.id)" />                             
                                 <BaseButton color="danger" :icon="mdiDeleteOutline" small @click="destroy(tipoDeDocumento.id)" />
                             </BaseButtons>

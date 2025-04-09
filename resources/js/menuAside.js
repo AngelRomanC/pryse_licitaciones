@@ -19,15 +19,7 @@ export default [
     label: "Dashboard",
     role: "Admin" //Vistas 
   },
-  {
-    href: "/dashboard",
-    to: "/dashboard",
-    icon: mdiMonitor,
-    label: "Dashboard",
-    role: "Alumno" // Vistas 
-  },
 
-  
   {
     label: "Gestión de Usuarios",
     icon: mdiAccountGroup ,
@@ -37,13 +29,6 @@ export default [
         href:"/usuarios",
         label: "Admin",
         icon: mdiSecurity,
-        role: "Admin",
-      }, 
-  
-      {
-        href:"/alumno",
-        label: "Alumno",
-        icon: mdiAccountSchool  ,
         role: "Admin",
       }, 
       {
@@ -89,38 +74,6 @@ export default [
   },
   
   {
-    label: "Catálogos",
-    icon: mdiLibrary ,
-    role: "Alumno",
-    menu: [
-      {
-        href:"/empresa",
-        label: "Empresa",
-        icon: mdiBookshelf,
-        role: "Alumno",
-      }, 
-      {
-        href:"/tipo-de-documento",
-        label: "Documento",
-        icon: mdiFileDocumentOutline,
-        role: "Alumno",
-      }, 
-      {
-        href:"/departamento",
-        label: "Departamento",
-        icon: mdiAccountGroup,
-        role: "Alumno",
-      }, 
-      {
-        href:"/modalidad",
-        label: "Modalidades",
-        icon: mdiFormatListChecks,
-        role: "Alumno",
-      }, 
-    ]
-  },
-
-  {
     href:"/documento",
     label: "Documentos Técnicos ",
     icon: mdiFileSign,
@@ -138,20 +91,6 @@ export default [
     icon: mdiBookshelf,
     role: "Admin",
   },
-
-  //ALUMNOOOOOOO
-  {
-    href:"/documento",
-    label: "Documentos Técnicos ",
-    icon: mdiFileSign,
-    role: "Alumno",
-  }, 
-  {
-    href:"/documento-legal",
-    label: "Documentos Legales ",
-    icon: mdiScaleBalance,
-    role: "Alumno",
-  }, 
 
   //Modulos a Usuario de sistema 
   {

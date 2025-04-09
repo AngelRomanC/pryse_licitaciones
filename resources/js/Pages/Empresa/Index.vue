@@ -79,7 +79,7 @@ const titulo = "Lista de Empresas";
                         <td data-label="Email" class="border p-2">{{ empresa.email }}</td>
                         <td class="before:hidden lg:w-1 whitespace-nowrap" data-label="Acciones">
                             <BaseButtons type="justify-start lg:justify-end" no-wrap>
-                                <BaseButton color="warning" :icon="mdiTagEdit" small
+                                <BaseButton color="info" :icon="mdiTagEdit" small
                                     :href="route('empresa.edit', empresa.id)" />
                                 <BaseButton color="danger" :icon="mdiDeleteOutline" small
                                     @click="destroy(empresa.id)" />

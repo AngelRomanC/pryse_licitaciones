@@ -98,7 +98,7 @@ class AlumnoController extends Controller
         $newUser->alumno()->save($alumno);
         
         //Mail::to($newUser->email)->send(new CrearAlumno($newUser, $password));
-        $newUser->notify(new CredencialesEstudianteNotification($request->email, $request->password));
+        $newUser->notify(instance: new CredencialesEstudianteNotification($request->email, $request->password));
 
 
         return redirect()->route("alumno.index")->with('success', 'Alumno generado con éxito');

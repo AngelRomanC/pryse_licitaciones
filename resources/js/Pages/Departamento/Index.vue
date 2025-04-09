@@ -74,7 +74,7 @@ const destroy = (id) => {
                        
                         <td class="before:hidden lg:w-1 whitespace-nowrap">
                             <BaseButtons type="justify-start lg:justify-end" no-wrap>
-                                <BaseButton color="warning" :icon="mdiTagEdit" small
+                                <BaseButton color="info" :icon="mdiTagEdit" small
                                      :href="route(`${props.routeName}edit`,departamento.id)" />                             
                                 <BaseButton color="danger" :icon="mdiDeleteOutline" small @click="destroy(departamento.id)" />
                             </BaseButtons>

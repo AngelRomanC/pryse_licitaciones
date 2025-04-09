@@ -1,65 +1,23 @@
-<script>
-import { Link, useForm } from '@inertiajs/vue3';
+<script setup>
 import Swal from "sweetalert2";
 import Pagination from '@/Shared/Pagination.vue';
+import { router } from '@inertiajs/vue3'
 import LayoutMain from '@/layouts/LayoutMain.vue';
-import {
-    mdiMonitorCellphone,
-    mdiTableBorder,
-    mdiTableOff,
-    mdiGithub,
-    mdiApplicationEdit, mdiTagEdit, mdiDeleteOutline, mdiTrashCan
-} from "@mdi/js";
-import TableSampleClients from "@/components/TableSampleClients.vue";
+import { mdiTagEdit, mdiDeleteOutline,mdiInformation } from "@mdi/js";
 import CardBox from "@/components/CardBox.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
-import BaseLevel from "@/components/BaseLevel.vue";
 import BaseButtons from "@/components/BaseButtons.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import CardBoxComponentEmpty from "@/components/CardBoxComponentEmpty.vue";
 import NotificationBar from "@/components/NotificationBar.vue";
 
+const props = defineProps({
+  admin: Object,
+  titulo: String,
+  routeName: String
+})
 
-
-export default {
-    props: {
-        titulo: { type: String, required: true },
-        usuarios: { type: Object, required: true },
-        admin: { type: Object, required: true },
-        alumnos: { type: Object, required: true },
-        profesores: { type: Object, required: true },
-        routeName: { type: String, required: true },
-        loadingResults: { type: Boolean, required: true, default: true }
-    },
-    components: {
-        Link,
-        LayoutMain,
-        CardBox,
-        TableSampleClients,
-        SectionTitleLineWithButton,
-        BaseLevel,
-        BaseButtons,
-        BaseButton,
-        CardBoxComponentEmpty,
-        Pagination,
-        NotificationBar,
-    },
-
-    setup() {
-        const form = useForm({
-            name: '',
-            apellido_paterno: '',
-            apellido_materno: '',
-            numero: '',
-            email: '',
-            role: '',
-            cuatrimestre: '',
-            matricula: '',
-            grado_academico: '',
-            area: '',
-
-        });
-        const eliminar = (id) => {
+const eliminarAdmin = (id) => {
             console.log(id)
             Swal.fire({
                 title: "¿Esta seguro?",
@@ -71,59 +29,12 @@ export default {
                 confirmButtonText: "Si!, eliminar registro!",
             }).then((res) => {
                 if (res.isConfirmed) {
-                    form.delete(route("alumno.destroy", id));
+                    router.delete(route(`${props.routeName}destroy`, id))
                 }
             });
         };
 
-        const eliminarprofesor = (id) => {
-            console.log(id)
-            Swal.fire({
-                title: "¿Esta seguro?",
-                text: "Esta acción no se puede revertir",
-                icon: "warning",
-                showCancelButton: true,
-                cancelButtonColor: "#d33",
-                confirmButtonColor: "#3085d6",
-                confirmButtonText: "Si!, eliminar registro!",
-            }).then((res) => {
-                if (res.isConfirmed) {
-                    form.delete(route("profesor.destroy", id));
-                }
-            });
-        };
-        const eliminarAdmin = (id) => {
-            console.log(id)
-            Swal.fire({
-                title: "¿Esta seguro?",
-                text: "Esta acción no se puede revertir",
-                icon: "warning",
-                showCancelButton: true,
-                cancelButtonColor: "#d33",
-                confirmButtonColor: "#3085d6",
-                confirmButtonText: "Si!, eliminar registro!",
-            }).then((res) => {
-                if (res.isConfirmed) {
-                    form.delete(route("usuarios.destroy", id));
-                }
-            });
-        };
 
-        return {
-            form, eliminar, eliminarprofesor, eliminarAdmin, mdiMonitorCellphone,
-            mdiTableBorder,
-            mdiTableOff,
-            mdiGithub,
-            mdiApplicationEdit,
-            mdiTagEdit,
-            
-            mdiTrashCan,
-            mdiDeleteOutline,
-
-        }
-    }
-
-}
 </script>
 
 <template>
@@ -140,7 +51,7 @@ export default {
             {{ $page.props.flash.error }}
         </NotificationBar>
 
-        <CardBox v-if="admin.length < 1">
+        <CardBox v-if="admin.data.length < 1">
             <CardBoxComponentEmpty />
         </CardBox>
 
@@ -162,7 +73,7 @@ export default {
                 </thead>
                 <tbody>
                     <!-- Sección para administradores -->
-                    <tr v-for="admin in admin" :key="admin.id">
+                    <tr v-for="admin in admin.data" :key="admin.id">
                         <td class="align-items-center"></td>
                         <td data-label="Nombre">{{ admin.name }}</td>
                         <td data-label="Apellido paterno">{{ admin.apellido_paterno }}</td>
@@ -182,6 +93,7 @@ export default {
                     </tr>
                 </tbody>
             </table>
+            <Pagination :currentPage="admin.current_page" :links="admin.links" :total="admin.links.length - 2" />
         </CardBox>
 
     </LayoutMain>
