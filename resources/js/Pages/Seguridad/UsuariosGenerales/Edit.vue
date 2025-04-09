@@ -25,6 +25,8 @@ const form = useForm({
 })
 const guardar = () => {
   console.log(form);  // Ver los datos que se están enviando
+  console.log('Data a enviar:', form.data());
+
 
   form.put(route(`${props.routeName}update`, props.usuario.id))
 }
@@ -56,7 +58,7 @@ const guardar = () => {
         <FormControl v-model="form.numero" type="text" required />
       </FormField>
 
-      <FormField label="Correo Electrónico">
+      <FormField :error="form.errors.email" label="Correo Electrónico">
         <FormControl v-model="form.email" type="email" required />
       </FormField>
 

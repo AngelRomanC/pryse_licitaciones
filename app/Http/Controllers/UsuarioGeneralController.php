@@ -8,7 +8,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\UpdateUser1Request;
 use App\Notifications\CredencialesEstudianteNotification;
 
 class UsuarioGeneralController extends Controller
@@ -77,7 +77,7 @@ class UsuarioGeneralController extends Controller
         ]);
     }
 
-    public function update(UpdateUserRequest $request, $id)
+    public function update(UpdateUser1Request $request, $id)
     {
         //dd($request->all());
 

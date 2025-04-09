@@ -60,36 +60,22 @@ const destroy = (id) => {
         </thead>
         <tbody>
           <tr v-for="usuario in usuarios.data" :key="usuario.id" class="border-t">
-            <td class="p-2">{{ usuario.name }}</td>
-            <td class="p-2">{{ usuario.email }}</td>
-            <td class="p-2">
+            <td data-label="Nombre" class="p-2">{{ usuario.name }}</td>
+            <td data-label="Correo Electrónico" class="p-2">{{ usuario.email }}</td>
+            <td data-label="Rol" class="p-2">
               <span v-if="usuario.roles.length > 0">{{ usuario.roles[0].name }}</span>
             </td>
-            <td class="p-2">
-              <BaseButtons type="justify-start">
-                <BaseButton
-                  :href="route(`${props.routeName}edit`, usuario.id)"
-                  color="info"
-                  :icon="mdiTagEdit"
-                  small
-                />
-                <BaseButton
-                  @click="destroy(usuario.id)"
-                  color="danger"
-                  :icon="mdiDeleteOutline"
-                  small
-                />
+            <td class="before:hidden lg:w-1 whitespace-nowrap">
+              <BaseButtons type="justify-start lg:justify-end" no-wrap>
+                <BaseButton :href="route(`${props.routeName}edit`, usuario.id)" color="info" :icon="mdiTagEdit" small />
+                <BaseButton @click="destroy(usuario.id)" color="danger" :icon="mdiDeleteOutline" small />
               </BaseButtons>
             </td>
           </tr>
         </tbody>
       </table>
 
-      <Pagination
-        :currentPage="usuarios.current_page"
-        :links="usuarios.links"
-        :total="usuarios.links.length - 2"
-      />
+      <Pagination :currentPage="usuarios.current_page" :links="usuarios.links" :total="usuarios.links.length - 2" />
     </CardBox>
   </LayoutMain>
 </template>

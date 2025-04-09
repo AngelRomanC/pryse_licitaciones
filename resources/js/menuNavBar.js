@@ -21,14 +21,7 @@ console.log('glooooooooooooooo')
 
 
 export default [
-  {
-    
-    href: "/notificaciones",
-    icon: mdiBell,
-    label: "Notificaciones",
-    isDesktopNoLabel: true,
-    isNotification: true,
-  },
+
 
   
   {
@@ -43,11 +36,7 @@ export default [
       {
         isDivider: true,
       },
-      {
-        icon: mdiLogout,
-        label: "Cerrar Sesion",
-        isLogout: true,
-      },
+    
       
 
 

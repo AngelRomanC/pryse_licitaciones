@@ -59,7 +59,7 @@ const titulo = "Lista de Empresas";
                 <thead>
                     <tr>
                         <th />
-                        <th class="border p-2">Nombre</th>
+                        <th class="border p-2">Nombre </th>
                         <th class="border p-2">Descripción</th>
                         <th class="border p-2">Dirección</th>
                         <th class="border p-2">Teléfono</th>
@@ -70,25 +70,26 @@ const titulo = "Lista de Empresas";
                 </thead>
                 <tbody>
                     <tr v-for="empresa in empresas.data" :key="empresa.id">
-                        <td class="align-items-center">
-                        </td>
-                        <td class="border p-2">{{ empresa.nombre }}</td>
-                        <td class="border p-2">{{ empresa.descripcion }}</td>
-                        <td class="border p-2">{{ empresa.direccion }}</td>
-                        <td class="border p-2">{{ empresa.telefono }}</td>
-                        <td class="border p-2">{{ empresa.email }}</td>
-                        <td class="before:hidden lg:w-1 whitespace-nowrap">
+                        <td class="align-items-center"></td>
+
+                        <td data-label="Nombre de Empresa" class="border p-2">{{ empresa.nombre }}</td>
+                        <td data-label="Descripción" class="border p-2">{{ empresa.descripcion }}</td>
+                        <td data-label="Dirección" class="border p-2">{{ empresa.direccion }}</td>
+                        <td data-label="Teléfono" class="border p-2">{{ empresa.telefono }}</td>
+                        <td data-label="Email" class="border p-2">{{ empresa.email }}</td>
+                        <td class="before:hidden lg:w-1 whitespace-nowrap" data-label="Acciones">
                             <BaseButtons type="justify-start lg:justify-end" no-wrap>
                                 <BaseButton color="warning" :icon="mdiTagEdit" small
                                     :href="route('empresa.edit', empresa.id)" />
-                                <BaseButton color="danger" :icon="mdiDeleteOutline" small @click="destroy(empresa.id)" />
+                                <BaseButton color="danger" :icon="mdiDeleteOutline" small
+                                    @click="destroy(empresa.id)" />
                             </BaseButtons>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <Pagination :currentPage="empresas.current_page" :links="empresas.links" :total="empresas.links.length - 2" />
+            <Pagination :currentPage="empresas.current_page" :links="empresas.links"
+                :total="empresas.links.length - 2" />
         </CardBox>
     </LayoutMain>
 </template>
- 

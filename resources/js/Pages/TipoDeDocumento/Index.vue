@@ -71,7 +71,7 @@ const titulo = "Lista de Empresas";
                     <tr v-for="tipoDeDocumento in tipoDeDocumentos.data" :key="tipoDeDocumento.id">
                         <td class="align-items-center">
                         </td>
-                        <td class="border p-2">{{ tipoDeDocumento.nombre_documento }}</td>
+                        <td data-label="Nombre Documento" class="border p-2">{{ tipoDeDocumento.nombre_documento }}</td>
                        
                         <td class="before:hidden lg:w-1 whitespace-nowrap">
                             <BaseButtons type="justify-start lg:justify-end" no-wrap>

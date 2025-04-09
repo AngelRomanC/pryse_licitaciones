@@ -77,12 +77,12 @@ const destroy = (id) => {
                     <tr v-for="documento in documentos.data" :key="documento.id">
                         <td class="align-items-center">
                         </td>
-                        <td class="border p-2">{{ documento.nombre_documento }}</td>
-                        <td class="border p-2">{{ documento.empresa.nombre}}</td>
-                        <td class="border p-2">{{ documento.tipo_de_documento.nombre_documento}}</td>
-                        <td class="border p-2">{{ documento.departamento.nombre_departamento}}</td>
-                        <td class="border p-2">{{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }}</td>
-                        <td class="border p-2">{{ moment(documento.fecha_vigencia).format("DD/MM/YYYY") }}</td>               
+                        <td data-label="Nombre de Documento" class="border p-2">{{ documento.nombre_documento }}</td>
+                        <td data-label="Empresa" class="border p-2">{{ documento.empresa.nombre}}</td>
+                        <td data-label="Documento" class="border p-2">{{ documento.tipo_de_documento.nombre_documento}}</td>
+                        <td data-label="Departamento" class="border p-2">{{ documento.departamento.nombre_departamento}}</td>
+                        <td data-label="Fecha Revalidación" class="border p-2">{{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }}</td>
+                        <td data-label="Fecha Vigencia" class="border p-2">{{ moment(documento.fecha_vigencia).format("DD/MM/YYYY") }}</td>               
                      
                         <td class="before:hidden lg:w-1 whitespace-nowrap">
                             <BaseButtons type="justify-start lg:justify-end" no-wrap>

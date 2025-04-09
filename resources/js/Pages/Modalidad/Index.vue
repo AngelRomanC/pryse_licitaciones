@@ -70,7 +70,7 @@ const destroy = (id) => {
                     <tr v-for="modalidad in modalidades.data" :key="modalidad.id">
                         <td class="align-items-center">
                         </td>
-                        <td class="border p-2">{{ modalidad.nombre_modalidad}}</td>
+                        <td data-label="Nombre de Modalidad"class="border p-2">{{ modalidad.nombre_modalidad}}</td>
                        
                         <td class="before:hidden lg:w-1 whitespace-nowrap">
                             <BaseButtons type="justify-start lg:justify-end" no-wrap>

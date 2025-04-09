@@ -47,7 +47,7 @@ const guardar = () => {
                 <FormControl v-model="form.numero" type="text" required />
             </FormField>
 
-            <FormField label="Correo Electrónico">
+            <FormField :error="form.errors.email" label="Correo Electrónico">
                 <FormControl v-model="form.email" type="email" required />
             </FormField>
 
