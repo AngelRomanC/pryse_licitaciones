@@ -40,7 +40,7 @@ class DocumentoController extends Controller
             ->withQueryString();
 
         return Inertia::render('Documento/Index', [
-            'titulo' => 'Lista de Documentos',
+            'titulo' => 'Lista de Documentos Técnicos',
             'documentos' => $documentos,
             'routeName' => $this->routeName,
             'loadingResults' => false

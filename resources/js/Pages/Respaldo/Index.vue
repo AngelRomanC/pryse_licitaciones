@@ -21,7 +21,7 @@ import NotificationBar from "@/components/NotificationBar.vue";
 
 import axios from "axios";
 
-import { mdiDownload } from '@mdi/js';
+import { mdiDownload, mdiInformation } from '@mdi/js';
 
 
 
@@ -29,8 +29,8 @@ import { mdiDownload } from '@mdi/js';
 export default {
     props: {
         titulo: { type: String, required: true },
-        respaldos:{
-            type: Object, default:{},
+        respaldos: {
+            type: Object, default: {},
         },
         routeName: { type: String, required: true },
         loadingResults: { type: Boolean, required: true, default: true }
@@ -53,9 +53,9 @@ export default {
             materia: '',
             periodo: '',
             profesor: '',
-            horarios:'',
-            cupo:'',
-           
+            horarios: '',
+            cupo: '',
+
         });
         const eliminar = (id) => {
             Swal.fire({
@@ -78,7 +78,7 @@ export default {
             mdiTableBorder,
             mdiTableOff,
             mdiGithub,
-            mdiApplicationEdit, mdiTrashCan,
+            mdiApplicationEdit, mdiTrashCan, mdiDownload, mdiInformation
         }
     }
 
@@ -90,7 +90,10 @@ export default {
         <SectionTitleLineWithButton :icon="mdiTableBorder" :title="titulo" main>
             <BaseButton :href="'respaldo/create'" color="warning" label="Agregar respaldo" />
         </SectionTitleLineWithButton>
-       
+        <!-- LOADER -->
+        <div v-if="loadingResults" class="text-center py-10">
+            <span class="text-gray-500 text-lg font-semibold">Cargando respaldos...</span>
+        </div>
         <NotificationBar v-if="$page.props.flash.success" color="success" :icon="mdiInformation" :outline="false">
             {{ $page.props.flash.success }}
         </NotificationBar>
@@ -99,8 +102,8 @@ export default {
             {{ $page.props.flash.error }}
         </NotificationBar>
 
-      
-        <CardBox v-if="respaldos < 1">
+
+        <CardBox v-else-if="respaldos < 1">
             <CardBoxComponentEmpty />
         </CardBox>
 
@@ -115,41 +118,41 @@ export default {
                         </h3>
                         <p class="text-lg font-semibold text-gray-800 dark:text-white">
                             ubicacion:
-                            <h3 class="text-sm text-gray-500 dark:text-gray-300">
-                              
-                                {{ item.fecha_modificacion }} 
-                            </h3>
-                           
+                        <h3 class="text-sm text-gray-500 dark:text-gray-300">
+
+                            {{ item.fecha_modificacion }}
+                        </h3>
+
                         </p>
                         <p class="text-lg font-semibold text-gray-800 dark:text-white">
                             Tamaño:
-                            <h3 class="text-sm text-gray-500 dark:text-gray-300">
-                              
-                                 {{ item.size}} 
-                            </h3>
-                           
+                        <h3 class="text-sm text-gray-500 dark:text-gray-300">
+
+                            {{ item.size }}
+                        </h3>
+
                         </p>
-                       
+
                         <div class="before:hidden ">
                             <BaseButtons type="justify-start lg:justify-end" no-wrap>
                                 <BaseButton color="warning" :icon="mdiApplicationEdit" small
                                     :href="route(`restaurarRespaldo`, item.ubicacion)" />
-                                
+
                                 <BaseButton color="warning" :icon="mdiDownload" small
                                     :href="route(`descargaRespaldo`, item.ubicacion)" />
 
-                                <BaseButton color="danger" :icon="mdiTrashCan" small 
-                                :href="route(`eliminarRespaldo`, item.ubicacion)" />
-                                
-                            </BaseButtons>
-                        </div>                    
+                                <BaseButton color="danger" :icon="mdiTrashCan" small
+                                    :href="route(`eliminarRespaldo`, item.ubicacion)" />
 
-                     
-                       
-                        
+                            </BaseButtons>
+                        </div>
+
+
+
+
 
                     </div>
-                   
+
                 </div>
             </div>
         </CardBox>

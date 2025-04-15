@@ -5,7 +5,7 @@ import BaseButton from '@/components/BaseButton.vue';
 import BaseButtons from "@/components/BaseButtons.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 import Swal from "sweetalert2";
-import { mdiTagEdit, mdiDeleteOutline } from "@mdi/js";
+import { mdiTagEdit, mdiDeleteOutline ,mdiInformation} from "@mdi/js";
 import Pagination from '@/Shared/Pagination.vue';
 import CardBoxComponentEmpty from "@/components/CardBoxComponentEmpty.vue";
 import CardBox from "@/components/CardBox.vue";
@@ -33,7 +33,6 @@ const destroy = (id) => {
     });
 };
 
-const titulo = "Lista de Empresas";
 </script>
 
 <template>
@@ -42,11 +41,11 @@ const titulo = "Lista de Empresas";
             <BaseButton :href="route('empresa.create')" color="warning" label="Crear" />
         </SectionTitleLineWithButton>
 
-        <NotificationBar v-if="$page.props.flash.success" color="success" :icon="'mdi-information'" :outline="false">
+        <NotificationBar v-if="$page.props.flash.success" color="success" :icon="mdiInformation" :outline="false">
             {{ $page.props.flash.success }}
         </NotificationBar>
 
-        <NotificationBar v-if="$page.props.flash.error" color="danger" :icon="'mdi-information'" :outline="false">
+        <NotificationBar v-if="$page.props.flash.error" color="danger" :icon="mdiInformation" :outline="false">
             {{ $page.props.flash.error }}
         </NotificationBar>
 

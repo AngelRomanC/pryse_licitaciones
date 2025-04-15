@@ -70,7 +70,7 @@ const submit = () => {
       <input type="hidden" v-model="form.role" />
 
       <BaseButtons>
-        <BaseButton @click="submit" type="submit" color="info" label="Crear" />
+        <BaseButton @click="submit" type="submit" color="info" outline label="Crear" />
         <BaseButton :href="route(`${routeName}index`)" type="reset" color="danger" outline label="Cancelar" />
       </BaseButtons>
     </CardBox>

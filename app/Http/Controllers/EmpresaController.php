@@ -68,7 +68,7 @@ class EmpresaController extends Controller
     public function edit(Empresa $empresa)
     {
         return Inertia::render("Empresa/Edit", [
-            'titulo' => 'Editar Empresaaaaa',
+            'titulo' => 'Editar Empresa',
             'empresa' => $empresa,
             'routeName' => $this->routeName
         ]);
@@ -93,5 +93,6 @@ class EmpresaController extends Controller
     public function destroy(Empresa $empresa)
     {
         $empresa->delete();
+        return redirect()->route($this->routeName . 'index')->with('success', 'Empresa eliminada con éxito.');
     }
 }

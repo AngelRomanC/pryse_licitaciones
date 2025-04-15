@@ -62,6 +62,7 @@ class RespaldoController extends Controller
             'titulo' => 'Respaldo y recuperación',
             'routeName' => $this->routeName,
             'respaldos' => $fileMetadata,
+            'loadingResults' => false
         ]);
     }
 

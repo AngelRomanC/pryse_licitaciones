@@ -59,7 +59,7 @@ class DocumentoLegalController extends Controller
         //$modalidades = Modalidad::select('id', 'nombre_modalidad as name')->get();
 
         return Inertia::render('DocumentoLegal/Create', [
-            'titulo' => 'Crear Documento Técnico',
+            'titulo' => 'Crear Documento Legal',
             'routeName' => $this->routeName,
             'empresas' => $empresas,
             'tipos_documento' => $tipos_documento,

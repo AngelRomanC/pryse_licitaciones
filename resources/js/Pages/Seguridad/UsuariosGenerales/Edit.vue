@@ -24,10 +24,6 @@ const form = useForm({
   email: props.usuario.email,
 })
 const guardar = () => {
-  console.log(form);  // Ver los datos que se están enviando
-  console.log('Data a enviar:', form.data());
-
-
   form.put(route(`${props.routeName}update`, props.usuario.id))
 }
 </script>

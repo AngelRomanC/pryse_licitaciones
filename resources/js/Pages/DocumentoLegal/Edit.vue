@@ -42,9 +42,9 @@ const form = useForm({
     ruta_documento_anexo: props.ruta_documento_anexo
 });
 
-console.log("nombre doc disponibles:", props.nombre_documento);
-console.log("empresaa seleccionadas:", form.empresa_id);
-console.log('Documento a editar:', props.documento);
+// console.log("nombre doc disponibles:", props.nombre_documento);
+// console.log("empresaa seleccionadas:", form.empresa_id);
+// console.log('Documento a editar:', props.documento);
 
 // Función para mostrar el PDF en SweetAlert2
 const mostrarArchivo = (ruta) => {
@@ -216,7 +216,7 @@ const guardar = () => {
 
             <template #footer>
                 <BaseButtons>
-                    <BaseButton @click="guardar" type="submit" color="info" label="Actualizar" />
+                    <BaseButton @click="guardar" type="submit" color="info" outline label="Actualizar" />
                     <BaseButton :href="route(`${props.routeName}index`)" type="reset" color="danger" outline label="Cancelar" />
                 </BaseButtons>
             </template>

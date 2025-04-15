@@ -55,7 +55,7 @@ const guardar = () => {
 
             <template #footer>
                 <BaseButtons>
-                    <BaseButton @click="guardar" type="submit" color="info" label="Actualizar" />
+                    <BaseButton @click="guardar" type="submit" color="info" outline label="Actualizar" />
                     <BaseButton :href="route(`${routeName}index`)" type="reset" color="danger" outline
                         label="Cancelar" />
                 </BaseButtons>

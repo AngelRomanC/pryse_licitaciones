@@ -11,7 +11,7 @@ use App\Notifications\CredencialesEstudianteNotification;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use App\Models\User;
-use App\Models\Alumno;
+//use App\Models\Alumno;
 use App\Models\Profesor;
 use App\Models\Modulo;
 use Inertia\Response;
@@ -44,7 +44,6 @@ class UserController extends Controller
     public function index(Request $request): Response
     {
 
-        $alumnos = Alumno::with('user')->get();
         
         //$admin = User::where('role', 'Admin')->get();
         $admin = User::where('role', 'Admin')->paginate(5); // Puedes ajustar el 10 al número de elementos por página que desees
@@ -60,7 +59,6 @@ class UserController extends Controller
         return Inertia::render("{$this->source}Index", [
             'titulo'   => ' Usuarios Admin',
             'usuarios' => $usuarios,
-            'alumnos' => $alumnos,
             'admin' => $admin,
             'profiles' => Role::get(['id', 'name']),
             'routeName' => $this->routeName,
@@ -126,17 +124,7 @@ class UserController extends Controller
         // Actualiza los datos del usuario
         $usuario->update($request->all());
 
-        // Obtén el alumno relacionado con este usuario
-        $alumno = Alumno::where('user_id', $usuario->id)->first();
-
-        if ($alumno) {
-            // Actualiza los datos del alumno si existe
-            $alumno->update([
-                'cuatrimestre' => $request->input('cuatrimestre'),
-                'matricula'    => $request->input('matricula'),
-                // Otros campos del alumno
-            ]);
-        }
+      
 
         return redirect()->route("usuarios.index")->with('message', '¡Usuario Admin actualizado correctamente!');
     }

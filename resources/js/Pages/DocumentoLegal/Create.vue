@@ -36,11 +36,7 @@ const form = useForm({
     ruta_documento: null,
     ruta_documento_anexo: null
 });
-console.log('Empresas:', JSON.parse(JSON.stringify(props.empresas)));
-console.log('Tipos de documento:', props.tipos_documento);
-console.log('Estados:', props.estados);
-console.log('Departamentos:', props.departamentos);
-console.log('Modalidades:', props.modalidades);
+
 const handleSubmit = () => {    
     //form.post(route(`${props.routeName}store`)); // Corregida sintaxis de ruta
     form.post(route(`${props.routeName}store`));
