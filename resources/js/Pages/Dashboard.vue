@@ -13,7 +13,6 @@ import {
   mdiViewModule,
 } from "@mdi/js";
 import * as chartConfig from "@/Components/Charts/chart.config.js";
-import LineChart from "@/Components/Charts/LineChart.vue";
 import SectionMain from "@/Components/SectionMain.vue";
 import CardBoxWidget from "@/Components/CardBoxWidget.vue";
 import CardBox from "@/Components/CardBox.vue";

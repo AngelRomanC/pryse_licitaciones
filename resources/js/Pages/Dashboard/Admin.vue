@@ -6,7 +6,6 @@ import LayoutDashboard from "@/Layouts/LayoutDashboard.vue";
 import SectionMain from "@/Components/SectionMain.vue";
 import SectionTitleLineWithButton from "@/Components/SectionTitleLineWithButton.vue";
 import CardBox from "@/components/CardBox.vue";
-import LineChart from "@/Components/LineChart.vue";
 import { Chart as ChartJS, CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement } from 'chart.js';
 import Pagination from '@/Shared/Pagination.vue';
 import moment from "moment";
