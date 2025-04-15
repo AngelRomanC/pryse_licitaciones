@@ -9,18 +9,13 @@ import BaseButtons from "@/components/BaseButtons.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 import CardBox from "@/components/CardBox.vue";
 import { mdiBallotOutline, mdiFileDocument, mdiMapMarker, mdiOfficeBuilding, mdiCalendar } from "@mdi/js"; // Íconos adicionales
-import FormControlV7 from '@/Components/FormControlV7.vue';
 import Swal from 'sweetalert2';
-import { Inertia } from '@inertiajs/inertia';
-
-
-
+import { router } from '@inertiajs/vue3';
 
 const props = defineProps({
     titulo: String,
     documento: Object,
     routeName: String,
-
     empresas: Array,
     tipos_documento: Array,    
     departamentos: Array,
@@ -31,13 +26,9 @@ const form = useForm({
     nombre_documento: props.documento.nombre_documento,
     empresa_id: props.documento.empresa_id,
     tipo_de_documento_id: props.documento.tipo_de_documento_id,
-    //estado_id: props.documento.estado_id,
     departamento_id: props.documento.departamento_id,
     fecha_revalidacion: props.documento.fecha_revalidacion,
     fecha_vigencia: props.documento.fecha_vigencia,
-    //modalidad_id: props.documento.modalidades.map(mod => mod.id), // Para manejar múltiples modalidades
-    //modalidad_id: props.documento.modalidades ? props.documento.modalidades.map(mod => mod.id) : [], // Asegurar que no sea undefined
-
     ruta_documento: props.ruta_documento,
     ruta_documento_anexo: props.ruta_documento_anexo
 });
@@ -71,13 +62,8 @@ const mostrarArchivo = (ruta) => {
     });
 };
 
-
-const guardar1 = () => {
-    console.log('Documento a enviar------:', props.documento);
-    form.put(route(`${props.routeName}update`, props.documento.id));
-};
 const guardar = () => {
-    Inertia.post(route(`${props.routeName}update`, props.documento.id), {
+    router.post(route(`${props.routeName}update`, props.documento.id), {
         _method: 'PATCH',
         ...form
     }, {
@@ -129,20 +115,7 @@ const guardar = () => {
                         required
                     />
                 </FormField>
-
-                <!-- Selector de Estado 
-                <FormField label="Estado" :error="form.errors.estado_id">
-                    <FormControl
-                        v-model="form.estado_id"
-                        :options="estados"
-                        type="select"
-                        label-key="name"
-                        value-key="id"
-                        :icon="mdiMapMarker"
-                        required
-                    />
-                </FormField> -->
-
+            
                 <!-- Selector de Departamento -->
                 <FormField label="Departamento" :error="form.errors.departamento_id">
                     <FormControl
@@ -154,19 +127,7 @@ const guardar = () => {
                         :icon="mdiMapMarker"
                         required
                     />
-                </FormField>
-
-                   <!-- Selector de Modalidad 
-                   <FormField label="Modalidad" :error="form.errors.modalidad_id">
-                    <FormControlV7
-                        v-model="form.modalidad_id"
-                        :options="modalidades"
-                        label-key="name"
-                        value-key="id"
-                    />
-                </FormField> -->
-                
-                
+                </FormField>              
 
                 <!-- Fecha de Revalidación -->
                 <FormField label="Fecha de Revalidación" :error="form.errors.fecha_revalidacion">

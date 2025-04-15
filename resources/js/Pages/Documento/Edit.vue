@@ -11,7 +11,8 @@ import CardBox from "@/components/CardBox.vue";
 import { mdiBallotOutline, mdiFileDocument, mdiMapMarker, mdiOfficeBuilding, mdiCalendar } from "@mdi/js"; // Íconos adicionales
 import FormControlV7 from '@/Components/FormControlV7.vue';
 import Swal from 'sweetalert2';
-import { Inertia } from '@inertiajs/inertia';
+import { router } from '@inertiajs/vue3';
+
 
 
 
@@ -67,13 +68,12 @@ const mostrarArchivo = (ruta) => {
     });
 };
 
-
 const guardar1 = () => {
     console.log('Documento a enviar------:', props.documento);
     form.put(route(`${props.routeName}update`, props.documento.id));
 };
 const guardar = () => {
-    Inertia.post(route(`${props.routeName}update`, props.documento.id), {
+    router.post(route(`${props.routeName}update`, props.documento.id), {
         _method: 'PATCH',
         ...form
     }, {
