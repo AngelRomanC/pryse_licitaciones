@@ -85,12 +85,7 @@ export default [
     icon: mdiScaleBalance,
     role: "Admin",
   }, 
-  {
-    href:"/respaldo",
-    label: "Respaldo DB",
-    icon: mdiBookshelf,
-    role: "Admin",
-  },
+ 
 
   //Modulos a Usuario de sistema 
   {

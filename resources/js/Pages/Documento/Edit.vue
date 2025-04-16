@@ -8,7 +8,7 @@ import BaseButton from "@/components/BaseButton.vue";
 import BaseButtons from "@/components/BaseButtons.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 import CardBox from "@/components/CardBox.vue";
-import { mdiBallotOutline, mdiFileDocument, mdiMapMarker, mdiOfficeBuilding, mdiCalendar } from "@mdi/js"; // Íconos adicionales
+import { mdiBallotOutline, mdiFileDocument, mdiMapMarker, mdiOfficeBuilding, mdiCalendar, mdiEye } from "@mdi/js"; // Íconos adicionales
 import FormControlV7 from '@/Components/FormControlV7.vue';
 import Swal from 'sweetalert2';
 import { router } from '@inertiajs/vue3';
@@ -205,8 +205,8 @@ const guardar = () => {
          
                 </FormField>                 
                 <!-- Botón para visualizar los archivos -->                
-                <BaseButton @click="mostrarArchivo(`/storage/${documento.ruta_documento}`)" label="Ver Documento Principal" />
-                <BaseButton @click="mostrarArchivo(`/storage/${documento.ruta_documento_anexo}`)" label="Ver Documento Anexo" />             
+                <BaseButton @click="mostrarArchivo(`/storage/${documento.ruta_documento}`)"  :icon="mdiEye"  color="lightDark" label="Ver Documento Principal" />
+                <BaseButton @click="mostrarArchivo(`/storage/${documento.ruta_documento_anexo}`)" :icon="mdiEye" color="lightDark" label="Ver Documento Anexo" />             
             
             </div>
 
