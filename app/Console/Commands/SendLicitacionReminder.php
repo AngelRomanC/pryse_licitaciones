@@ -26,37 +26,34 @@ class SendLicitacionReminder extends Command
     {
         $documentos = Documento::with(['empresa', 'tipoDeDocumento', 'estado', 'departamento', 'modalidades'])
             ->where('nombre_documento', 'Documento Técnico')
-            ->orderBy('id')
-            ->paginate(8)
-            ->withQueryString();
-
+            ->get(); // Cambia paginate por get para procesar todos
+    
         $documentosLegal = DocumentoLegal::with(['empresa', 'tipoDocumento', 'departamento'])
             ->where('nombre_documento', 'Documento Legal')
-            ->orderBy('id')
-            ->paginate(8)
-            ->withQueryString();
-
+            ->get();
+    
         foreach ($documentos as $documento) {
-            $fechaVigencia = Carbon::parse($documento->fecha_vigencia); // Convierte a Carbon
-            $documento->dias_restantes = $fechaVigencia->diffInDays(now());
-
-            if ($documento->dias_restantes === 7) {
+            $diasRestantes = now()->startOfDay()->diffInDays(
+                Carbon::parse($documento->fecha_vigencia)->startOfDay(), 
+                false
+            );
+    
+            if ($diasRestantes === 7) {
                 $this->enviarCorreoLicitacion($documento);
             }
         }
-
-
-        // Calcular los días restantes para cada documento
+    
         foreach ($documentosLegal as $documentoLegal) {
-            $fechaVigencia = Carbon::parse($documentoLegal->fecha_vigencia); // Convierte a Carbon
-            $documentoLegal->dias_restantes = $fechaVigencia->diffInDays(now());
-
-            if ($documentoLegal->dias_restantes === 7) {
+            $diasRestantes = now()->startOfDay()->diffInDays(
+                Carbon::parse($documentoLegal->fecha_vigencia)->startOfDay(), 
+                false
+            );
+    
+            if ($diasRestantes === 7) {
                 $this->enviarCorreoLicitacion($documentoLegal);
             }
         }
-
-
+    
         return 0;
     }
     private function enviarCorreoLicitacion($documento)
