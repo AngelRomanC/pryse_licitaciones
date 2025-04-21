@@ -35,7 +35,7 @@ class DocumentoLegalController extends Controller
 
         $documentos = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento'])
             ->where('nombre_documento', 'Documento Legal') // Filtra solo los documentos técnicos
-            ->orderBy('id')
+            ->orderBy('id', 'desc')
             ->paginate(8)
             ->withQueryString();
 

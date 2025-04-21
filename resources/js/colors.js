@@ -49,7 +49,7 @@ export const getButtonColor = (
       danger: "ring-red-300 dark:ring-red-700",
       warning: "ring-yellow-300 dark:ring-yellow-700",
       info: "ring-blue-300 dark:ring-blue-700",
-      // chano: "ring-gray-200",
+      navy: "ring-blue-800 dark:ring-blue-900", // Azul marino para el ring
     },
     active: {
       white: "bg-gray-100",
@@ -58,8 +58,9 @@ export const getButtonColor = (
       contrast: "bg-gray-700 dark:bg-slate-100",
       success: "bg-emerald-700 dark:bg-emerald-600",
       danger: "bg-red-700 dark:bg-red-600",
-      warning: "bg-yellow-700 dark:bg-yellow-600",
+      warning1: "bg-yellow-700 dark:bg-yellow-600",
       info: "bg-blue-700 dark:bg-blue-600",
+      warning: "bg-blue-800 dark:bg-blue-900", // Azul marino para estado activo
     },
     bg: {
       white: "bg-white text-black",
@@ -68,8 +69,9 @@ export const getButtonColor = (
       contrast: "bg-gray-800 text-white dark:bg-white dark:text-black",
       success: "bg-emerald-600 dark:bg-emerald-500 text-white",
       danger: "bg-red-600 dark:bg-red-500 text-white",
-      warning: "bg-yellow-600 dark:bg-yellow-500 text-white",
+      warning1: "bg-yellow-600 dark:bg-yellow-500 text-white",
       info: "bg-blue-600 dark:bg-blue-500 text-white",
+      warning: "bg-blue-800 dark:bg-blue-700 text-white", // Fondo azul marino
     },
     bgHover: {
       white: "hover:bg-gray-100",
@@ -80,9 +82,10 @@ export const getButtonColor = (
         "hover:bg-emerald-700 hover:border-emerald-700 hover:dark:bg-emerald-600 hover:dark:border-emerald-600",
       danger:
         "hover:bg-red-700 hover:border-red-700 hover:dark:bg-red-600 hover:dark:border-red-600",
-      warning:
+      warning1:
         "hover:bg-yellow-700 hover:border-yellow-700 hover:dark:bg-yellow-600 hover:dark:border-yellow-600",
       info: "hover:bg-blue-700 hover:border-blue-700 hover:dark:bg-blue-600 hover:dark:border-blue-600",
+      warning: "hover:bg-blue-900 hover:border-blue-900 hover:dark:bg-blue-800 hover:dark:border-blue-800", // Hover azul marino más oscuro
     },
     borders: {
       white: "border-white",
@@ -91,15 +94,17 @@ export const getButtonColor = (
       contrast: "border-gray-800 dark:border-white",
       success: "border-emerald-600 dark:border-emerald-500",
       danger: "border-red-600 dark:border-red-500",
-      warning: "border-yellow-600 dark:border-yellow-500",
+      warning1: "border-yellow-600 dark:border-yellow-500",
       info: "border-blue-600 dark:border-blue-500",
+      warning: "border-blue-800 dark:border-blue-700", // Borde azul marino
     },
     text: {
       contrast: "dark:text-slate-100",
       success: "text-emerald-600 dark:text-emerald-500",
       danger: "text-red-600 dark:text-red-500",
-      warning: "text-yellow-600 dark:text-yellow-500",
+      warning1: "text-yellow-600 dark:text-yellow-500",
       info: "text-blue-600 dark:text-blue-500",
+      warning: "text-blue-800 dark:text-blue-700", // Texto azul marino
     },
     outlineHover: {
       contrast:
@@ -108,9 +113,10 @@ export const getButtonColor = (
         "hover:bg-emerald-600 hover:text-white hover:text-white hover:dark:text-white hover:dark:border-emerald-600",
       danger:
         "hover:bg-red-600 hover:text-white hover:text-white hover:dark:text-white hover:dark:border-red-600",
-      warning:
+      warning1:
         "hover:bg-yellow-600 hover:text-white hover:text-white hover:dark:text-white hover:dark:border-yellow-600",
       info: "hover:bg-blue-600 hover:text-white hover:dark:text-white hover:dark:border-blue-600",
+      warning: "hover:bg-blue-800 hover:text-white hover:dark:text-white hover:dark:border-blue-800", // Hover para outline azul marino
     },
   };
 
