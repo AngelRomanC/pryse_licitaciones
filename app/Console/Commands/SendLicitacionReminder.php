@@ -27,33 +27,39 @@ class SendLicitacionReminder extends Command
         $documentos = Documento::with(['empresa', 'tipoDeDocumento', 'estado', 'departamento', 'modalidades'])
             ->where('nombre_documento', 'Documento Técnico')
             ->get(); // Cambia paginate por get para procesar todos
-    
+
         $documentosLegal = DocumentoLegal::with(['empresa', 'tipoDocumento', 'departamento'])
             ->where('nombre_documento', 'Documento Legal')
             ->get();
-    
+
         foreach ($documentos as $documento) {
-            $diasRestantes = now()->startOfDay()->diffInDays(
-                Carbon::parse($documento->fecha_vigencia)->startOfDay(), 
-                false
+            $documento->setAttribute(
+                'dias_restantes',
+                now()->startOfDay()->diffInDays(
+                    Carbon::parse($documento->fecha_vigencia)->startOfDay(),
+                    false
+                )
             );
-    
-            if ($diasRestantes === 7) {
+
+            if ($documento->dias_restantes === 7) {
                 $this->enviarCorreoLicitacion($documento);
             }
         }
-    
-        foreach ($documentosLegal as $documentoLegal) {
-            $diasRestantes = now()->startOfDay()->diffInDays(
-                Carbon::parse($documentoLegal->fecha_vigencia)->startOfDay(), 
-                false
+        
+        foreach ($documentosLegal as $documento) {
+            $documento->setAttribute(
+                'dias_restantes', 
+                now()->startOfDay()->diffInDays(
+                    Carbon::parse($documentosLegal->fecha_vigencia)->startOfDay(), 
+                    false
+                )
             );
-    
-            if ($diasRestantes === 7) {
-                $this->enviarCorreoLicitacion($documentoLegal);
+        
+            if ($documento->dias_restantes === 7) {
+                $this->enviarCorreoLicitacion($documento);
             }
         }
-    
+
         return 0;
     }
     private function enviarCorreoLicitacion($documento)
@@ -61,10 +67,8 @@ class SendLicitacionReminder extends Command
         $usuarios = User::all(); // Obtener todos los usuarios
 
         foreach ($usuarios as $usuario) {
-           // Mail::to($usuario->email)->send(new LicitacionAviso($documento));
+            // Mail::to($usuario->email)->send(new LicitacionAviso($documento));
             $usuario->notify(new LicitacionAvisoNotification($documento));
-
-
         }
     }
 }
