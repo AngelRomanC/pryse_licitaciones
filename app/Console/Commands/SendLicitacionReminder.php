@@ -56,7 +56,7 @@ class SendLicitacionReminder extends Command
             );
         
             if ($documento->dias_restantes === 7) {
-                $this->enviarCorreoLicitacion($documento);
+                $this->enviarCorreoLicitacion($documentosLegal);
             }
         }
 
