@@ -50,13 +50,13 @@ class SendLicitacionReminder extends Command
             $documento->setAttribute(
                 'dias_restantes', 
                 now()->startOfDay()->diffInDays(
-                    Carbon::parse($documentosLegal->fecha_vigencia)->startOfDay(), 
+                    Carbon::parse($documento->fecha_vigencia)->startOfDay(), 
                     false
                 )
             );
         
             if ($documento->dias_restantes === 7) {
-                $this->enviarCorreoLicitacion($documentosLegal);
+                $this->enviarCorreoLicitacion($documento);
             }
         }
 
