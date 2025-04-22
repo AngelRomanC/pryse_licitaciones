@@ -81,7 +81,7 @@ const destroy = (id) => {
                         <td data-label="Documento" class="border p-2">{{ documento.tipo_de_documento.nombre_documento}}</td>
                         <td data-label="Departamento" class="border p-2">{{ documento.departamento.nombre_departamento}}</td>
                         <td data-label="Fecha Revalidación" class="border p-2">{{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }} </td>
-                        <td data-label="Fecha Vigencia" class="border p-2">{{ moment(documento.vigencia).format("DD/MM/YYYY") }}</td>                      
+                        <td data-label="Fecha Vigencia" class="border p-2">{{ moment(documento.fecha_vigencia).format("DD/MM/YYYY") }}</td>                      
 
 
                         <td class="before:hidden lg:w-1 whitespace-nowrap">
