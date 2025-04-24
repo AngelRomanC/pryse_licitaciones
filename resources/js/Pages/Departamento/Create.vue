@@ -7,7 +7,7 @@ import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.
 import CardBox from "@/components/CardBox.vue";
 import FormField from "@/components/FormField.vue";
 import FormControl from "@/components/FormControl.vue";
-import { mdiBallotOutline, mdiAccount, mdiHomeCity} from "@mdi/js"; //agregado
+import { mdiBallotOutline, mdiAccount, mdiHomeCity,mdiEmail} from "@mdi/js"; //agregado
 
 const props = defineProps({
     titulo: String, // Título enviado desde el backend
@@ -16,7 +16,8 @@ const props = defineProps({
 // Datos del formulario
 const form = useForm({
     nombre_departamento: '',
-  
+    email: '',
+    
 });
 // Función para enviar el formulario
 const handleSubmit = () => {
@@ -39,8 +40,18 @@ const handleSubmit = () => {
                     <FormControl
                         v-model="form.nombre_departamento"
                         type="text"
-                        placeholder="Nombre de área"
+                        placeholder="Nombre de Departamento"
                         :icon="mdiHomeCity"
+                        required
+                    />
+                </FormField>  
+
+                <FormField label="Correo" :error="form.errors.email">
+                    <FormControl
+                        v-model="form.email"
+                        type="email"
+                        placeholder="Correo Departamento"
+                        :icon="mdiEmail"
                         required
                     />
                 </FormField>              

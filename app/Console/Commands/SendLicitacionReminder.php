@@ -70,5 +70,7 @@ class SendLicitacionReminder extends Command
             // Mail::to($usuario->email)->send(new LicitacionAviso($documento));
             $usuario->notify(new LicitacionAvisoNotification($documento));
         }
+        $documento->departamento->notify(new LicitacionAvisoNotification($documento));
+
     }
 }

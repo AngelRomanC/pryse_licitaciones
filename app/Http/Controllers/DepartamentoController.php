@@ -48,6 +48,8 @@ class DepartamentoController extends Controller
         // Validar los datos recibidos
         $validated = $request->validate([
             'nombre_departamento' => 'required|string|max:50',
+            'email' => 'required|email|max:50', 
+
         ]);
 
         Departamento::create($validated);
@@ -81,7 +83,8 @@ class DepartamentoController extends Controller
     public function update(Request $request, Departamento $departamento)
     {
         $validated = $request->validate([
-            'nombre_departamento' => 'required|string|max:50',           
+            'nombre_departamento' => 'required|string|max:50',  
+            'email' => 'required|email|max:50',          
         ]);
         $departamento->update($validated);
 

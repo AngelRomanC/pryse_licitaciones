@@ -32,7 +32,7 @@ class LicitacionAvisoNotification extends Notification
                     ->line('La licitación "' . $this->documento->nombre_documento . '" está próxima a vencer en ' . $this->documento->dias_restantes . ' días.')
                     ->action('Iniciar sesión', url('/login' )) 
                     ->line('Por favor, tome las acciones necesarias antes de la fecha límite.')
-                    ->salutation('Atentamente, Licitaciones.com');
+                    ->salutation('Atentamente, licitaciones.grupopryse.mx');
     }
 
     public function toArray(object $notifiable): array
@@ -41,6 +41,8 @@ class LicitacionAvisoNotification extends Notification
             'documento_id' => $this->documento->id,
             'nombre_documento' => $this->documento->nombre_documento,
             'dias_restantes' => $this->documento->dias_restantes,
+            'nombre_departamento' => $this->documento->nombre_departamento,
+
         ];
     }
 }

@@ -47,6 +47,15 @@ const guardar = () => {
                     />
                 </FormField>              
                 
+                <FormField label="Correo" :error="form.errors.email">
+                    <FormControl
+                        v-model="form.email"
+                        type="email"
+                        placeholder="Correo Departamento"
+                        :icon="mdiEmail"
+                        required
+                    />
+                </FormField> 
             </div>
             
             <template #footer>

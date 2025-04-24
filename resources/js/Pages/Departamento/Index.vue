@@ -61,7 +61,7 @@ const destroy = (id) => {
                 <thead>
                     <tr>
                         <th />
-                        <th class="border p-2">Nombre de Documento</th>  
+                        <th class="border p-2">Nombre de Departamento</th>  
                         <th class="border p-2">Acciones</th>               
                         <th />
                     </tr>
