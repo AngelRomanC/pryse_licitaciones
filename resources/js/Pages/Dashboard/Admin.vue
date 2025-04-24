@@ -215,10 +215,10 @@ const documentosLegalesVencidos = computed(() => {
             <tbody class="bg-white divide-y divide-gray-200">
               <tr v-for="documento in documentos.data" :key="documento.id"
                 class="hover:bg-gray-50 transition-colors duration-150">
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" data-label="Documento">
+                <td class="px-6 py-4 whitespace-normal text-sm font-medium text-gray-900" data-label="Documento">
                   {{ documento.tipo_de_documento.nombre_documento }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" data-label="Departamento">
+                <td class="px-6 py-4 whitespace-normal text-sm text-gray-500" data-label="Departamento">
                   {{ documento.departamento.nombre_departamento }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" data-label="Fecha Revalidación">
@@ -278,10 +278,10 @@ const documentosLegalesVencidos = computed(() => {
             <tbody class="bg-white divide-y divide-gray-200">
               <tr v-for="documento in documentosLegal.data" :key="documento.id"
                 class="hover:bg-gray-50 transition-colors duration-150">
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" data-label="Documento">
+                <td class="px-6 py-4 whitespace-normal text-sm font-medium text-gray-900" data-label="Documento">
                   {{ documento.tipo_de_documento.nombre_documento }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" data-label="Departamento">
+                <td class="px-6 py-4 whitespace-normal text-sm text-gray-500" data-label="Departamento">
                   {{ documento.departamento.nombre_departamento }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" data-label="Fecha Revalidación">

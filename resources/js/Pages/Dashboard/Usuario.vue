@@ -476,7 +476,7 @@ const mostrarDetalles = (documento) => {
                 <td data-label="Nombre de Documento" class="px-6 py-4  whitespace-normal text-sm font-medium text-gray-900">
                   {{ documento.tipo_de_documento.nombre_documento }}
                 </td>
-                <td data-label="Departamento" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td data-label="Departamento" class="px-6 py-4 whitespace-normal text-sm text-gray-500">
                   {{ documento.departamento.nombre_departamento }}
                 </td>
                 <td data-label="Fecha Revalidación" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -551,7 +551,7 @@ const mostrarDetalles = (documento) => {
                   {{ documento.tipo_de_documento.nombre_documento }}
                 </td>
                 
-                <td data-label="Departamento" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td data-label="Departamento" class="px-6 py-4 whitespace-normal text-sm text-gray-500">
                   {{ documento.departamento.nombre_departamento }}
                 </td>
                 <td data-label="Fecha Revalidación" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
