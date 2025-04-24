@@ -26,13 +26,21 @@ class LicitacionAvisoNotification extends Notification
 
     public function toMail(object $notifiable): MailMessage
     {
+        $fecha = \Carbon\Carbon::parse($this->documento->fecha_vigencia)->locale('es');
+        $nombreDia = ucfirst($fecha->isoFormat('dddd'));
+        $fechaVencimiento = $nombreDia . $fecha->isoFormat(', D [de] MMMM [de] YYYY');
+        
         return (new MailMessage)
-                    ->subject('Aviso: Licitación Próxima a Vencer')
-                    ->greeting('Estimado usuario,')
-                    ->line('La licitación "' . $this->documento->nombre_documento . '" está próxima a vencer en ' . $this->documento->dias_restantes . ' días.')
-                    ->action('Iniciar sesión', url('/login' )) 
-                    ->line('Por favor, tome las acciones necesarias antes de la fecha límite.')
-                    ->salutation('Atentamente, licitaciones.grupopryse.mx');
+                    ->subject('Aviso Importante: Licitación Próxima a Vencer')
+                    ->greeting('Estimado/a Responsable,')
+                    ->line('Le informamos que la licitación:')
+                    ->line('**"' . $this->documento->nombre_documento . '"**')
+                    ->line('del departamento **' . $this->documento->departamento->nombre_departamento . '**')
+                    ->line('vencerá en **' . $this->documento->dias_restantes . ' días** ('.$fechaVencimiento.')')
+                    ->action('Acceder al Sistema', url('/login'))
+                    ->line('**Acción requerida:**')
+                    ->line('Por favor, revise los documentos y realice las gestiones necesarias antes de la fecha límite indicada.')
+                    ->salutation('Atentamente, Equipo de Licitaciones.com ');
     }
 
     public function toArray(object $notifiable): array
@@ -42,6 +50,8 @@ class LicitacionAvisoNotification extends Notification
             'nombre_documento' => $this->documento->nombre_documento,
             'dias_restantes' => $this->documento->dias_restantes,
             'nombre_departamento' => $this->documento->nombre_departamento,
+            'fecha_vigencia' => $this->documento->fecha_vigencia,
+            
 
         ];
     }
