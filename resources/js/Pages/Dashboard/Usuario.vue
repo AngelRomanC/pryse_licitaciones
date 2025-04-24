@@ -472,18 +472,19 @@ const mostrarDetalles = (documento) => {
               <tr v-for="documento in documentos.data" :key="documento.id"
                 class="hover:bg-gray-50 transition-colors duration-150"
                 :class="{ 'bg-red-50': documento.dias_restantes <= 7 }">
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+               
+                <td data-label="Nombre de Documento" class="px-6 py-4  whitespace-normal text-sm font-medium text-gray-900">
                   {{ documento.tipo_de_documento.nombre_documento }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td data-label="Departamento" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {{ documento.departamento.nombre_departamento }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td data-label="Fecha Revalidación" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }}
 
 
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td data-label="Fecha Vigencia" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {{ moment(documento.fecha_vigencia).format("DD/MM/YYYY") }}
 
                 </td>
@@ -496,7 +497,8 @@ const mostrarDetalles = (documento) => {
                     }" class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full">
                       {{ documento.dias_restantes <= 0 ? 'Vencido' : `${documento.dias_restantes} días` }} </span>
                         <BaseButton @click="mostrarDetalles(documento)" :icon="mdiEye" color="lightDark"
-                          class="!p-1.5 !rounded-full hover:bg-gray-200 transition-colors"  title="Ver detalles del documento" />
+                          class="!p-1.5 !rounded-full hover:bg-gray-200 transition-colors"
+                          title="Ver detalles del documento" />
                   </div>
                 </td>
               </tr>
@@ -544,17 +546,19 @@ const mostrarDetalles = (documento) => {
               <tr v-for="documento in documentosLegal.data" :key="documento.id"
                 class="hover:bg-gray-50 transition-colors duration-150"
                 :class="{ 'bg-red-50': documento.dias_restantes <= 7 }">
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                
+                <td data-label="Nombre de Documento" class="px-6 py-4 whitespace-normal text-sm font-medium text-gray-900">
                   {{ documento.tipo_de_documento.nombre_documento }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                
+                <td data-label="Departamento" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {{ documento.departamento.nombre_departamento }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td data-label="Fecha Revalidación" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }}
 
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td data-label="Fecha Vigencia" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {{ moment(documento.fecha_vigencia).format("DD/MM/YYYY") }}
 
                 </td>
@@ -566,8 +570,11 @@ const mostrarDetalles = (documento) => {
                     'bg-green-100 text-green-800': documento.dias_restantes > 7
                   }" class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full">
                     {{ documento.dias_restantes <= 0 ? 'Vencido' : `${documento.dias_restantes} días` }} </span>
+                      <BaseButton @click="mostrarDetalles(documento)" :icon="mdiEye" color="lightDark"
+                        class="!p-1.5 !rounded-full hover:bg-gray-200 transition-colors"
+                        title="Ver detalles del documento" />
                 </td>
-                
+
               </tr>
             </tbody>
           </table>
