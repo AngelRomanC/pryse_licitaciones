@@ -83,8 +83,8 @@ class DocumentoLegalController extends Controller
             'fecha_revalidacion' => 'required|date',
             'fecha_vigencia' => 'required|date',
 
-            'ruta_documento' => 'nullable|file|mimes:pdf|max:5120',
-            'ruta_documento_anexo' => 'nullable|file|mimes:pdf|max:5120',
+            'ruta_documento' => 'nullable|file|mimes:pdf|max:10240',
+            'ruta_documento_anexo' => 'nullable|file|mimes:pdf|max:10240',
         ]);
 
         // Definir carpeta base para documentos técnicos
@@ -178,8 +178,8 @@ class DocumentoLegalController extends Controller
             'departamento_id' => 'required|exists:departamentos,id',
             'fecha_revalidacion' => 'required|date',
             'fecha_vigencia' => 'required|date',
-            'ruta_documento' => 'nullable|file|mimes:pdf|max:5120',
-            'ruta_documento_anexo' => 'nullable|file|mimes:pdf|max:5120',
+            'ruta_documento' => 'nullable|file|mimes:pdf|max:10240',
+            'ruta_documento_anexo' => 'nullable|file|mimes:pdf|max:10240',
         ]);
         Log::info('Datos recibidos en validated--------:', $validated);
         // Crear las carpetas si no existen

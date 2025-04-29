@@ -85,8 +85,8 @@ class DocumentoController extends Controller
             'fecha_vigencia' => 'required|date',
             'modalidad_id' => 'required|array',
             'modalidad_id.*' => 'exists:modalidads,id',
-            'ruta_documento' => 'nullable|file|mimes:pdf|max:5120',
-            'ruta_documento_anexo' => 'nullable|file|mimes:pdf|max:5120',
+            'ruta_documento' => 'nullable|file|mimes:pdf|max:10240',
+            'ruta_documento_anexo' => 'nullable|file|mimes:pdf|max:10240',
         ]);
 
         // Definir carpeta base para documentos técnicos
@@ -200,8 +200,8 @@ class DocumentoController extends Controller
             'fecha_revalidacion' => 'required|date',
             'fecha_vigencia' => 'required|date',
             'modalidad_id' => 'nullable|array|exists:modalidads,id',
-            'ruta_documento' => 'nullable|file|mimes:pdf|max:5120',
-            'ruta_documento_anexo' => 'nullable|file|mimes:pdf|max:5120',
+            'ruta_documento' => 'nullable|file|mimes:pdf|max:10240',
+            'ruta_documento_anexo' => 'nullable|file|mimes:pdf|max:10240',
         ]);
         Log::info('Datos recibidos en validated--------:', $validated);
         // Crear las carpetas si no existen
