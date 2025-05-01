@@ -8,7 +8,8 @@ import {
   mdiScaleBalance,
   mdiFileSign,
   mdiLibrary,
-  mdiFormatListChecks,  
+  mdiFormatListChecks, 
+  mdiGavel , 
 } from "@mdi/js";
 
 export default [
@@ -137,6 +138,12 @@ export default [
     href:"/documento-legal",
     label: "Documentos Legales ",
     icon: mdiScaleBalance,
+    role: "Usuario",
+  }, 
+  {
+    href:"/documento-legal",
+    label: "Licitaciones",
+    icon: mdiGavel ,
     role: "Usuario",
   }, 
 ];

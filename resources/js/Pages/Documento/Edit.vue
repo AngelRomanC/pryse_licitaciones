@@ -13,10 +13,6 @@ import FormControlV7 from '@/Components/FormControlV7.vue';
 import Swal from 'sweetalert2';
 import { router } from '@inertiajs/vue3';
 
-
-
-
-
 const props = defineProps({
     titulo: String,
     documento: Object,
@@ -66,6 +62,25 @@ const mostrarArchivo = (ruta) => {
         allowOutsideClick: true, 
         allowEscapeKey: true,
     });
+};
+const eliminarDocumento = (tipo) => {
+    if (tipo === 'principal') {
+        if (documento.value?.ruta_documento) {
+            // Si es un documento existente (no recién cargado)
+            form.ruta_documento = null; // Esto mostrará el input nuevamente
+            // Aquí podrías añadir lógica para eliminar el archivo del servidor si es necesario
+        } else {
+            // Si es un documento recién cargado (no guardado aún)
+            form.ruta_documento = null;
+        }
+    } else {
+        // Misma lógica para el anexo
+        if (documento.value?.ruta_documento_anexo) {
+            form.ruta_documento_anexo = null;
+        } else {
+            form.ruta_documento_anexo = null;
+        }
+    }
 };
 
 const guardar1 = () => {
@@ -183,8 +198,9 @@ const guardar = () => {
                         required
                     />
                 </FormField>
-                     <!-- Campo: Ruta Documento -->
-                     <FormField label="Documento Principal" :error="form.errors.ruta_documento">
+                    
+                <!-- Campo: Ruta Documento -->
+                    <FormField label="Documento Principal" :error="form.errors.ruta_documento">
                     <FormControl
                         type="file"
                         @change="(e) => form.ruta_documento = e.target.files[0] "
@@ -201,9 +217,9 @@ const guardar = () => {
                         @change="(e) => form.ruta_documento_anexo = e.target.files[0] "
                         accept="application/pdf"
                         required
-                    />
-         
-                </FormField>                 
+                    />         
+                </FormField> 
+                                
                 <!-- Botón para visualizar los archivos -->                
                 <BaseButton @click="mostrarArchivo(`/storage/${documento.ruta_documento}`)"  :icon="mdiEye"  color="lightDark" label="Ver Documento Principal" />
                 <BaseButton @click="mostrarArchivo(`/storage/${documento.ruta_documento_anexo}`)" :icon="mdiEye" color="lightDark" label="Ver Documento Anexo" />             
