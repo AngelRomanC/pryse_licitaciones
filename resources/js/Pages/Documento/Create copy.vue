@@ -146,25 +146,44 @@ const handleSubmit = () => {
                     />
                 </FormField>
                  
-              
+                <!-- Campo: Ruta Documento -->
+                 <FormField label="Documento Principal" :error="form.errors.ruta_documento">
+                    <FormControl
+                        type="file"
+                        @change="(e)=>form.ruta_documento = e.target.files[0]"
+                        accept="application/pdf"
+                        required
+                    />
+                </FormField>
+
+                <!-- Campo: Ruta Documento Anexo -->
+                <FormField label="Documento Anexo" :error="form.errors.ruta_documento_anexo">
+                    <FormControl
+                        type="file"
+                        @change="(e)=>form.ruta_documento_anexo = e.target.files[0]"
+                        accept="application/pdf"
+                        required
+                        
+                    />         
+                </FormField>   
                 
                 <!-- Campo: Documentos Principales -->
-                <FileUploader 
-                label="Documento(s) Principal(es)" 
-                v-model="form.ruta_documento"
-                :error="form.errors.ruta_documento"
-                accept="application/pdf"
-                multiple
-                />
+        <FileUploader 
+          label="Documento(s) Principal(es)" 
+          v-model="form.ruta_documento"
+          :error="form.errors.ruta_documento"
+          accept="application/pdf"
+          multiple
+        />
 
-                <!-- Campo: Documentos Anexos -->
-                <FileUploader 
-                label="Documento(s) Anexo(s)" 
-                v-model="form.ruta_documento_anexo"
-                :error="form.errors.ruta_documento_anexo"
-                accept="application/pdf"
-                
-                />
+        <!-- Campo: Documentos Anexos -->
+        <FileUploader 
+          label="Documento(s) Anexo(s)" 
+          v-model="form.ruta_documento_anexo"
+          :error="form.errors.ruta_documento_anexo"
+          accept="application/pdf"
+          multiple
+        />
                
                         
             </div>

@@ -12,8 +12,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
-use Illuminate\Support\Str;
-
 
 
 class DocumentoController extends Controller
@@ -30,6 +28,7 @@ class DocumentoController extends Controller
         $this->middleware("permission:{$this->module}.store")->only(['store', 'create']);
         $this->middleware("permission:{$this->module}.update")->only(['edit', 'update']);
         $this->middleware("permission:{$this->module}.delete")->only(['destroy']);
+       
     }
     public function index()
     {
@@ -86,16 +85,12 @@ class DocumentoController extends Controller
             'fecha_vigencia' => 'required|date',
             'modalidad_id' => 'required|array',
             'modalidad_id.*' => 'exists:modalidads,id',
-            'ruta_documento' => 'required|array',
-            'ruta_documento.*' => 'file|mimes:pdf|max:10240',
-            'ruta_documento_anexo' => 'nullable|array',
-            'ruta_documento_anexo.*' => 'file|mimes:pdf|max:10240',
+            'ruta_documento' => 'nullable|file|mimes:pdf|max:10240',
+            'ruta_documento_anexo' => 'nullable|file|mimes:pdf|max:10240',
         ]);
 
         // Definir carpeta base para documentos técnicos
         $folder = 'documentos_tecnicos';
-        $folderAnexos = "$folder/documentos_anexos";
-
         if (!Storage::disk('public')->exists($folder)) {
             Storage::disk('public')->makeDirectory($folder);
         }
@@ -104,8 +99,8 @@ class DocumentoController extends Controller
         }
 
         // Guardar documentos
-        // $rutaDocumento = $this->storeFile($request->file('ruta_documento'), "$folder");
-        // $rutaDocumentoAnexo = $this->storeFile($request->file('ruta_documento_anexo'), "$folder/documentos_anexos");
+        $rutaDocumento = $this->storeFile($request->file('ruta_documento'), "$folder");
+        $rutaDocumentoAnexo = $this->storeFile($request->file('ruta_documento_anexo'), "$folder/documentos_anexos");
 
         // Crear documento en la base de datos
         $documento = Documento::create([
@@ -116,32 +111,9 @@ class DocumentoController extends Controller
             'departamento_id' => $validated['departamento_id'],
             'fecha_revalidacion' => $validated['fecha_revalidacion'],
             'fecha_vigencia' => $validated['fecha_vigencia'],
-            // 'ruta_documento' => $rutaDocumento,
-            // 'ruta_documento_anexo' => $rutaDocumentoAnexo,
+            'ruta_documento' => $rutaDocumento,
+            'ruta_documento_anexo' => $rutaDocumentoAnexo,
         ]);
-
-        // Guardar documentos principales
-        foreach ($request->file('ruta_documento') as $file) {
-            $documento->archivos()->create([
-                'ruta_archivo' => $this->storeFile($file, $folder),
-                'tipo' => 'principal',
-                'nombre_original' => $file->getClientOriginalName(),
-
-            ]);
-        }
-
-        // Guardar documentos anexos (si existen)
-        if ($request->hasFile('ruta_documento_anexo')) {
-            foreach ($request->file('ruta_documento_anexo') as $file) {
-                $documento->archivos()->create([
-                    'ruta_archivo' => $this->storeFile($file, $folderAnexos),
-                    'tipo' => 'anexo',
-                    'nombre_original' => $file->getClientOriginalName(),
-
-                ]);
-            }
-        }
-
         // Guardar las fechas en la tabla 'fechas' relacionada
         $documento->fechas()->create([
             'fecha_revalidacion' => $validated['fecha_revalidacion'],
@@ -153,7 +125,7 @@ class DocumentoController extends Controller
             $documento->modalidades()->attach($validated['modalidad_id']);
         }
 
-
+    
 
         return redirect()->route($this->routeName . 'index')->with('success', 'Documento creado con éxito.');
     }
@@ -161,15 +133,9 @@ class DocumentoController extends Controller
     /**
      * Guardar un archivo en la carpeta especificada
      */
-
     private function storeFile($file, $folder)
     {
-        // return $file ? $file->storeAs($folder, time() . '_' . $file->getClientOriginalName(), 'public') : null;
-        $originalName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
-        $extension = $file->getClientOriginalExtension();
-        $fileName = time() . '_' . $originalName . '.' . $extension;
-
-        return $file->storeAs($folder, $fileName, 'public');
+        return $file ? $file->storeAs($folder, time() . '_' . $file->getClientOriginalName(), 'public') : null;
     }
 
     /**
@@ -200,9 +166,6 @@ class DocumentoController extends Controller
         // Asegurar que las modalidades asociadas estén al inicio y eliminar duplicados
         $modalidades = $modalidadesAsociadas->merge($modalidades)->unique('id');
         $modalidades = $modalidades->sortBy('id')->values(); // Puedes cambiar 'id' por 'name' si quieres orden alfabético
-        // Separar archivos principales y anexos
-        $archivosPrincipales = $documento->archivos->where('tipo', 'principal')->values();
-        $archivosAnexos = $documento->archivos->where('tipo', 'anexo')->values(); //forzar para empezar indice des 0 y ser array
 
 
 
@@ -216,8 +179,6 @@ class DocumentoController extends Controller
             'estados' => $estados,
             'departamentos' => $departamentos,
             'modalidades' => $modalidades,
-            'archivosPrincipales' => $archivosPrincipales,
-            'archivosAnexos' => $archivosAnexos,
         ]);
     }
 
@@ -226,8 +187,8 @@ class DocumentoController extends Controller
      */
     public function update(Request $request, Documento $documento)
     {
-        // logger('Archivos pdf en updateControlador:', $request->allFiles());
-        // Log::info('Datos recibidos en update:', $request->all());
+        logger('Archivos pdf en updateControlador:', $request->allFiles());
+        Log::info('Datos recibidos en update:', $request->all());
 
         // Validar los datos recibidos
         $validated = $request->validate([
@@ -239,13 +200,31 @@ class DocumentoController extends Controller
             'fecha_revalidacion' => 'required|date',
             'fecha_vigencia' => 'required|date',
             'modalidad_id' => 'nullable|array|exists:modalidads,id',
-            'nuevos_documentos_principales' => 'nullable|array',
-            'nuevos_documentos_principales.*' => 'file|mimes:pdf|max:10240',
-            'nuevos_documentos_anexos' => 'nullable|array',
-            'nuevos_documentos_anexos.*' => 'file|mimes:pdf|max:10240',
-            'archivos_a_eliminar' => 'nullable|array', // Para manejar eliminación de archivos existentes
-            'archivos_a_eliminar.*' => 'integer|exists:documento_archivos,id'
+            'ruta_documento' => 'nullable|file|mimes:pdf|max:10240',
+            'ruta_documento_anexo' => 'nullable|file|mimes:pdf|max:10240',
         ]);
+        Log::info('Datos recibidos en validated--------:', $validated);
+        // Crear las carpetas si no existen
+        $folder = 'documentos_tecnicos';
+        $rutaDocumento = $documento->ruta_documento;
+        $rutaDocumentoAnexo = $documento->ruta_documento_anexo;
+
+
+        if ($request->hasFile('ruta_documento')) {
+            // Borrar archivo anterior si existe
+            if ($rutaDocumento && Storage::disk('public')->exists($rutaDocumento)) {
+                Storage::disk('public')->delete($rutaDocumento);
+            }
+            $rutaDocumento = $this->storeFile($request->file('ruta_documento'), "$folder");
+        }
+
+        if ($request->hasFile('ruta_documento_anexo')) {
+            // Borrar archivo anterior si existe
+            if ($rutaDocumentoAnexo && Storage::disk('public')->exists($rutaDocumentoAnexo)) {
+                Storage::disk('public')->delete($rutaDocumentoAnexo);
+            }
+            $rutaDocumentoAnexo = $this->storeFile($request->file('ruta_documento_anexo'), "$folder/documentos_anexos");
+        }
 
         // Si no se sube archivo, conservar el archivo actual
         $documento->update([
@@ -256,47 +235,9 @@ class DocumentoController extends Controller
             'departamento_id' => $validated['departamento_id'],
             'fecha_revalidacion' => $validated['fecha_revalidacion'],
             'fecha_vigencia' => $validated['fecha_vigencia'],
-
+            'ruta_documento' => $rutaDocumento,
+            'ruta_documento_anexo' => $rutaDocumentoAnexo,
         ]);
-
-        // Definir carpetas base
-        $folder = 'documentos_tecnicos';
-        $folderAnexos = "$folder/documentos_anexos";
-
-        // Eliminar archivos marcados para eliminación
-        if (!empty($validated['archivos_a_eliminar'])) {
-            $archivosAEliminar = $documento->archivos()->whereIn('id', $validated['archivos_a_eliminar'])->get();
-
-            foreach ($archivosAEliminar as $archivo) {
-                if (Storage::disk('public')->exists($archivo->ruta_archivo)) {
-                    Storage::disk('public')->delete($archivo->ruta_archivo);
-                }
-                $archivo->delete();
-            }
-        }
-
-        // Guardar nuevos archivos principales
-        if ($request->hasFile('nuevos_documentos_principales')) {
-            foreach ($request->file('nuevos_documentos_principales') as $file) {
-                $documento->archivos()->create([
-                    'ruta_archivo' => $this->storeFile($file, 'documentos_tecnicos'),
-                    'tipo' => 'principal',
-                    'nombre_original' => $file->getClientOriginalName()
-                ]);
-            }
-        }
-
-        // Guardar nuevos archivos anexos
-        if ($request->hasFile('nuevos_documentos_anexos')) {
-            foreach ($request->file('nuevos_documentos_anexos') as $file) {
-                $documento->archivos()->create([
-                    'ruta_archivo' => $this->storeFile($file, 'documentos_tecnicos/documentos_anexos'),
-                    'tipo' => 'anexo',
-                    'nombre_original' => $file->getClientOriginalName()
-                ]);
-            }
-        }
-
         // Actualizar fechas en la tabla 'fechas' relacionada
         $documento->fechas()->updateOrCreate(
             ['documento_id' => $documento->id], // Buscar el registro por documento_id
@@ -335,4 +276,5 @@ class DocumentoController extends Controller
 
         return redirect()->route($this->routeName . 'index')->with('success', 'Documento eliminado con éxito.');
     }
+
 }

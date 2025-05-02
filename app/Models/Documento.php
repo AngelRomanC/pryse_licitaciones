@@ -50,5 +50,9 @@ class Documento extends Model
 
     }
 
+    //relación con archivosPDF
+    public function archivos() {
+        return $this->hasMany(DocumentoArchivo::class);
+    }
 
 }
