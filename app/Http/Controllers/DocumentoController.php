@@ -260,8 +260,8 @@ class DocumentoController extends Controller
         ]);
 
         // Definir carpetas base
-        $folder = 'documentos_tecnicos';
-        $folderAnexos = "$folder/documentos_anexos";
+       // $folder = 'documentos_tecnicos';
+       // $folderAnexos = "$folder/documentos_anexos";
 
         // Eliminar archivos marcados para eliminación
         if (!empty($validated['archivos_a_eliminar'])) {

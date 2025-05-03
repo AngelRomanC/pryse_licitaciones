@@ -112,13 +112,7 @@ const guardar = () => {
         ...form.data(),
     }, {
         forceFormData: true,
-        onSuccess: () => {
-            Swal.fire({
-                icon: 'success',
-                title: '¡Éxito!',
-                text: 'Documento actualizado correctamente',
-            });
-        }
+      
     });
 };
 
@@ -138,12 +132,104 @@ const agregarDocumentosAnexos = (files) => {
         <SectionTitleLineWithButton :icon="mdiBallotOutline" :title="titulo" main />
         <CardBox form @submit.prevent="guardar" enctype="multipart/form-data">
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <!-- Campos del formulario existentes... -->
+                 <!-- Nombre del Documento -->
+                 <FormField label="Nombre del documento" :error="form.errors.nombre_documento">
+                    <FormControl
+                        v-model="form.nombre_documento"
+                        type="text"
+                        placeholder="Nombre del documento"
+                        :icon="mdiFileDocument"
+                        required
+                    />
+                </FormField>
+
+                <!-- Selector de Empresa -->
+                <FormField label="Empresa" :error="form.errors.empresa_id">
+                    <FormControl
+                        v-model="form.empresa_id"
+                        :options="empresas"
+                        type="select"
+                        label-key="name"
+                        value-key="id"
+                        :icon="mdiOfficeBuilding"
+                        placeholder="Selecciona una empresa"
+                        required
+                    />
+                </FormField>
+
+                <!-- Selector de Tipo de Documento -->
+                <FormField label="Tipo de documento" :error="form.errors.tipo_de_documento_id">
+                    <FormControl
+                        v-model="form.tipo_de_documento_id"
+                        :options="tipos_documento"
+                        type="select"
+                        label-key="name"
+                        value-key="id"
+                        :icon="mdiFileDocument"
+                        required
+                    />
+                </FormField>
+
+                <!-- Selector de Estado -->
+                <FormField label="Estado" :error="form.errors.estado_id">
+                    <FormControl
+                        v-model="form.estado_id"
+                        :options="estados"
+                        type="select"
+                        label-key="name"
+                        value-key="id"
+                        :icon="mdiMapMarker"
+                        required
+                    />
+                </FormField>
+
+                <!-- Selector de Departamento -->
+                <FormField label="Departamento" :error="form.errors.departamento_id">
+                    <FormControl
+                        v-model="form.departamento_id"
+                        :options="departamentos"
+                        type="select"
+                        label-key="name"
+                        value-key="id"
+                        :icon="mdiMapMarker"
+                        required
+                    />
+                </FormField>
+
+                <!-- Selector de Modalidad -->
+                <FormField label="Modalidad" :error="form.errors.modalidad_id">
+                    <FormControlV7
+                        v-model="form.modalidad_id"
+                        :options="modalidades"
+                        label-key="name"
+                        value-key="id"
+                    />
+                </FormField>
+
+                <!-- Fecha de Revalidación -->
+                <FormField label="Fecha de Revalidación" :error="form.errors.fecha_revalidacion">
+                    <FormControl
+                        v-model="form.fecha_revalidacion"
+                        type="date"
+                        :icon="mdiCalendar"
+                        required
+                    />
+                </FormField>
+
+                <!-- Fecha de Vigencia -->
+                <FormField label="Fecha de Vigencia" :error="form.errors.fecha_vigencia">
+                    <FormControl
+                        v-model="form.fecha_vigencia"
+                        type="date"
+                        :icon="mdiCalendar"
+                        required
+                    />
+                </FormField>
 
                 <!-- Documentos Principales Existentes -->
-                <div class="col-span-2">
-                    <h3 class="text-lg font-medium mb-2">Documentos Principales</h3>
+                <div>
                     <div v-if="archivosPrincipales.length > 0" class="mb-4">
+                        <h3 class="text-lg font-medium mb-2">Documentos Principales</h3>
                         <div v-for="archivo in archivosPrincipales" :key="archivo.id" class="flex items-center justify-between p-2 border rounded mb-2">
                             <span class="truncate">{{ archivo.nombre_original }}</span>
                             <div class="flex space-x-2">
@@ -163,6 +249,7 @@ const agregarDocumentosAnexos = (files) => {
                                 />
                             </div>
                         </div>
+                      
                     </div>
                     <FileUploader 
                         label="Agregar nuevos documentos principales" 
@@ -171,13 +258,15 @@ const agregarDocumentosAnexos = (files) => {
                         accept="application/pdf"
                         multiple
                         @files-selected="agregarDocumentosPrincipales"
-                    />
-                </div>
+                        />
+                   </div>
 
+                      
+               
                 <!-- Documentos Anexos Existentes -->
-                <div class="col-span-2">
-                    <h3 class="text-lg font-medium mb-2">Documentos Anexos</h3>
+                 <div>
                     <div v-if="archivosAnexos.length > 0" class="mb-4">
+                        <h3 class="text-lg font-medium mb-2">Documentos Anexos</h3>
                         <div v-for="archivo in archivosAnexos" :key="archivo.id" class="flex items-center justify-between p-2 border rounded mb-2">
                             <span class="truncate">{{ archivo.nombre_original }}</span>
                             <div class="flex space-x-2">
@@ -197,7 +286,8 @@ const agregarDocumentosAnexos = (files) => {
                                 />
                             </div>
                         </div>
-                    </div>
+                     
+                    </div>  
                     <FileUploader 
                         label="Agregar nuevos documentos anexos" 
                         v-model="form.nuevos_documentos_anexos"
@@ -206,7 +296,8 @@ const agregarDocumentosAnexos = (files) => {
                         multiple
                         @files-selected="agregarDocumentosAnexos"
                     />
-                </div>
+                </div>               
+                
             </div>
 
             <template #footer>

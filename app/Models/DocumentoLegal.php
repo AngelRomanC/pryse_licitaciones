@@ -32,7 +32,7 @@ class DocumentoLegal extends Documento
 
     public function tipoDocumento()
     {
-        return $this->belongsTo(TipoDeDocumento::class,'tipo_de_docuemnto');
+        return $this->belongsTo(TipoDeDocumento::class,'tipo_de_documento');
     }
 
     public function departamento()
@@ -46,6 +46,10 @@ class DocumentoLegal extends Documento
         return $this->hasMany(Fecha::class, 'documento_id');
 
     }
-
-
+    
+   //relación con archivosPDF
+   public function archivos() {
+    return $this->hasMany(DocumentoArchivo::class, 'documento_id');
+}
+//Siempre debemos especificar el id, donde se guardar el datop ya que es un Modelo Heredado
 }

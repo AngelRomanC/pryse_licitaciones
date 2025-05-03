@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class DocumentoArchivo extends Model
 {
     use HasFactory;
-    
     protected $fillable = [
         'documento_id',
         'ruta_archivo',
@@ -19,4 +18,5 @@ class DocumentoArchivo extends Model
     public function documento() {
         return $this->belongsTo(Documento::class);
     }
+   
 }

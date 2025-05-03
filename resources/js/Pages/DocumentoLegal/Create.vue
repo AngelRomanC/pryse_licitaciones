@@ -8,7 +8,8 @@ import CardBox from "@/components/CardBox.vue";
 import FormField from "@/components/FormField.vue";
 import FormControl from "@/components/FormControl.vue";
 import { mdiBallotOutline, mdiFormatListChecks, mdiOfficeBuilding, mdiFileDocument, mdiMapMarker, mdiCalendar } from "@mdi/js";
-import FormControlV7 from '@/Components/FormControlV7.vue';
+import FileUploader from '@/Components/FileUploader.vue';
+
 
 
 
@@ -33,8 +34,8 @@ const form = useForm({
     fecha_revalidacion: '',
     fecha_vigencia: '',
     //modalidad_id: [],
-    ruta_documento: null,
-    ruta_documento_anexo: null
+    ruta_documento: [],
+    ruta_documento_anexo: []
 });
 
 const handleSubmit = () => {    
@@ -146,26 +147,26 @@ const handleSubmit = () => {
                         required
                     />
                 </FormField>
-                 <!-- Campo: Ruta Documento -->
-                 <FormField label="Documento Principal" :error="form.errors.ruta_documento">
-                    <FormControl
-                        type="file"
-                        @change="(e)=>form.ruta_documento = e.target.files[0]"
-                        accept="application/pdf"
-                        required
-                    />
-                </FormField>
+                 
+                <!-- Campo: Ruta Documento -->
+                <!-- Campo: Documentos Principales -->
+                <FileUploader 
+                label="Documento(s) Principal(es)" 
+                v-model="form.ruta_documento"
+                :error="form.errors.ruta_documento"
+                accept="application/pdf"
+                multiple
+                />
 
-                <!-- Campo: Ruta Documento Anexo -->
-                <FormField label="Documento Anexo" :error="form.errors.ruta_documento_anexo">
-                    <FormControl
-                        type="file"
-                        @change="(e)=>form.ruta_documento_anexo = e.target.files[0]"
-                        accept="application/pdf"
-                        required
-                    />
-         
-                </FormField>           
+                <!-- Campo: Documentos Anexos -->
+                <FileUploader 
+                label="Documento(s) Anexo(s)" 
+                v-model="form.ruta_documento_anexo"
+                :error="form.errors.ruta_documento_anexo"
+                accept="application/pdf"
+                
+                /> 
+                       
             </div>
 
             <template #footer>
