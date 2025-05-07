@@ -19,9 +19,9 @@ class EmpresaController extends Controller
     public function index()
     {
         // Obtener todas las empresas ordenadas por ID y paginadas
-        $empresas = Empresa::orderBy('id')  
-            ->paginate(8)  
-            ->withQueryString(); 
+        $empresas = Empresa::orderBy('id')
+            ->paginate(8)
+            ->withQueryString();
 
         return Inertia::render("Empresa/Index", [
             'titulo' => 'Lista de Empresas',  // Título de la vista
@@ -45,16 +45,24 @@ class EmpresaController extends Controller
 
     public function store(Request $request)
     {
+        logger('Redirect recibido:', ['redirect' => $request->input('redirect')]);
+
         // Validar los datos recibidos
         $validated = $request->validate([
             'nombre' => 'required|string|max:50',
             'descripcion' => 'required|string|max:50',
             'direccion' => 'required|string|max:50',
             'telefono' => 'required|string|max:50',
-            'email' => 'required|email|max:50', 
+            'email' => 'required|email|max:50',
         ]);
 
         Empresa::create($validated);
+
+        if ($request->filled('redirect')) { // Usa "filled" verificar que no esté vacío
+            return redirect($request->input('redirect'))
+                ->with('success', 'Empresa creada correctamente');
+        }
+
         return redirect()->route($this->routeName . 'index')->with('success', 'Empresa creada con éxito.');
     }
 

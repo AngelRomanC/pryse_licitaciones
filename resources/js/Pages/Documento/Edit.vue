@@ -258,6 +258,8 @@ const agregarDocumentosAnexos = (files) => {
                         accept="application/pdf"
                         multiple
                         @files-selected="agregarDocumentosPrincipales"
+                        class="w-full border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-blue-400 transition-colors cursor-pointer"
+
                         />
                    </div>
 
@@ -295,6 +297,8 @@ const agregarDocumentosAnexos = (files) => {
                         accept="application/pdf"
                         multiple
                         @files-selected="agregarDocumentosAnexos"
+                        class="w-full border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-blue-400 transition-colors cursor-pointer"
+
                     />
                 </div>               
                 

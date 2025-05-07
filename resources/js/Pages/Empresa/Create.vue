@@ -12,7 +12,11 @@ import { mdiBallotOutline, mdiAccount, mdiText, mdiMapMarker,mdiPhone ,mdiEmail}
 const props = defineProps({
     titulo: String, // Título enviado desde el backend
     routeName: String, // Nombre de la ruta base
+
 });
+// Captura el parámetro `redirect` de la URL
+const urlParams = new URLSearchParams(window.location.search);
+const redirectParam = urlParams.get('redirect'); // Obtiene el valor de ?redirect=...
 // Datos del formulario
 const form = useForm({
     nombre: '',
@@ -20,6 +24,8 @@ const form = useForm({
     direccion: '',
     telefono: '',
     email: '',
+    redirect: redirectParam, // ¡Pásalo al formulario!
+
 });
 // Función para enviar el formulario
 const handleSubmit = () => {
@@ -46,6 +52,7 @@ const handleSubmit = () => {
                         required
                     />
                 </FormField>
+
 
                 <!-- Campo: Descripción -->
                 <FormField label="Descripción" :error="form.errors.descripcion">
