@@ -10,17 +10,19 @@ import FormControl from "@/components/FormControl.vue";
 import { mdiBallotOutline, mdiFileDocumentCheckOutline, mdiText, mdiMapMarker,mdiPhone ,mdiEmail} from "@mdi/js"; //agregado
 
 const props = defineProps({
-    titulo: String, // Título enviado desde el backend
-    routeName: String, // Nombre de la ruta base
+    titulo: String, 
+    routeName: String, 
 });
+const urlParams = new URLSearchParams(window.location.search);
+const redirectParam = urlParams.get('redirect');
 // Datos del formulario
 const form = useForm({
     nombre_documento: '',
+    redirect: redirectParam, 
+
   
 });
-// Función para enviar el formulario
 const handleSubmit = () => {
-    // form.post(route(${props.routeName}store'));
     form.post(route(`${props.routeName}store`));
 
 };

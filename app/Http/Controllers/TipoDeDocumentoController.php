@@ -53,6 +53,10 @@ class TipoDeDocumentoController extends Controller
         ]);
 
         TipoDeDocumento::create($validated);
+        if ($request->filled('redirect')) { 
+            return redirect($request->input('redirect'))
+                ->with('success', 'Empresa creada correctamente');
+        }
 
         return redirect()->route($this->routeName . 'index')->with('success', 'Documento creado con éxito.');
     }
