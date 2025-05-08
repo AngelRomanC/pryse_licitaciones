@@ -26,7 +26,13 @@ class DashboardController extends Controller
                     'dias_restantes',
                     now()->startOfDay()->diffInDays(Carbon::parse($documento->fecha_vigencia)->startOfDay(), false) 
 
-                ))
+                )
+                ->setAttribute(
+                    'dias_restantes_revalidacion',
+                    now()->startOfDay()->diffInDays(Carbon::parse($documento->fecha_revalidacion)->startOfDay(), false)
+                )
+                
+                )
                 ->withQueryString();
 
             $documentosLegal = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento'])
@@ -64,9 +70,12 @@ class DashboardController extends Controller
                 ->paginate(8)
                 ->through(fn($documento) => $documento->setAttribute(
                     'dias_restantes',
-                   // Carbon::parse($documento->fecha_vigencia)->diffInDays(now())
                    now()->startOfDay()->diffInDays(Carbon::parse($documento->fecha_vigencia)->startOfDay(), false) 
                  
+                )
+                ->setAttribute(
+                    'dias_restantes_revalidacion',
+                    now()->startOfDay()->diffInDays(Carbon::parse($documento->fecha_revalidacion)->startOfDay(), false)
                 ))
                 ->withQueryString();
 
@@ -81,6 +90,10 @@ class DashboardController extends Controller
                     now()->startOfDay()->diffInDays(Carbon::parse($documentoLegal->fecha_vigencia)->startOfDay(), false) 
                     
                     
+                )
+                ->setAttribute(
+                    'dias_restantes_revalidacion',
+                    now()->startOfDay()->diffInDays(Carbon::parse($documentoLegal->fecha_revalidacion)->startOfDay(), false)
                 ))
                 ->withQueryString();
 

@@ -14,9 +14,6 @@ import Swal from 'sweetalert2';
 import BaseButton from "@/components/BaseButton.vue";
 import { mdiEye } from "@mdi/js";
 
-
-
-
 // Registrar los componentes necesarios de Chart.js
 ChartJS.register(CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement, ArcElement, PointElement, LineElement);
 
@@ -33,150 +30,6 @@ const props = defineProps({
 // Contar total de documentos
 const totalDocumentosTecnicos = computed(() => props.documentos.total);
 const totalDocumentosLegales = computed(() => props.documentosLegal.total);
-
-const documentosTecnicosVencidos = computed(() => {
-  return props.d1.filter(documento => documento.dias_restantes <= 0).length; // Mando las licitaciones vencidas total 
-});
-
-const documentosLegalesVencidos = computed(() => {
-  return props.d2.filter(documento => documento.dias_restantes <= 0).length;
-});
-
-// Datos para el gráfico de doughnut
-const chartData2 = {
-  labels: ['Documentos Técnicos', 'Documentos Legales'],
-  datasets: [{
-    data: [totalDocumentosTecnicos.value, totalDocumentosLegales.value],
-    backgroundColor: [
-      'rgba(79, 70, 229, 0.8)',
-      'rgba(16, 185, 129, 0.8)',
-    ],
-    borderColor: [
-      'rgba(79, 70, 229, 1)',
-      'rgba(16, 185, 129, 1)',
-    ],
-    borderWidth: 1,
-    hoverOffset: 10
-  }]
-};
-
-const chartOptions2 = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'right',
-    },
-    title: {
-      display: true,
-      text: 'Proporción de Documentos Técnicos vs Legales',
-      font: {
-        size: 16
-      }
-    },
-    tooltip: {
-      callbacks: {
-        label: function (context) {
-          const label = context.label || '';
-          const value = context.raw || 0;
-          const total = context.dataset.data.reduce((a, b) => a + b, 0);
-          const percentage = Math.round((value / total) * 100);
-          return `${label}: ${value} (${percentage}%)`;
-        }
-      }
-    }
-  },
-  cutout: '70%',
-};
-
-// Procesar documentos por departamento
-const procesarDocumentosPorDepartamento = () => {
-  const todosDocumentosTecnicos = props.d1;
-  const todosDocumentosLegales = props.d2;
-
-  const tecnicosPorDepto = todosDocumentosTecnicos.reduce((acc, doc) => {
-    if (!doc.departamento || !doc.departamento.nombre_departamento) return acc;
-    const depto = doc.departamento.nombre_departamento;
-    acc[depto] = acc[depto] || { total: 0, vencidos: 0 };
-    acc[depto].total++;
-    if (doc.dias_restantes <= 0) acc[depto].vencidos++;
-    return acc;
-  }, {});
-
-  const legalesPorDepto = todosDocumentosLegales.reduce((acc, doc) => {
-    if (!doc.departamento || !doc.departamento.nombre_departamento) return acc;
-    const depto = doc.departamento.nombre_departamento;
-    acc[depto] = acc[depto] || { total: 0, vencidos: 0 };
-    acc[depto].total++;
-    if (doc.dias_restantes <= 0) acc[depto].vencidos++;
-    return acc;
-  }, {});
-
-  const departamentos = [...new Set([
-    ...Object.keys(tecnicosPorDepto),
-    ...Object.keys(legalesPorDepto)
-  ])];
-
-  return {
-    labels: departamentos,
-    datasets: [
-      {
-        label: 'Técnicos (Total)',
-        data: departamentos.map(depto => tecnicosPorDepto[depto]?.total || 0),
-        backgroundColor: 'rgba(79, 70, 229, 0.6)',
-        borderColor: 'rgba(79, 70, 229, 1)',
-        borderWidth: 1
-      },
-      {
-        label: 'Técnicos (Vencidos)',
-        data: departamentos.map(depto => tecnicosPorDepto[depto]?.vencidos || 0),
-        backgroundColor: 'rgba(220, 38, 38, 0.6)',
-        borderColor: 'rgba(220, 38, 38, 1)',
-        borderWidth: 1
-      },
-      {
-        label: 'Legales (Total)',
-        data: departamentos.map(depto => legalesPorDepto[depto]?.total || 0),
-        backgroundColor: 'rgba(16, 185, 129, 0.6)',
-        borderColor: 'rgba(16, 185, 129, 1)',
-        borderWidth: 1
-      },
-      {
-        label: 'Legales (Vencidos)',
-        data: departamentos.map(depto => legalesPorDepto[depto]?.vencidos || 0),
-        backgroundColor: 'rgba(245, 158, 11, 0.6)',
-        borderColor: 'rgba(245, 158, 11, 1)',
-        borderWidth: 1
-      }
-    ]
-  };
-};
-
-const horizontalBarData = procesarDocumentosPorDepartamento();
-
-const horizontalBarOptions = {
-  indexAxis: 'y',
-  responsive: true,
-  plugins: {
-    title: {
-      display: true,
-      text: 'Documentos por Departamento (Totales vs Vencidos)',
-      font: { size: 16 }
-    },
-    tooltip: {
-      callbacks: {
-        label: (context) => {
-          const label = context.dataset.label || '';
-          const value = context.raw || 0;
-          return `${label}: ${value} documentos`;
-        }
-      }
-    }
-  },
-  scales: {
-    x: { stacked: false, title: { display: true, text: 'Cantidad de Documentos' } },
-    y: { stacked: true }
-  }
-};
 
 // Detalle de documento
 const mostrarDetalles = (documento) => {
@@ -350,23 +203,7 @@ const mostrarDetalles = (documento) => {
         </div>
       </CardBox>
 
-      <!-- Tarjeta de Licitaciones Técnicas -->
-      <CardBox class="hover:shadow-lg transition-shadow duration-300">
-        <div class="flex items-center">
-          <div class="p-3 rounded-full bg-red-100 text-red-600 mr-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-sm font-medium text-gray-500">Licitaciones Técnicas</h3>
-            <p class="text-2xl font-bold text-red-600">{{ documentosTecnicosVencidos }}</p>
-            <p class="text-xs text-gray-500 mt-1" v-if="documentosTecnicosVencidos > 0">¡Requieren atención!</p>
-          </div>
-        </div>
-      </CardBox>
+   
 
       <!-- Tarjeta de Documentos Legales -->
       <CardBox class="hover:shadow-lg transition-shadow duration-300">
@@ -385,57 +222,10 @@ const mostrarDetalles = (documento) => {
         </div>
       </CardBox>
 
-      <!-- Tarjeta de Licitaciones Legales -->
-      <CardBox class="hover:shadow-lg transition-shadow duration-300">
-        <div class="flex items-center">
-          <div class="p-3 rounded-full bg-yellow-100 text-yellow-600 mr-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-sm font-medium text-gray-500">Licitaciones Legales</h3>
-            <p class="text-2xl font-bold text-yellow-600">{{ documentosLegalesVencidos }}</p>
-            <p class="text-xs text-gray-500 mt-1" v-if="documentosLegalesVencidos > 0">Revisión necesaria</p>
-          </div>
-        </div>
-      </CardBox>
+   
     </div>
 
-    <!-- Sección de Gráficos -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-      <!-- Gráfico de Doughnut -->
-      <CardBox class="p-6">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-600" viewBox="0 0 20 20"
-            fill="currentColor">
-            <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
-            <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
-          </svg>
-          Distribución de Documentos
-        </h2>
-        <div class="h-80">
-          <Doughnut :data="chartData2" :options="chartOptions2" />
-        </div>
-      </CardBox>
 
-      <!-- Gráfico de Barras Horizontales -->
-      <CardBox class="p-6">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20"
-            fill="currentColor">
-            <path
-              d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
-          </svg>
-          Documentos por Departamento
-        </h2>
-        <div class="h-80">
-          <Bar :data="horizontalBarData" :options="horizontalBarOptions" />
-        </div>
-      </CardBox>
-    </div>
 
     <!-- Secciones de Documentos -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -465,7 +255,7 @@ const mostrarDetalles = (documento) => {
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Vigencia</th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Estado</th>
+                  Ver</th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -479,23 +269,42 @@ const mostrarDetalles = (documento) => {
                 <td data-label="Departamento" class="px-6 py-4 whitespace-normal text-sm text-gray-500">
                   {{ documento.departamento.nombre_departamento }}
                 </td>
+
                 <td data-label="Fecha Revalidación" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }}
-
-
+                  <div class="flex flex-col">
+                      <div>{{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }}</div>
+                      <span
+                        :class="{
+                          'bg-red-500 text-white': documento.dias_restantes_revalidacion <= 0,
+                          'bg-red-200 text-red-800': documento.dias_restantes_revalidacion > 0 && documento.dias_restantes_revalidacion <= 7,
+                          'bg-green-100 text-green-800': documento.dias_restantes_revalidacion > 7
+                        }"
+                        class="mt-1 px-3 py-1 text-xs font-semibold rounded-full"
+                      >
+                        {{ documento.dias_restantes_revalidacion <= 0 ? 'Vencido' : `${documento.dias_restantes_revalidacion} días` }}
+                      </span>
+                    </div>
                 </td>
-                <td data-label="Fecha Vigencia" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {{ moment(documento.fecha_vigencia).format("DD/MM/YYYY") }}
 
-                </td>
+                <td data-label="Fecha Vigencia" class="px-6 py-4 text-sm text-gray-500">
+                    <div class="flex flex-col">
+                      <div>{{ moment(documento.fecha_vigencia).format("DD/MM/YYYY") }}</div>
+                      <span
+                        :class="{
+                          'bg-red-500 text-white': documento.dias_restantes <= 0,
+                          'bg-red-200 text-red-800': documento.dias_restantes > 0 && documento.dias_restantes <= 7,
+                          'bg-green-100 text-green-800': documento.dias_restantes > 7
+                        }"
+                        class="mt-1 px-3 py-1 text-xs font-semibold rounded-full"
+                      >
+                        {{ documento.dias_restantes <= 0 ? 'Vencido' : `${documento.dias_restantes} días` }}
+                      </span>
+                    </div>
+                  </td>
+
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="flex items-center space-x-2">
-                    <span :class="{
-                      'bg-red-500 text-white': documento.dias_restantes <= 0,
-                      'bg-red-200 text-red-800': documento.dias_restantes > 0 && documento.dias_restantes <= 7,
-                      'bg-green-100 text-green-800': documento.dias_restantes > 7
-                    }" class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full">
-                      {{ documento.dias_restantes <= 0 ? 'Vencido' : `${documento.dias_restantes} días` }} </span>
+                  
                         <BaseButton @click="mostrarDetalles(documento)" :icon="mdiEye" color="lightDark"
                           class="!p-1.5 !rounded-full hover:bg-gray-200 transition-colors"
                           title="Ver detalles del documento" />
@@ -555,21 +364,38 @@ const mostrarDetalles = (documento) => {
                   {{ documento.departamento.nombre_departamento }}
                 </td>
                 <td data-label="Fecha Revalidación" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }}
-
+                  <div class="flex flex-col">
+                      <div>{{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }}</div>
+                      <span
+                        :class="{
+                          'bg-red-500 text-white': documento.dias_restantes_revalidacion <= 0,
+                          'bg-red-200 text-red-800': documento.dias_restantes_revalidacion > 0 && documento.dias_restantes_revalidacion <= 7,
+                          'bg-green-100 text-green-800': documento.dias_restantes_revalidacion > 7
+                        }"
+                        class="mt-1 px-3 py-1 text-xs font-semibold rounded-full"
+                      >
+                        {{ documento.dias_restantes_revalidacion <= 0 ? 'Vencido' : `${documento.dias_restantes_revalidacion} días` }}
+                      </span>
+                    </div>
                 </td>
-                <td data-label="Fecha Vigencia" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {{ moment(documento.fecha_vigencia).format("DD/MM/YYYY") }}
+                <td data-label="Fecha Vigencia" class="px-6 py-4 text-sm text-gray-500">
+                    <div class="flex flex-col">
+                      <div>{{ moment(documento.fecha_vigencia).format("DD/MM/YYYY") }}</div>
+                      <span
+                        :class="{
+                          'bg-red-500 text-white': documento.dias_restantes <= 0,
+                          'bg-red-200 text-red-800': documento.dias_restantes > 0 && documento.dias_restantes <= 7,
+                          'bg-green-100 text-green-800': documento.dias_restantes > 7
+                        }"
+                        class="mt-1 px-3 py-1 text-xs font-semibold rounded-full"
+                      >
+                        {{ documento.dias_restantes <= 0 ? 'Vencido' : `${documento.dias_restantes} días` }}
+                      </span>
+                    </div>
+                  </td>
 
-                </td>
 
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span :class="{
-                    'bg-red-500 text-white': documento.dias_restantes <= 0,
-                    'bg-red-200 text-red-800': documento.dias_restantes > 0 && documento.dias_restantes <= 7,
-                    'bg-green-100 text-green-800': documento.dias_restantes > 7
-                  }" class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full">
-                    {{ documento.dias_restantes <= 0 ? 'Vencido' : `${documento.dias_restantes} días` }} </span>
+                <td class="px-6 py-4 whitespace-nowrap">           
                       <BaseButton @click="mostrarDetalles(documento)" :icon="mdiEye" color="lightDark"
                         class="!p-1.5 !rounded-full hover:bg-gray-200 transition-colors"
                         title="Ver detalles del documento" />
