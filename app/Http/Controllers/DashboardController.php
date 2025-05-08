@@ -20,7 +20,7 @@ class DashboardController extends Controller
         if ($user->hasRole('Admin')) {
             $documentos = Documento::with(['empresa', 'tipoDeDocumento', 'estado', 'departamento', 'modalidades'])
                 -> where('nombre_documento', 'Documento Técnico')
-                ->orderBy('id')
+                ->orderBy('fecha_vigencia', 'asc')
                 ->paginate(10)
                 ->through(fn($documento) => $documento->setAttribute(
                     'dias_restantes',
@@ -37,13 +37,18 @@ class DashboardController extends Controller
 
             $documentosLegal = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento'])
                 ->where('nombre_documento', 'Documento Legal')
-                ->orderBy('id')
+                ->orderBy('fecha_vigencia', 'asc')
                 ->paginate(10)
                 ->through(fn($documentoLegal) => $documentoLegal->setAttribute(
                     'dias_restantes',
                     now()->startOfDay()->diffInDays(Carbon::parse($documentoLegal->fecha_vigencia)->startOfDay(), false) 
                     
-                ))
+                )
+                ->setAttribute(
+                    'dias_restantes_revalidacion',
+                    now()->startOfDay()->diffInDays(Carbon::parse($documentoLegal->fecha_revalidacion)->startOfDay(), false)
+                )
+                )
                 ->withQueryString();
          
 

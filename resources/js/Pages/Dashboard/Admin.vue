@@ -9,7 +9,9 @@ import CardBox from "@/components/CardBox.vue";
 import { Chart as ChartJS, CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement } from 'chart.js';
 import Pagination from '@/Shared/Pagination.vue';
 import moment from "moment";
-
+import UsersCard from '@/Components/UsersCard.vue';
+import TechnicalDocumentsCard from '@/Components/TechnicalDocumentsCard.vue';
+import LegalDocumentsCard from '@/Components/LegalDocumentsCard.vue';
 
 
 // Registrar los componentes necesarios de Chart.js
@@ -29,10 +31,7 @@ const props = defineProps({
 const totalDocumentosTecnicos = computed(() => props.documentos.total);
 const totalDocumentosLegales = computed(() => props.documentosLegal.total);
 
-
-
 </script>
-
 <template>
 
   <Head title="Dashboard Admin" />
@@ -44,104 +43,28 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
     <!-- Estadísticas Principales -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
       <!-- Usuarios Registrados -->
-      <CardBox class="hover:shadow-lg transition-shadow duration-300">
-        <div class="flex items-center">
-          <div class="p-3 rounded-full bg-purple-100 text-purple-600 mr-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-sm font-medium text-gray-500">Usuarios Registrados</h3>
-            <p class="text-2xl font-bold text-purple-600">{{ users }}</p>
-          </div>
-        </div>
-      </CardBox>
+        <UsersCard 
+         :latest-users="latestUsers" 
+         :users="users"         
+         title="Detalles de usuarios registrados"
+        />   
+      
 
       <!-- Documentos Técnicos -->
-      <CardBox class="hover:shadow-lg transition-shadow duration-300">
-        <div class="flex items-center">
-          <div class="p-3 rounded-full bg-indigo-100 text-indigo-600 mr-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-sm font-medium text-gray-500">Documentos Técnicos</h3>
-            <p class="text-2xl font-bold text-indigo-600">{{ totalDocumentosTecnicos }}</p>
-          </div>
-        </div>
-      </CardBox>
+      <TechnicalDocumentsCard 
+      :count="totalDocumentosTecnicos" 
+      tooltip="Haz clic para crear un nuevo documento técnico"
+      />
 
-   
+      <LegalDocumentsCard 
+      :count="totalDocumentosLegales" 
+      tooltip="Haz clic para crear un nuevo documento legal"
+    />
 
-      <!-- Documentos Legales -->
-      <CardBox class="hover:shadow-lg transition-shadow duration-300">
-        <div class="flex items-center">
-          <div class="p-3 rounded-full bg-green-100 text-green-600 mr-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-sm font-medium text-gray-500">Documentos Legales</h3>
-            <p class="text-2xl font-bold text-green-600">{{ totalDocumentosLegales }}</p>
-          </div>
-        </div>
-      </CardBox>
 
-  
     </div>
 
-    <!-- Últimos usuarios registrados -->
-    <CardBox class="mb-8">
-      <div class="p-6 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-indigo-50">
-        <h2 class="text-xl font-semibold text-gray-800 flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-purple-600" viewBox="0 0 20 20"
-            fill="currentColor">
-            <path
-              d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-          </svg>
-          Últimos usuarios registrados
-        </h2>
-      </div>
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
-            <tr>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Nombre</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Correo Electrónico</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rol
-              </th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Fecha de Registro</th>
 
-            </tr>
-          </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="user in latestUsers" :key="user.id" class="hover:bg-gray-50 transition-colors duration-150">
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" data-label="Nombre">{{ user.name
-                }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" data-label="Email">{{ user.email }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" data-label="Rol">{{ user.role }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" data-label="Fecha de Creación">
-                {{ new Date(user.created_at).toLocaleString('es-MX', { hour12: true }) }}
-              </td>
-            </tr>
-          </tbody>
-
-        </table>
-      </div>
-    </CardBox>
 
     <!-- Documentos Técnicos y Legales -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -184,11 +107,27 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
                   {{ documento.departamento.nombre_departamento }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" data-label="Fecha Revalidación">
-                  {{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }}
+                  <div class="flex flex-col">
+                    <div>{{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }}</div>
+                    <span :class="{
+                      'bg-red-500 text-white': documento.dias_restantes_revalidacion <= 0,
+                      'bg-red-200 text-red-800': documento.dias_restantes_revalidacion > 0 && documento.dias_restantes_revalidacion <= 7,
+                      'bg-green-100 text-green-800': documento.dias_restantes_revalidacion > 7
+                    }" class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full">
+                      {{ documento.dias_restantes_revalidacion <= 0 ? 'Vencido' :
+                        `${documento.dias_restantes_revalidacion} días` }} </span>
+                  </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" data-label="Fecha Vigencia">
-                  {{ moment(documento.fecha_vigencia).format("DD/MM/YYYY") }}
-
+                  <div class="flex flex-col">
+                    <div>{{ moment(documento.fecha_vigencia).format("DD/MM/YYYY") }}</div>
+                    <span :class="{
+                      'bg-red-500 text-white': documento.dias_restantes <= 0,
+                      'bg-red-200 text-red-800': documento.dias_restantes > 0 && documento.dias_restantes <= 7,
+                      'bg-green-100 text-green-800': documento.dias_restantes > 7
+                    }" class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full">
+                      {{ documento.dias_restantes <= 0 ? 'Vencido' : `${documento.dias_restantes} días` }} </span>
+                  </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <span :class="{
@@ -247,11 +186,27 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
                   {{ documento.departamento.nombre_departamento }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" data-label="Fecha Revalidación">
-                  {{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }}
+                  <div class="flex flex-col">
+                    <div>{{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }}</div>
+                    <span :class="{
+                      'bg-red-500 text-white': documento.dias_restantes_revalidacion <= 0,
+                      'bg-red-200 text-red-800': documento.dias_restantes_revalidacion > 0 && documento.dias_restantes_revalidacion <= 7,
+                      'bg-green-100 text-green-800': documento.dias_restantes_revalidacion > 7
+                    }" class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full">
+                      {{ documento.dias_restantes_revalidacion <= 0 ? 'Vencido' :
+                        `${documento.dias_restantes_revalidacion} días` }} </span>
+                  </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" data-label="Fecha Vigencia">
-                  {{ moment(documento.fecha_vigencia).format("DD/MM/YYYY") }}
-
+                  <div class="flex flex-col">
+                    <div>{{ moment(documento.fecha_vigencia).format("DD/MM/YYYY") }}</div>
+                    <span :class="{
+                      'bg-red-500 text-white': documento.dias_restantes <= 0,
+                      'bg-red-200 text-red-800': documento.dias_restantes > 0 && documento.dias_restantes <= 7,
+                      'bg-green-100 text-green-800': documento.dias_restantes > 7
+                    }" class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full">
+                      {{ documento.dias_restantes <= 0 ? 'Vencido' : `${documento.dias_restantes} días` }} </span>
+                  </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <span :class="{

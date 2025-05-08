@@ -253,7 +253,7 @@ const mostrarDetalles = (documento) => {
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Revalidación</th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Vigencia</th>
+                    Vigencia</th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Ver</th>
               </tr>
@@ -279,8 +279,8 @@ const mostrarDetalles = (documento) => {
                           'bg-red-200 text-red-800': documento.dias_restantes_revalidacion > 0 && documento.dias_restantes_revalidacion <= 7,
                           'bg-green-100 text-green-800': documento.dias_restantes_revalidacion > 7
                         }"
-                        class="mt-1 px-3 py-1 text-xs font-semibold rounded-full"
-                      >
+                         class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full"
+                         >
                         {{ documento.dias_restantes_revalidacion <= 0 ? 'Vencido' : `${documento.dias_restantes_revalidacion} días` }}
                       </span>
                     </div>
@@ -295,8 +295,8 @@ const mostrarDetalles = (documento) => {
                           'bg-red-200 text-red-800': documento.dias_restantes > 0 && documento.dias_restantes <= 7,
                           'bg-green-100 text-green-800': documento.dias_restantes > 7
                         }"
-                        class="mt-1 px-3 py-1 text-xs font-semibold rounded-full"
-                      >
+                         class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full"
+                         >
                         {{ documento.dias_restantes <= 0 ? 'Vencido' : `${documento.dias_restantes} días` }}
                       </span>
                     </div>
@@ -372,8 +372,8 @@ const mostrarDetalles = (documento) => {
                           'bg-red-200 text-red-800': documento.dias_restantes_revalidacion > 0 && documento.dias_restantes_revalidacion <= 7,
                           'bg-green-100 text-green-800': documento.dias_restantes_revalidacion > 7
                         }"
-                        class="mt-1 px-3 py-1 text-xs font-semibold rounded-full"
-                      >
+                         class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full"
+                         >
                         {{ documento.dias_restantes_revalidacion <= 0 ? 'Vencido' : `${documento.dias_restantes_revalidacion} días` }}
                       </span>
                     </div>
@@ -387,8 +387,8 @@ const mostrarDetalles = (documento) => {
                           'bg-red-200 text-red-800': documento.dias_restantes > 0 && documento.dias_restantes <= 7,
                           'bg-green-100 text-green-800': documento.dias_restantes > 7
                         }"
-                        class="mt-1 px-3 py-1 text-xs font-semibold rounded-full"
-                      >
+                         class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full"
+                         >
                         {{ documento.dias_restantes <= 0 ? 'Vencido' : `${documento.dias_restantes} días` }}
                       </span>
                     </div>
