@@ -37,7 +37,7 @@ class TipoDeDocumentoController extends Controller
     public function create()
     {
         return Inertia::render("TipoDeDocumento/Create", [
-            'titulo' => 'Detalles de la Documento',
+            'titulo' => 'Detalles del Documento',
             'routeName' => $this->routeName,
         ]);
     }

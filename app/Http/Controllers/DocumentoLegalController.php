@@ -293,16 +293,17 @@ class DocumentoLegalController extends Controller
      */
     public function destroy(DocumentoLegal $documentoLegal)
     {
-        // Borrar los archivos asociados si existen
-        if ($documentoLegal->ruta_documento && Storage::disk('public')->exists($documentoLegal->ruta_documento)) {
-            Storage::disk('public')->delete($documentoLegal->ruta_documento);
+        // Eliminar archivos asociados (principal y anexo)
+        foreach ($documentoLegal->archivos as $archivo) {
+            if ($archivo->ruta_archivo && Storage::disk('public')->exists($archivo->ruta_archivo)) {
+                Storage::disk('public')->delete($archivo->ruta_archivo);
+            }
+
+            // Eliminar el registro del archivo en la base de datos
+            $archivo->delete();
         }
 
-        if ($documentoLegal->ruta_documento_anexo && Storage::disk('public')->exists($documentoLegal->ruta_documento_anexo)) {
-            Storage::disk('public')->delete($documentoLegal->ruta_documento_anexo);
-        }
-
-        // Eliminar el documento de la base de datos
+        // Eliminar el documento en sí
         $documentoLegal->delete();
 
         return redirect()->route($this->routeName . 'index')->with('success', 'Documento eliminado con éxito.');

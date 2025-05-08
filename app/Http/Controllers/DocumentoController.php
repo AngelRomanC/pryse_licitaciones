@@ -260,8 +260,8 @@ class DocumentoController extends Controller
         ]);
 
         // Definir carpetas base
-       // $folder = 'documentos_tecnicos';
-       // $folderAnexos = "$folder/documentos_anexos";
+        // $folder = 'documentos_tecnicos';
+        // $folderAnexos = "$folder/documentos_anexos";
 
         // Eliminar archivos marcados para eliminación
         if (!empty($validated['archivos_a_eliminar'])) {
@@ -321,18 +321,20 @@ class DocumentoController extends Controller
      */
     public function destroy(Documento $documento)
     {
-        // Borrar los archivos asociados si existen
-        if ($documento->ruta_documento && Storage::disk('public')->exists($documento->ruta_documento)) {
-            Storage::disk('public')->delete($documento->ruta_documento);
+        // Eliminar archivos asociados (principal y anexo)
+        foreach ($documento->archivos as $archivo) {
+            if ($archivo->ruta_archivo && Storage::disk('public')->exists($archivo->ruta_archivo)) {
+                Storage::disk('public')->delete($archivo->ruta_archivo);
+            }
+
+            // Eliminar el registro del archivo en la base de datos
+            $archivo->delete();
         }
 
-        if ($documento->ruta_documento_anexo && Storage::disk('public')->exists($documento->ruta_documento_anexo)) {
-            Storage::disk('public')->delete($documento->ruta_documento_anexo);
-        }
-
-        // Eliminar el documento de la base de datos
+        // Eliminar el documento en sí
         $documento->delete();
 
-        return redirect()->route($this->routeName . 'index')->with('success', 'Documento eliminado con éxito.');
+        return redirect()->route($this->routeName . 'index')->with('success', 'Documento y archivos eliminados con éxito.');
     }
+
 }
