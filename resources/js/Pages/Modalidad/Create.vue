@@ -10,14 +10,16 @@ import FormControl from "@/components/FormControl.vue";
 import { mdiBallotOutline, mdiFormatListChecks} from "@mdi/js"; //agregado
 
 const props = defineProps({
-    titulo: String, // Título enviado desde el backend
-    routeName: String, // Nombre de la ruta base
+    titulo: String, 
+    routeName: String, 
 });
-// Datos del formulario
+const urlParams = new URLSearchParams(window.location.search);
+const redirectParam = urlParams.get('redirect');
+
 const form = useForm({
-    nombre_modalidad: '',  
+    nombre_modalidad: '', 
+    redirect: redirectParam, 
 });
-// Función para enviar el formulario
 const handleSubmit = () => {    
     form.post(route(`${props.routeName}store`));
 };

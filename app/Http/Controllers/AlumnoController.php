@@ -42,10 +42,10 @@ class AlumnoController extends Controller
             ->withQueryString();
 
         return Inertia::render("Alumno/Index", [
-            'titulo'      => 'Alumnos  ',
-            'Alumno'    => $Alumno,
+            'titulo' => 'Alumnos  ',
+            'Alumno' => $Alumno,
             'usuarios' => $usuarios,
-            'routeName'      => $this->routeName,
+            'routeName' => $this->routeName,
             'loadingResults' => false
         ]);
     }
@@ -59,9 +59,9 @@ class AlumnoController extends Controller
     {
         $usuarios = User::all();
         return Inertia::render("Alumno/Create", [
-            'titulo'      => 'Agregar alumno',
-            'routeName'      => $this->routeName,
-            'usuarios'  => $usuarios, //no se ocupa
+            'titulo' => 'Agregar alumno',
+            'routeName' => $this->routeName,
+            'usuarios' => $usuarios, //no se ocupa
             'roles' => Role::pluck('name'), //no se ocupa
         ]);
     }
@@ -96,7 +96,7 @@ class AlumnoController extends Controller
         ]);
 
         $newUser->alumno()->save($alumno);
-        
+
         //Mail::to($newUser->email)->send(new CrearAlumno($newUser, $password));
         $newUser->notify(instance: new CredencialesEstudianteNotification($request->email, $request->password));
 
@@ -122,10 +122,10 @@ class AlumnoController extends Controller
         $usuario = $Alumno->user;
 
         return Inertia::render("Alumno/Edit", [
-            'titulo'      => 'Modificar Alumno',
-            'Alumno'    => $Alumno,
-            'usuario'   => $usuario,
-            'routeName'      => $this->routeName,
+            'titulo' => 'Modificar Alumno',
+            'Alumno' => $Alumno,
+            'usuario' => $usuario,
+            'routeName' => $this->routeName,
         ]);
     }
 

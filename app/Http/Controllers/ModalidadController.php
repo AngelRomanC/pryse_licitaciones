@@ -52,6 +52,11 @@ class ModalidadController extends Controller
 
         Modalidad::create($validated);
 
+        if ($request->filled('redirect')) { 
+            return redirect($request->input('redirect'))
+                ->with('success', 'Empresa creada correctamente');
+        }
+        
         return redirect()->route($this->routeName . 'index')->with('success', 'Modalidad creada con éxito.');
     }
 
