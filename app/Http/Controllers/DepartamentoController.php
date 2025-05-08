@@ -54,6 +54,11 @@ class DepartamentoController extends Controller
 
         Departamento::create($validated);
 
+        if ($request->filled('redirect')) { 
+            return redirect($request->input('redirect'))
+                ->with('success', 'Empresa creada correctamente');
+        }
+
         return redirect()->route($this->routeName . 'index')->with('success', 'Área creada con éxito.');
     }
 
