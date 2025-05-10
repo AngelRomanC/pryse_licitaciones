@@ -13,6 +13,10 @@ import moment from "moment";
 import Swal from 'sweetalert2';
 import BaseButton from "@/components/BaseButton.vue";
 import { mdiEye } from "@mdi/js";
+import TechnicalDocumentsCard from '@/Components/TechnicalDocumentsCard.vue';
+import LegalDocumentsCard from '@/Components/LegalDocumentsCard.vue';
+import { onMounted } from 'vue'
+
 
 // Registrar los componentes necesarios de Chart.js
 ChartJS.register(CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement, ArcElement, PointElement, LineElement);
@@ -31,10 +35,20 @@ const props = defineProps({
 const totalDocumentosTecnicos = computed(() => props.documentos.total);
 const totalDocumentosLegales = computed(() => props.documentosLegal.total);
 
+//checar la relacion archivos
+onMounted(() => {
+  props.documentosLegal.data.forEach((doc, index) => {
+    console.log(`Archivos del  documento #${index + 1}:`, doc.archivos);
+  });
+});
+
 // Detalle de documento
 const mostrarDetalles = (documento) => {
-  const tienePrincipal = documento.ruta_documento;
-  const tieneAnexo = documento.ruta_documento_anexo;
+  const archivoPrincipal = documento.archivos?.find(a => a.tipo === 'principal');
+  const archivoAnexo = documento.archivos?.find(a => a.tipo === 'anexo');
+
+  const tienePrincipal = !!archivoPrincipal;
+  const tieneAnexo = !!archivoAnexo;
 
   Swal.fire({
     title: `<div class="text-2xl font-bold text-gray-800">${documento.tipo_de_documento.nombre_documento}</div>`,
@@ -100,7 +114,7 @@ const mostrarDetalles = (documento) => {
         <div class="border-t border-gray-200 pt-4">
           <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-3">Visualizar documentos</h4>
           <div class="flex flex-wrap gap-3">
-            <button onclick="mostrarArchivoEnModal('/storage/${documento.ruta_documento}')" 
+            <button onclick="mostrarArchivoEnModal('/storage/${archivoPrincipal?.ruta_archivo ?? ''}')" 
               class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${!tienePrincipal ? 'opacity-50 cursor-not-allowed' : ''
       }" 
               ${!tienePrincipal ? 'disabled' : ''}>
@@ -112,7 +126,7 @@ const mostrarDetalles = (documento) => {
             </button>
             
             ${tieneAnexo ? `
-              <button onclick="mostrarArchivoEnModal('/storage/${documento.ruta_documento_anexo}')" 
+              <button onclick="mostrarArchivoEnModal('/storage/${archivoAnexo.ruta_archivo}')" 
                 class="inline-flex items-center px-4 py-2.5 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                 <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -184,52 +198,22 @@ const mostrarDetalles = (documento) => {
       <SectionTitleLineWithButton title="Bienvenido al Dashboard de Usuario" main class="mb-8" />
     </SectionMain>
 
-    <!-- Sección de Estadísticas Rápidas -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      <!-- Tarjeta de Documentos Técnicos -->
-      <CardBox class="hover:shadow-lg transition-shadow duration-300">
-        <div class="flex items-center">
-          <div class="p-3 rounded-full bg-indigo-100 text-indigo-600 mr-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-sm font-medium text-gray-500">Documentos Técnicos</h3>
-            <p class="text-2xl font-bold text-indigo-600">{{ totalDocumentosTecnicos }}</p>
-          </div>
-        </div>
-      </CardBox>
+      
+      <TechnicalDocumentsCard 
+        :count="totalDocumentosTecnicos" 
+        tooltip="Haz clic para crear un nuevo documento técnico"
+      />
 
-   
-
-      <!-- Tarjeta de Documentos Legales -->
-      <CardBox class="hover:shadow-lg transition-shadow duration-300">
-        <div class="flex items-center">
-          <div class="p-3 rounded-full bg-green-100 text-green-600 mr-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-sm font-medium text-gray-500">Documentos Legales</h3>
-            <p class="text-2xl font-bold text-green-600">{{ totalDocumentosLegales }}</p>
-          </div>
-        </div>
-      </CardBox>
-
+      <LegalDocumentsCard 
+        :count="totalDocumentosLegales" 
+        tooltip="Haz clic para crear un nuevo documento legal"
+      />
    
     </div>
 
-
-
     <!-- Secciones de Documentos -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <!-- Documentos Técnicos -->
       <CardBox>
         <div class="p-6 border-b border-gray-200 bg-gradient-to-r from-indigo-50 to-blue-50">
           <h2 class="text-xl font-semibold text-gray-800 flex items-center">

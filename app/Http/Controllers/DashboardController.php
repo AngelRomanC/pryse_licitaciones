@@ -64,8 +64,8 @@ class DashboardController extends Controller
 
         } else {
             // Definir relaciones comunes para cargar
-            $relacionesDocumentos = ['empresa', 'tipoDeDocumento', 'estado', 'departamento', 'modalidades'];
-            $relacionesDocumentosLegales = ['empresa', 'tipoDeDocumento', 'departamento'];
+            $relacionesDocumentos = ['empresa', 'tipoDeDocumento', 'estado', 'departamento', 'modalidades','archivos'];
+            $relacionesDocumentosLegales = ['empresa', 'tipoDeDocumento', 'departamento','archivos'];
 
             // Obtener documentos paginados con días restantes
             $documentos = Documento::with($relacionesDocumentos)
