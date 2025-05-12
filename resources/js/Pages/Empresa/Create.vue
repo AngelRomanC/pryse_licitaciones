@@ -98,7 +98,7 @@ const handleSubmit = () => {
             <template #footer>
                 <BaseButtons>
                     <BaseButton @click="handleSubmit" type="submit" color="info" outline label="Crear" />
-                    <BaseButton :href="route(`empresa.index`)" type="reset" color="danger" outline label="Cancelar" />
+                    <BaseButton :href="redirectParam || route(`empresa.index`)" type="reset" color="danger" outline label="Cancelar" />
                 </BaseButtons>
             </template>
         </CardBox>

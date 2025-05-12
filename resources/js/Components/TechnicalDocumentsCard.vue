@@ -37,9 +37,16 @@
     }
   });
   
-  const redirectToCreate = () => {
-    router.visit(route('documento.create'), {
-      method: 'get'
-    });
-  };
+  // const redirectToCreate = () => {
+  //   router.visit(route('documento.create'), {
+  //     method: 'get'
+  //   });
+  // };
+
+const redirectToCreate = () => {
+  router.get(route('documento.create', {
+    redirect: route('dashboard') // O el nombre correcto de tu ruta de dashboard
+  }))
+};
+
   </script>

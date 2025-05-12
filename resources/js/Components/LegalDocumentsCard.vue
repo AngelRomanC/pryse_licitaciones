@@ -36,11 +36,16 @@
     }
   });
   
+  // const redirectToCreate = () => {
+  //   router.visit(route('documento-legal.create'), {
+  //     method: 'get'
+  //   });
+  // };
   const redirectToCreate = () => {
-    router.visit(route('documento-legal.create'), {
-      method: 'get'
-    });
-  };
+  router.get(route('documento-legal.create', {
+    redirect: route('dashboard') // O el nombre correcto de tu ruta de dashboard
+  }))
+};
   </script>
   
   <style scoped>

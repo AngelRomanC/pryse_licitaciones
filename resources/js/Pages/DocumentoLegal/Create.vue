@@ -23,6 +23,9 @@ const props = defineProps({
     modalidades: Array      // Debe ser Array
 });
 
+const urlParams = new URLSearchParams(window.location.search);
+const redirectParam = urlParams.get('redirect');
+
 const form = useForm({
     nombre_documento: 'Documento Legal',
     empresa_id: '',
@@ -33,7 +36,8 @@ const form = useForm({
     fecha_vigencia: '',
     //modalidad_id: [],
     ruta_documento: [],
-    ruta_documento_anexo: []
+    ruta_documento_anexo: [],
+    redirect: redirectParam, 
 });
 
 const handleSubmit = () => {    
@@ -179,7 +183,7 @@ const handleSubmit = () => {
                     <BaseButton @click="handleSubmit" type="submit" color="info" outline label="Crear" />
 
                     <BaseButton 
-                        :href="route(`${routeName}index`)" 
+                        :href="redirectParam || route(`${routeName}index`)" 
                         type="button" 
                         color="danger" 
                         outline 

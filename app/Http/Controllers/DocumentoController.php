@@ -153,7 +153,10 @@ class DocumentoController extends Controller
             $documento->modalidades()->attach($validated['modalidad_id']);
         }
 
-
+        if ($request->filled('redirect')) {
+            return redirect($request->input('redirect'))
+                ->with('success', 'Documento Técnico creado correctamente');
+        }
 
         return redirect()->route($this->routeName . 'index')->with('success', 'Documento creado con éxito.');
     }

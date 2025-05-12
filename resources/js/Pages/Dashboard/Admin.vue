@@ -12,6 +12,7 @@ import moment from "moment";
 import UsersCard from '@/Components/UsersCard.vue';
 import TechnicalDocumentsCard from '@/Components/TechnicalDocumentsCard.vue';
 import LegalDocumentsCard from '@/Components/LegalDocumentsCard.vue';
+import NotificationBar from "@/components/NotificationBar.vue";
 
 
 // Registrar los componentes necesarios de Chart.js
@@ -39,6 +40,14 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
     <SectionMain>
       <SectionTitleLineWithButton title="Bienvenido al Dashboard de Administrador" main class="mb-8" />
     </SectionMain>
+
+      <NotificationBar v-if="$page.props.flash.success" color="success" :icon="mdiInformation" :outline="false">
+            {{ $page.props.flash.success }}
+        </NotificationBar>
+
+        <NotificationBar v-if="$page.props.flash.error" color="danger" :icon="mdiInformation" :outline="false">
+            {{ $page.props.flash.error }}
+        </NotificationBar>
 
     <!-- Estadísticas Principales -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">

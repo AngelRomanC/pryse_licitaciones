@@ -16,6 +16,8 @@ import { mdiEye } from "@mdi/js";
 import TechnicalDocumentsCard from '@/Components/TechnicalDocumentsCard.vue';
 import LegalDocumentsCard from '@/Components/LegalDocumentsCard.vue';
 import { onMounted } from 'vue'
+import NotificationBar from "@/components/NotificationBar.vue";
+
 
 
 // Registrar los componentes necesarios de Chart.js
@@ -44,11 +46,8 @@ onMounted(() => {
 
 // Detalle de documento
 const mostrarDetalles = (documento) => {
-  const archivoPrincipal = documento.archivos?.find(a => a.tipo === 'principal');
-  const archivoAnexo = documento.archivos?.find(a => a.tipo === 'anexo');
-
-  const tienePrincipal = !!archivoPrincipal;
-  const tieneAnexo = !!archivoAnexo;
+  const archivosPrincipales = documento.archivos?.filter(a => a.tipo === 'principal') || [];
+  const archivosAnexos = documento.archivos?.filter(a => a.tipo === 'anexo') || [];
 
   Swal.fire({
     title: `<div class="text-2xl font-bold text-gray-800">${documento.tipo_de_documento.nombre_documento}</div>`,
@@ -92,7 +91,24 @@ const mostrarDetalles = (documento) => {
               </div>
             </div>
           </div>
-          
+
+
+             <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm">
+            <div class="flex items-center space-x-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+              <div>
+                <p class="text-sm font-medium text-gray-500">Estado</p>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${documento.dias_restantes_revalidacion <= 5 ? 'bg-red-300 text-red-800' :
+      documento.dias_restantes_revalidacion <= 7 ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
+    }">
+                  ${documento.dias_restantes_revalidacion <= 0 ? 'Vencido' : documento.dias_restantes_revalidacion + ' días restantes'}
+                </span>
+              </div>
+            </div>
+          </div>
+
           <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm">
             <div class="flex items-center space-x-2">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -101,44 +117,58 @@ const mostrarDetalles = (documento) => {
               <div>
                 <p class="text-sm font-medium text-gray-500">Estado</p>
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${documento.dias_restantes <= 5 ? 'bg-red-300 text-red-800' :
-        documento.dias_restantes <= 7 ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
-      }">
+                      documento.dias_restantes <= 7 ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
+                    }">
                   ${documento.dias_restantes <= 0 ? 'Vencido' : documento.dias_restantes + ' días restantes'}
                 </span>
               </div>
             </div>
-          </div>
-        </div>
-
-        <!-- Acciones -->
-        <div class="border-t border-gray-200 pt-4">
-          <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-3">Visualizar documentos</h4>
-          <div class="flex flex-wrap gap-3">
-            <button onclick="mostrarArchivoEnModal('/storage/${archivoPrincipal?.ruta_archivo ?? ''}')" 
-              class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${!tienePrincipal ? 'opacity-50 cursor-not-allowed' : ''
-      }" 
-              ${!tienePrincipal ? 'disabled' : ''}>
-              <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </svg>
-              Ver Documento Principal
-            </button>
             
-            ${tieneAnexo ? `
-              <button onclick="mostrarArchivoEnModal('/storage/${archivoAnexo.ruta_archivo}')" 
-                class="inline-flex items-center px-4 py-2.5 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-                Ver Documento Anexo
-              </button>
-            ` : ''}
           </div>
+          
         </div>
 
-        <!-- Visor de PDF con diseño premium -->
+        <!-- Archivos -->
+      <div class="border-t border-gray-200 pt-4">
+  <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-3">Visualizar documentos</h4>
+
+  <!-- Fila de Documentos Principales -->
+  <div class="mb-4">
+    <h5 class="text-sm font-medium text-gray-700 mb-2">Documentos Principales</h5>
+    <div class="flex flex-wrap gap-2">
+      ${archivosPrincipales.map((archivo, index) => `
+        <button onclick="mostrarArchivoEnModal('/storage/${archivo.ruta_archivo}')" 
+          class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+          Principal ${archivosPrincipales.length > 1 ? index + 1 : ''}
+        </button>
+      `).join('')}
+    </div>
+  </div>
+
+  <!-- Fila de Documentos Anexos -->
+  <div>
+    <h5 class="text-sm font-medium text-gray-700 mb-2">Documentos Anexos</h5>
+    <div class="flex flex-wrap gap-2">
+      ${archivosAnexos.map((archivo, index) => `
+        <button onclick="mostrarArchivoEnModal('/storage/${archivo.ruta_archivo}')" 
+          class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+          Anexo ${archivosAnexos.length > 1 ? index + 1 : ''}
+        </button>
+      `).join('')}
+    </div>
+  </div>
+</div>
+
+        
+      <!-- Visor de PDF con diseño premium -->
         <div id="pdf-viewer-container" class="mt-4 hidden rounded-lg overflow-hidden border border-gray-300 shadow-lg">
           <div class="bg-gray-800 px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-2">
@@ -197,6 +227,14 @@ const mostrarDetalles = (documento) => {
     <SectionMain>
       <SectionTitleLineWithButton title="Bienvenido al Dashboard de Usuario" main class="mb-8" />
     </SectionMain>
+    
+     <NotificationBar v-if="$page.props.flash.success" color="success" :icon="mdiInformation" :outline="false">
+            {{ $page.props.flash.success }}
+        </NotificationBar>
+
+        <NotificationBar v-if="$page.props.flash.error" color="danger" :icon="mdiInformation" :outline="false">
+            {{ $page.props.flash.error }}
+        </NotificationBar>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       

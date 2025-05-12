@@ -153,6 +153,10 @@ class DocumentoLegalController extends Controller
             $documento->modalidades()->attach($validated['modalidad_id']);
         }
 
+        if ($request->filled('redirect')) {
+            return redirect($request->input('redirect'))
+                ->with('success', 'Docuemento Legal creado correctamente');
+        }
         return redirect()->route($this->routeName . 'index')->with('success', 'Documento creado con éxito.');
     }
 
@@ -226,7 +230,7 @@ class DocumentoLegalController extends Controller
             'archivos_a_eliminar' => 'nullable|array', // Para manejar eliminación de archivos existentes
             'archivos_a_eliminar.*' => 'integer|exists:documento_archivos,id'
         ]);
-        
+
         // Si no se sube archivo, conservar el archivo actual
         $documentoLegal->update([
             'nombre_documento' => $validated['nombre_documento'],
@@ -235,11 +239,11 @@ class DocumentoLegalController extends Controller
             'departamento_id' => $validated['departamento_id'],
             'fecha_revalidacion' => $validated['fecha_revalidacion'],
             'fecha_vigencia' => $validated['fecha_vigencia'],
-          
+
         ]);
 
-         // Eliminar archivos marcados para eliminación
-         if (!empty($validated['archivos_a_eliminar'])) {
+        // Eliminar archivos marcados para eliminación
+        if (!empty($validated['archivos_a_eliminar'])) {
             $archivosAEliminar = $documentoLegal->archivos()->whereIn('id', $validated['archivos_a_eliminar'])->get();
 
             foreach ($archivosAEliminar as $archivo) {
