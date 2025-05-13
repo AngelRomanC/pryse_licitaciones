@@ -18,6 +18,9 @@ import LegalDocumentsCard from '@/Components/LegalDocumentsCard.vue';
 import { onMounted } from 'vue'
 import NotificationBar from "@/components/NotificationBar.vue";
 
+import DocumentDetailModal from "@/components/DocumentDetailModal.vue";
+
+
 
 
 // Registrar los componentes necesarios de Chart.js
@@ -45,9 +48,11 @@ onMounted(() => {
 });
 
 // Detalle de documento
-const mostrarDetalles = (documento) => {
+const mostrarDetalles = (documento, tipoDocumento ) => {
   const archivosPrincipales = documento.archivos?.filter(a => a.tipo === 'principal') || [];
   const archivosAnexos = documento.archivos?.filter(a => a.tipo === 'anexo') || [];
+  const todosArchivos = [...archivosPrincipales, ...archivosAnexos]; // Definimos aquí la variable
+
 
   Swal.fire({
     title: `<div class="text-2xl font-bold text-gray-800">${documento.tipo_de_documento.nombre_documento}</div>`,
@@ -128,6 +133,30 @@ const mostrarDetalles = (documento) => {
           
         </div>
 
+
+
+
+         <!-- Archivos -->
+      <div class="border-t border-gray-200 pt-4">
+        <div class="flex justify-between items-center mb-3">
+          <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-500">Visualizar documentos</h4>
+          ${todosArchivos.length > 0 ? `
+            <button id="descargar-todos" 
+              class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+              <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+              </svg>
+              Descargar todos
+            </button>
+          ` : ''}
+        </div>
+
+
+
+
+
+
+
         <!-- Archivos -->
       <div class="border-t border-gray-200 pt-4">
   <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-3">Visualizar documentos</h4>
@@ -186,6 +215,7 @@ const mostrarDetalles = (documento) => {
           <iframe id="pdf-iframe" src="" class="w-full h-[500px]" frameborder="0"></iframe>
         </div>
       </div>
+      
     `,
     width: '900px',
     showConfirmButton: false,
@@ -195,6 +225,14 @@ const mostrarDetalles = (documento) => {
       closeButton: 'text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-full p-1'
     },
     didOpen: () => {
+   // Capturar las variables necesarias en el closure
+      const currentTipoDocumento = tipoDocumento;
+      const currentDocumentoId = documento.id;
+
+      document.getElementById('descargar-todos')?.addEventListener('click', () => {
+        window.location.href = `/${currentTipoDocumento}/${currentDocumentoId}/descargar-todos`;
+      });
+
       window.mostrarArchivoEnModal = (ruta) => {
         if (!ruta) return;
         const iframe = document.getElementById('pdf-iframe');
@@ -212,7 +250,14 @@ const mostrarDetalles = (documento) => {
       };
     },
     willClose: () => {
-      delete window.mostrarArchivoEnModal;
+// Obtener referencia al botón
+  const downloadButton = document.getElementById('descargar-todos');
+  
+  // Crear un nuevo botón para eliminar todos los event listeners
+  if (downloadButton) {
+    const newButton = downloadButton.cloneNode(true);
+    downloadButton.parentNode.replaceChild(newButton, downloadButton);
+  }      delete window.mostrarArchivoEnModal;
       delete window.cerrarVisorPDF;
     }
   });
@@ -327,9 +372,12 @@ const mostrarDetalles = (documento) => {
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="flex items-center space-x-2">
                   
-                        <BaseButton @click="mostrarDetalles(documento)" :icon="mdiEye" color="lightDark"
+                        <BaseButton @click="mostrarDetalles(documento,'documento')" :icon="mdiEye" color="lightDark"
                           class="!p-1.5 !rounded-full hover:bg-gray-200 transition-colors"
                           title="Ver detalles del documento" />
+
+                                <DocumentDetailModal :document="documento" />
+
                   </div>
                 </td>
               </tr>
@@ -418,7 +466,7 @@ const mostrarDetalles = (documento) => {
 
 
                 <td class="px-6 py-4 whitespace-nowrap">           
-                      <BaseButton @click="mostrarDetalles(documento)" :icon="mdiEye" color="lightDark"
+                      <BaseButton @click="mostrarDetalles(documento,'documento-legal')" :icon="mdiEye" color="lightDark"
                         class="!p-1.5 !rounded-full hover:bg-gray-200 transition-colors"
                         title="Ver detalles del documento" />
                 </td>

@@ -92,6 +92,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('documento-legal', controller: DocumentoLegalController::class);
     Route::resource('usuarios-sistema', controller: UsuarioGeneralController::class);  
 
+    // routes/web.php
+    Route::get('/documento/{documento}/descargar-todos', [DocumentoController::class, 'descargarTodos'])->name('documento.descargar-todos');
+    Route::get('/documento-legal/{documento}/descargar-todos', [DocumentoLegalController::class, 'descargarTodos'])->name('documento-legal.descargar-todos');
+
+    
 });
 
 require __DIR__ . '/auth.php';

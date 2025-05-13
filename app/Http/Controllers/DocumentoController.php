@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
+use ZipArchive;
+
 
 
 
@@ -339,5 +341,50 @@ class DocumentoController extends Controller
 
         return redirect()->route($this->routeName . 'index')->with('success', 'Documento y archivos eliminados con éxito.');
     }
+
+    public function descargarTodos(Documento $documento)
+{
+    return $this->procesarDescarga($documento);
+}
+
+protected function procesarDescarga($documento)
+{
+   $zip = new ZipArchive;
+    $zipFileName = "documento-{$documento->id}-archivos-".now()->format('YmdHis').".zip";
+    $zipPath = storage_path("app/public/temp/{$zipFileName}");
+
+    // Crear directorio temporal si no existe
+    if (!file_exists(dirname($zipPath))) {
+        mkdir(dirname($zipPath), 0755, true);
+    }
+
+    if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+        // Carpeta para archivos principales
+        foreach ($documento->archivos->where('tipo', 'principal') as $archivo) {
+            $filePath = storage_path("app/public/{$archivo->ruta_archivo}");
+            if (file_exists($filePath)) {
+                $nombreArchivo = $archivo->nombre_original ?: basename($archivo->ruta_archivo);
+                $zip->addFile($filePath, "Principales/{$nombreArchivo}");
+            }
+        }
+
+        // Carpeta para archivos anexos
+        foreach ($documento->archivos->where('tipo', 'anexo') as $archivo) {
+            $filePath = storage_path("app/public/{$archivo->ruta_archivo}");
+            if (file_exists($filePath)) {
+                $nombreArchivo = $archivo->nombre_original ?: basename($archivo->ruta_archivo);
+                $zip->addFile($filePath, "Anexos/{$nombreArchivo}");
+            }
+        }
+        
+        $zip->close();
+        
+        return response()
+            ->download($zipPath)
+            ->deleteFileAfterSend(true);
+    }
+
+    return back()->with('error', 'No se pudo crear el archivo ZIP');
+}
 
 }
