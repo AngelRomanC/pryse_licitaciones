@@ -13,6 +13,7 @@ import UsersCard from '@/Components/UsersCard.vue';
 import TechnicalDocumentsCard from '@/Components/TechnicalDocumentsCard.vue';
 import LegalDocumentsCard from '@/Components/LegalDocumentsCard.vue';
 import NotificationBar from "@/components/NotificationBar.vue";
+import DocumentDetailsModal from "@/components/DocumentDetailsModal.vue";
 
 
 // Registrar los componentes necesarios de Chart.js
@@ -26,7 +27,12 @@ const props = defineProps({
   titulo2: String,
   latestUsers: Object,
 });
-
+//checar la relacion archivos
+onMounted(() => {
+  props.documentosLegal.data.forEach((doc, index) => {
+    console.log(`Archivos del  documento #${index + 1}:`, doc.archivos);
+  });
+});
 
 // Contar total de documentos
 const totalDocumentosTecnicos = computed(() => props.documentos.total);
@@ -41,34 +47,25 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
       <SectionTitleLineWithButton title="Bienvenido al Dashboard de Administrador" main class="mb-8" />
     </SectionMain>
 
-      <NotificationBar v-if="$page.props.flash.success" color="success" :icon="mdiInformation" :outline="false">
-            {{ $page.props.flash.success }}
-        </NotificationBar>
+    <NotificationBar v-if="$page.props.flash.success" color="success" :icon="mdiInformation" :outline="false">
+      {{ $page.props.flash.success }}
+    </NotificationBar>
 
-        <NotificationBar v-if="$page.props.flash.error" color="danger" :icon="mdiInformation" :outline="false">
-            {{ $page.props.flash.error }}
-        </NotificationBar>
+    <NotificationBar v-if="$page.props.flash.error" color="danger" :icon="mdiInformation" :outline="false">
+      {{ $page.props.flash.error }}
+    </NotificationBar>
 
     <!-- Estadísticas Principales -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
       <!-- Usuarios Registrados -->
-        <UsersCard 
-         :latest-users="latestUsers" 
-         :users="users"         
-         title="Detalles de usuarios registrados"
-        />   
-      
+      <UsersCard :latest-users="latestUsers" :users="users" title="Detalles de usuarios registrados" />
+
 
       <!-- Documentos Técnicos -->
-      <TechnicalDocumentsCard 
-      :count="totalDocumentosTecnicos" 
-      tooltip="Haz clic para crear un nuevo documento técnico"
-      />
+      <TechnicalDocumentsCard :count="totalDocumentosTecnicos"
+        tooltip="Haz clic para crear un nuevo documento técnico" />
 
-      <LegalDocumentsCard 
-      :count="totalDocumentosLegales" 
-      tooltip="Haz clic para crear un nuevo documento legal"
-    />
+      <LegalDocumentsCard :count="totalDocumentosLegales" tooltip="Haz clic para crear un nuevo documento legal" />
 
 
     </div>
@@ -103,7 +100,7 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Vigencia</th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Estado</th>
+                  Ver</th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -139,12 +136,7 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <span :class="{
-                    'bg-red-100 text-red-800': documento.dias_restantes <= 7,
-                    'bg-red-200 text-red-800': documento.dias_restantes > 0 && documento.dias_restantes <= 7,
-                    'bg-green-100 text-green-800': documento.dias_restantes > 7
-                  }" class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full">
-                    {{ documento.dias_restantes <= 0 ? 'Vencido' : `${documento.dias_restantes} días` }} </span>
+                  <DocumentDetailsModal :documento="documento" :tipo-documento="'documento'" />
                 </td>
               </tr>
             </tbody>
@@ -182,7 +174,7 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Vigencia</th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Estado</th>
+                  Ver</th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -218,12 +210,8 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <span :class="{
-                    'bg-red-100 text-red-800': documento.dias_restantes <= 7,
-                    'bg-red-200 text-red-800': documento.dias_restantes > 0 && documento.dias_restantes <= 7,
-                    'bg-green-100 text-green-800': documento.dias_restantes > 7
-                  }" class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full">
-                    {{ documento.dias_restantes <= 0 ? 'Vencido' : `${documento.dias_restantes} días` }} </span>
+                  <DocumentDetailsModal :documento="documento" :tipo-documento="'documento-legal'" />
+
                 </td>
               </tr>
             </tbody>

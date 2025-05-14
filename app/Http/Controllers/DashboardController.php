@@ -18,7 +18,7 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         if ($user->hasRole('Admin')) {
-            $documentos = Documento::with(['empresa', 'tipoDeDocumento', 'estado', 'departamento', 'modalidades'])
+            $documentos = Documento::with(['empresa', 'tipoDeDocumento', 'estado', 'departamento', 'modalidades','archivos'])
                 -> where('nombre_documento', 'Documento Técnico')
                 ->orderBy('fecha_vigencia', 'asc')
                 ->paginate(10)
@@ -35,7 +35,7 @@ class DashboardController extends Controller
                 )
                 ->withQueryString();
 
-            $documentosLegal = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento'])
+            $documentosLegal = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento','archivos'])
                 ->where('nombre_documento', 'Documento Legal')
                 ->orderBy('fecha_vigencia', 'asc')
                 ->paginate(10)
