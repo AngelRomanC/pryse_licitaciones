@@ -2,6 +2,7 @@
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\DocumentoLegalController;
 use App\Http\Controllers\EmpresaController;
+use App\Http\Controllers\LicitacionController;
 use App\Http\Controllers\ModalidadController;
 use App\Http\Controllers\TipoDeDocumentoController;
 use App\Http\Controllers\DocumentoController;
@@ -95,8 +96,8 @@ Route::middleware('auth')->group(function () {
     // routes/web.php
     Route::get('/documento/{documento}/descargar-todos', [DocumentoController::class, 'descargarTodos'])->name('documento.descargar-todos');
     Route::get('/documento-legal/{documento}/descargar-todos', [DocumentoLegalController::class, 'descargarTodos'])->name('documento-legal.descargar-todos');
-
     
+    Route::resource('licitaciones', LicitacionController::class);
 });
 
 require __DIR__ . '/auth.php';
