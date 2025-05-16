@@ -141,7 +141,7 @@ export default [
     role: "Usuario",
   }, 
   {
-    href:"/licitaciones",
+    href:"/licitacion",
     label: "Licitaciones",
     icon: mdiGavel ,
     role: "Usuario",

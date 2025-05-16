@@ -28,7 +28,7 @@ const form = useForm({
 });
 
 const handleSubmit = () => {
-    form.post(route('licitaciones.store'), {
+    form.post(route('licitacion.store'), {
         forceFormData: true,
     });
 };
@@ -136,7 +136,7 @@ const handleSubmit = () => {
                         :loading="form.processing"
                     />
                     <BaseButton 
-                        :href="route('licitaciones.index')" 
+                        :href="route('licitacion.index')" 
                         type="button" 
                         color="danger" 
                         outline 

@@ -16,7 +16,7 @@ class LicitacionController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->routeName = 'documento.';
+        $this->routeName = 'licitacion.';
         // $this->middleware("permission:{$this->module}.index")->only(['index', 'show']);
         // $this->middleware("permission:{$this->module}.store")->only(['store', 'create']);
         // $this->middleware("permission:{$this->module}.update")->only(['edit', 'update']);

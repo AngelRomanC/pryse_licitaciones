@@ -1,6 +1,5 @@
-<!-- components/MultiSelectEstados.vue -->
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { ref, watch, computed, onMounted, onUnmounted } from 'vue';
 
 const props = defineProps({
   estados: {
@@ -16,9 +15,10 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue']);
 const isOpen = ref(false);
 const searchTerm = ref('');
+const dropdownRef = ref(null);
 
 const filteredEstados = computed(() => {
-  return props.estados.filter(estado => 
+  return props.estados.filter(estado =>
     estado.name.toLowerCase().includes(searchTerm.value.toLowerCase())
   );
 });
@@ -26,13 +26,13 @@ const filteredEstados = computed(() => {
 const toggleEstado = (estadoId) => {
   const newValue = [...props.modelValue];
   const index = newValue.indexOf(estadoId);
-  
+
   if (index === -1) {
     newValue.push(estadoId);
   } else {
     newValue.splice(index, 1);
   }
-  
+
   emit('update:modelValue', newValue);
 };
 
@@ -42,12 +42,27 @@ const selectedEstadosNames = computed(() => {
     .map(estado => estado.name)
     .join(', ');
 });
+
+// Cerrar el dropdown al hacer clic fuera
+const handleClickOutside = (event) => {
+  if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
+    isOpen.value = false;
+  }
+};
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
 </script>
 
 <template>
-  <div class="relative">
+  <div class="relative" ref="dropdownRef">
     <label class="block text-sm font-medium text-gray-700 mb-1">Estados</label>
-    <div 
+    <div
       @click="isOpen = !isOpen"
       class="cursor-pointer w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-left shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
     >
@@ -64,7 +79,7 @@ const selectedEstadosNames = computed(() => {
       leave-from-class="transform opacity-100 scale-100"
       leave-to-class="transform opacity-0 scale-95"
     >
-      <div 
+      <div
         v-show="isOpen"
         class="absolute z-10 mt-1 w-full rounded-md bg-white shadow-lg"
       >
