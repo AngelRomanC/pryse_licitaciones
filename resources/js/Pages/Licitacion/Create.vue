@@ -10,12 +10,19 @@ import FormControl from "@/components/FormControl.vue";
 import { mdiBallotOutline, mdiOfficeBuilding, mdiFileDocument, mdiPlus,mdiMapMarker, mdiCalendar } from "@mdi/js";
 import FileUploader from '@/Components/FileUploader.vue';
 import CatalogoRedirectButton from '@/Components/CatalogoRedirectButton.vue';
+
 import MultiSelectEstados from '@/Components/MultiSelectEstados.vue';
+import TransferList  from '@/Components/TransferList.vue';
+
 
 
 const props = defineProps({
     empresas: Array,
     estados: Array,
+    routeName: String,
+    documentos_tecnicos: Array,
+    documentos_legales: Array,
+
 });
 
 const form = useForm({
@@ -84,46 +91,48 @@ const handleSubmit = () => {
 
                         />
                     </div>
-                </FormField>
+                </FormField>              
 
-                <!-- Estados -->
                 <FormField label="Estados" :error="form.errors.estados">
-                    <FormControl
-                        v-model="form.estados"
-                        :options="estados"
-                        type="multiselect"
-                        label-key="nombre"
-                        value-key="id"
-                        :icon="mdiMapMarker"
-                        placeholder="Seleccione estados"
-                        required
-                    />
-                </FormField>
-
-
-
                   <MultiSelectEstados 
                     v-model="form.estados"
                     :estados="estados"
                     />
+                </FormField>
+
+                <TransferList :estados="estados" />
+
+               
+
 
                 <!-- Documentos Legales -->
-                <FileUploader 
-                    label="Documentos Legales" 
-                    v-model="form.documentos_legales"
-                    :error="form.errors.documentos_legales"
-                    accept=".pdf,.doc,.docx"
-                    multiple
-                />
+                <FormField label="Documentos Legales" :error="form.errors.documentos_legales">
+                    <FormControl
+                        v-model="form.documentos_legales"
+                        :options="props.documentos_legales"
+                        type="multiselect"
+                        label-key="name"
+                        value-key="id"
+                        :icon="mdiFileDocument"
+                        placeholder="Seleccione documentos legales"
+                    />
+                </FormField>
 
                 <!-- Documentos Técnicos -->
-                <FileUploader 
-                    label="Documentos Técnicos" 
-                    v-model="form.documentos_tecnicos"
-                    :error="form.errors.documentos_tecnicos"
-                    accept=".pdf,.doc,.docx"
-                    multiple
-                />
+                <FormField label="Documentos Técnicos" :error="form.errors.documentos_tecnicos">
+                    <FormControl
+                        v-model="form.documentos_tecnicos"
+                        :options="props.documentos_tecnicos"
+                        type="multiselect"
+                        label-key="name"
+                        value-key="id"
+                        :icon="mdiFileDocument"
+                        placeholder="Seleccione documentos técnicos"
+                    />
+                </FormField>
+
+                
+
             </div>
 
             <template #footer>

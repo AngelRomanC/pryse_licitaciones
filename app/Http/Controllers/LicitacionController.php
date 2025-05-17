@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Documento;
+use App\Models\DocumentoLegal;
 use App\Models\Licitacion;
 use Illuminate\Http\Request;
 use App\Models\Empresa;
@@ -24,11 +26,14 @@ class LicitacionController extends Controller
     }
     public function index()
     {
-        $licitaciones = Licitacion::with(['empresa', 'estado'])->get();
+        $licitaciones = Licitacion::with(['empresa', 'estado'])
+         ->orderBy('id', 'desc')
+            ->paginate(8)
+            ->withQueryString();
 
         return Inertia::render('Licitacion/Index', [
             'titulo' => 'Lista de Licitaciones',
-            'documentos' => $licitaciones,
+            'licitaciones' => $licitaciones,
             'routeName' => $this->routeName,
         ]);
 
@@ -37,19 +42,27 @@ class LicitacionController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
-        $empresas = Empresa::select('id', 'nombre as name')->get();
-        $estados = Estado::select('id', 'nombre as name')->get();
+  public function create()
+{
+    $empresas = Empresa::select('id', 'nombre as name')->get();
+    $estados = Estado::select('id', 'nombre as name')->get();
 
-        return Inertia::render('Licitacion/Create', [
-            'titulo' => 'Crear Documento Técnico',
-            'routeName' => $this->routeName,
-            'empresas' => $empresas,
-            'estados' => $estados,
-        ]);
-    }
+    $documentosTecnicos = Documento::where('nombre_documento', 'Documento Técnico')
+        ->select('id', 'nombre_documento as name')
+        ->get();
+
+    $documentosLegales = DocumentoLegal::where('nombre_documento', 'Documento Legal')
+        ->select('id', 'nombre_documento as name')
+        ->get();
+
+    return Inertia::render('Licitacion/Create', [
+        'empresas' => $empresas,
+        'estados' => $estados,
+        'documentos_tecnicos' => $documentosTecnicos,
+        'documentos_legales' => $documentosLegales,
+    ]);
+}
+
 
     /**
      * Store a newly created resource in storage.

@@ -53,12 +53,12 @@ const destroy = (id) => {
             {{ $page.props.flash.error }}
         </NotificationBar>
 
-        <CardBox v-if="documentos.data.length < 1">
+        <CardBox v-if="licitaciones.data.length < 1">
             <CardBoxComponentEmpty />
         </CardBox>
 
         <CardBox v-else class="mb-6" has-table>
-            <table class="w-full border-collapse border mt-4">
+           { <table class="w-full border-collapse border mt-4">
                 <thead>
                     <tr>
                         <th />
@@ -73,7 +73,7 @@ const destroy = (id) => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="documento in documentos.data" :key="documento.id">
+                    <tr v-for="documento in licitaciones.data" :key="documento.id">
                         <td class="align-items-center">
                         </td>
                         <td data-label="Nombre de Documento" class="border p-2">{{ documento.nombre_documento }}</td>
@@ -93,9 +93,9 @@ const destroy = (id) => {
                         </td>
                     </tr>
                 </tbody>
-            </table>
-            <Pagination :currentPage="documentos.current_page" :links="documentos.links"
-                :total="documentos.links.length - 2" />
+            </table>}
+            <Pagination :currentPage="licitaciones.current_page" :links="licitaciones.links"
+                :total="licitaciones.links.length - 2" />
         </CardBox>
     </LayoutMain>
 </template>

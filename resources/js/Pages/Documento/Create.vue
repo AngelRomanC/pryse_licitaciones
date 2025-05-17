@@ -43,7 +43,9 @@ const form = useForm({
 
 const handleSubmit = () => {    
     //form.post(route(`${props.routeName}store`)); // Corregida sintaxis de ruta
-    form.post(route(`${props.routeName}store`));
+        form.post(route(`${props.routeName}store`));
+
+   
 
 };
 </script>

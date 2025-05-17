@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue';
+import FormControlIcon from '@/components/FormControlIcon.vue';
 
 const props = defineProps({
   estados: {
@@ -9,6 +10,14 @@ const props = defineProps({
   modelValue: {
     type: Array,
     default: () => []
+  },
+  icon: {
+    type: String,
+    default: null
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -24,6 +33,8 @@ const filteredEstados = computed(() => {
 });
 
 const toggleEstado = (estadoId) => {
+  if (props.disabled) return;
+  
   const newValue = [...props.modelValue];
   const index = newValue.indexOf(estadoId);
 
@@ -57,18 +68,35 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside);
 });
+
+// Clases computadas para mantener consistencia con FormControl
+const controlIconH = computed(() => 'h-12');
+const inputElClass = computed(() => {
+  const base = [
+    'px-3 py-2 max-w-full focus:ring focus:outline-none border-gray-700 rounded w-full',
+    'dark:placeholder-gray-400 h-12',
+    'bg-white dark:bg-slate-800 border',
+    props.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+  ];
+
+  if (props.icon) {
+    base.push('pl-10');
+  }
+
+  return base.join(' ');
+});
 </script>
 
 <template>
   <div class="relative" ref="dropdownRef">
-    <label class="block text-sm font-medium text-gray-700 mb-1">Estados</label>
     <div
-      @click="isOpen = !isOpen"
-      class="cursor-pointer w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-left shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
+      @click="!disabled && (isOpen = !isOpen)"
+      :class="inputElClass"
     >
       <span class="block truncate">
         {{ selectedEstadosNames || 'Seleccione estados...' }}
       </span>
+      <FormControlIcon v-if="icon" :icon="icon" :h="controlIconH" />
     </div>
 
     <transition
@@ -81,14 +109,14 @@ onUnmounted(() => {
     >
       <div
         v-show="isOpen"
-        class="absolute z-10 mt-1 w-full rounded-md bg-white shadow-lg"
+        class="absolute z-10 mt-1 w-full rounded-md bg-white dark:bg-slate-800 shadow-lg border border-gray-300 dark:border-gray-600"
       >
-        <div class="p-2 border-b">
+        <div class="p-2 border-b border-gray-200 dark:border-gray-600">
           <input
             v-model="searchTerm"
             type="text"
             placeholder="Buscar estado..."
-            class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            class="w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-slate-700 dark:text-white"
           />
         </div>
         <div class="max-h-60 overflow-y-auto">
@@ -96,7 +124,7 @@ onUnmounted(() => {
             v-for="estado in filteredEstados"
             :key="estado.id"
             @click.stop="toggleEstado(estado.id)"
-            class="cursor-pointer hover:bg-indigo-50 p-2 flex items-center"
+            class="cursor-pointer hover:bg-indigo-50 dark:hover:bg-slate-700 p-2 flex items-center"
           >
             <input
               type="checkbox"
@@ -104,7 +132,7 @@ onUnmounted(() => {
               class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
               readonly
             />
-            <span class="ml-2">{{ estado.name }}</span>
+            <span class="ml-2 dark:text-white">{{ estado.name }}</span>
           </div>
         </div>
       </div>
