@@ -27,7 +27,7 @@ class LicitacionController extends Controller
     public function index()
     {
         $licitaciones = Licitacion::with(['empresa', 'estado'])
-         ->orderBy('id', 'desc')
+            ->orderBy('id', 'desc')
             ->paginate(8)
             ->withQueryString();
 
@@ -42,26 +42,49 @@ class LicitacionController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-  public function create()
-{
-    $empresas = Empresa::select('id', 'nombre as name')->get();
-    $estados = Estado::select('id', 'nombre as name')->get();
+    public function create()
+    {
+        $empresas = Empresa::select('id', 'nombre as name')->get();
+        $estados = Estado::select('id', 'nombre as name')->get();
 
-    $documentosTecnicos = Documento::where('nombre_documento', 'Documento Técnico')
-        ->select('id', 'nombre_documento as name')
-        ->get();
+        $documentosTecnicos = Documento::where('nombre_documento', 'Documento Técnico')
+            ->select('id', 'nombre_documento as name')
+            ->get();
 
-    $documentosLegales = DocumentoLegal::where('nombre_documento', 'Documento Legal')
-        ->select('id', 'nombre_documento as name')
-        ->get();
+        $documentosLegales = DocumentoLegal::where('nombre_documento', 'Documento Legal')
+            ->select('id', 'nombre_documento as name')
+            ->get();
 
-    return Inertia::render('Licitacion/Create', [
-        'empresas' => $empresas,
-        'estados' => $estados,
-        'documentos_tecnicos' => $documentosTecnicos,
-        'documentos_legales' => $documentosLegales,
-    ]);
-}
+        return Inertia::render('Licitacion/Create', [
+            'empresas' => $empresas,
+            'estados' => $estados,
+            'documentos_tecnicos' => $documentosTecnicos,
+            'documentos_legales' => $documentosLegales,
+        ]);
+    }
+
+    public function getDocumentosByEmpresa(Empresa $empresa)
+    {
+        $documentosTecnicos = $empresa->documentosTecnicos()
+            ->where('nombre_documento', 'Documento Técnico')
+            ->with(['archivos:id,documento_id,nombre_original,ruta_archivo','tipoDeDocumento:id,nombre_documento'])
+            ->select('id', 'tipo_de_documento_id')
+            ->get();
+
+        $documentosLegales = $empresa->documentosLegales()
+            ->where('nombre_documento', 'Documento Legal')
+            ->with(['archivos:id,documento_id,nombre_original,ruta_archivo', 'tipoDeDocumento:id,nombre_documento'])
+            ->select('id', 'tipo_de_documento_id')
+            ->get();
+
+        return response()->json([
+            'documentos_tecnicos' => $documentosTecnicos,
+            'documentos_legales' => $documentosLegales,
+        ]);
+    }
+
+    
+
 
 
     /**

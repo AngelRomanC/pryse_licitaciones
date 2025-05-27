@@ -13,6 +13,10 @@ import CatalogoRedirectButton from '@/Components/CatalogoRedirectButton.vue';
 
 import MultiSelectEstados from '@/Components/MultiSelectEstados.vue';
 import TransferList  from '@/Components/TransferList.vue';
+import { ref, watch } from 'vue'
+import axios from 'axios'
+import MultiSelectEmpresas  from '@/Components/MultiSelectEmpresas.vue';
+
 
 
 
@@ -28,10 +32,10 @@ const props = defineProps({
 const form = useForm({
     nombre: '',
     fecha_licitacion: '',
-    empresa_id: '',
-    estados: [],
-    documentos_legales: [],
-    documentos_tecnicos: [],
+    empresa_id: [],
+    estados: [],   
+    archivos_legales: [],    // Para el select multiple
+    archivos_tecnicos: []    // Para el select multiple
 });
 
 const handleSubmit = () => {
@@ -39,6 +43,84 @@ const handleSubmit = () => {
         forceFormData: true,
     });
 };
+
+const archivosTecnicos = ref([])
+const archivosLegales = ref([])
+
+
+
+// Escuchar cambios en empresa_id
+// watch(() => form.empresa_id, async (nuevoId) => {
+//     if (!nuevoId) return;
+
+//     const response = await axios.get(`/empresa/${nuevoId}/documentos`);
+//     const documentos = response.data.documentos_tecnicos;
+//     const documentosLegales = response.data.documentos_legales;
+
+
+//     // Recolectar todos los archivos de esos documentos
+//     archivosTecnicos.value = documentos.flatMap(doc => 
+//         doc.archivos.map(archivo => ({
+//             id: archivo.id,
+//             nombre: archivo.nombre_original,
+//             url: archivo.ruta_archivo,
+//             documento: doc.tipo_de_documento.nombre_documento
+
+//         }))
+//     );
+
+//     archivosLegales.value = documentosLegales.flatMap(doc => 
+//         doc.archivos.map(archivo => ({
+//             id: archivo.id,
+//             nombre: archivo.nombre_original,
+//             url: archivo.ruta_archivo,
+//             documento: doc.tipo_de_documento.nombre_documento
+
+//         }))
+//     );
+// });
+watch(() => form.empresa_id, async (nuevasEmpresas) => {
+  //if (!nuevasEmpresas || nuevasEmpresas.length === 0) return;
+  if (!nuevasEmpresas || nuevasEmpresas.length === 0) {
+    archivosTecnicos.value = [];
+    archivosLegales.value = [];
+    return;
+  }
+
+  archivosTecnicos.value = [];
+  archivosLegales.value = [];
+
+  for (const empresaId of nuevasEmpresas) {
+    const response = await axios.get(`/empresa/${empresaId}/documentos`);
+    const documentos = response.data.documentos_tecnicos;
+    const documentosLegales = response.data.documentos_legales;
+
+    // Agregar archivos técnicos
+    const nuevosTecnicos = documentos.flatMap(doc =>
+      doc.archivos.map(archivo => ({
+        id: archivo.id,
+        nombre: archivo.nombre_original,
+        url: archivo.ruta_archivo,
+        documento: doc.tipo_de_documento.nombre_documento
+      }))
+    );
+
+    // Agregar archivos legales
+    const nuevosLegales = documentosLegales.flatMap(doc =>
+      doc.archivos.map(archivo => ({
+        id: archivo.id,
+        nombre: archivo.nombre_original,
+        url: archivo.ruta_archivo,
+        documento: doc.tipo_de_documento.nombre_documento
+      }))
+    );
+
+    archivosTecnicos.value.push(...nuevosTecnicos);
+    archivosLegales.value.push(...nuevosLegales);
+  }
+});
+
+
 </script>
 
 <template>
@@ -68,18 +150,16 @@ const handleSubmit = () => {
                 </FormField>
 
                 <!-- Empresa -->
-                <FormField label="Empresa" :error="form.errors.empresa_id">
+                <FormField label="Empresas" :error="form.errors.empresa_id">
                     <div class="flex items-center gap-2">
                         <div class="flex-1">
-                            <FormControl
+                          <MultiSelectEmpresas
+                                :empresas="empresas"
                                 v-model="form.empresa_id"
-                                :options="empresas"
-                                type="select"
-                                label-key="nombre"
-                                value-key="id"
                                 :icon="mdiOfficeBuilding"
-                                placeholder="Seleccione una empresa"
-                                required
+                                placeholder="Seleccione empresas participantes"
+                                search-placeholder="Buscar por nombre"
+                                no-options-text="No se encontraron empresas"
                             />
                         </div>
                         <CatalogoRedirectButton
@@ -105,31 +185,29 @@ const handleSubmit = () => {
                
 
 
-                <!-- Documentos Legales -->
-                <FormField label="Documentos Legales" :error="form.errors.documentos_legales">
-                    <FormControl
-                        v-model="form.documentos_legales"
-                        :options="props.documentos_legales"
-                        type="multiselect"
-                        label-key="name"
-                        value-key="id"
-                        :icon="mdiFileDocument"
-                        placeholder="Seleccione documentos legales"
-                    />
-                </FormField>
 
-                <!-- Documentos Técnicos -->
-                <FormField label="Documentos Técnicos" :error="form.errors.documentos_tecnicos">
-                    <FormControl
-                        v-model="form.documentos_tecnicos"
-                        :options="props.documentos_tecnicos"
-                        type="multiselect"
-                        label-key="name"
-                        value-key="id"
-                        :icon="mdiFileDocument"
-                        placeholder="Seleccione documentos técnicos"
-                    />
-                </FormField>
+
+              
+
+<select v-model="form.archivos_legales" multiple>
+  <option v-for="archivo in archivosLegales" :key="archivo.id" :value="archivo.id">
+    {{ archivo.documento }} - {{ archivo.nombre }}
+  </option>
+</select>
+
+<select v-model="form.archivos_tecnicos" multiple>
+  <option v-for="archivo in archivosTecnicos" :key="archivo.id" :value="archivo.id">
+    {{ archivo.documento }} - {{ archivo.nombre }}
+  </option>
+</select>
+
+
+
+
+
+
+
+
 
                 
 

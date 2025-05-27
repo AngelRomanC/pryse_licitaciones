@@ -98,6 +98,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/documento-legal/{documento}/descargar-todos', [DocumentoLegalController::class, 'descargarTodos'])->name('documento-legal.descargar-todos');
     
     Route::resource('licitacion', LicitacionController::class);
+    Route::get('/empresa/{empresa}/documentos', [LicitacionController::class, 'getDocumentosByEmpresa']);
+    
+
 });
 
 require __DIR__ . '/auth.php';
