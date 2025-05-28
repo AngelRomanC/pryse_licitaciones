@@ -26,8 +26,7 @@ class LicitacionController extends Controller
     }
     public function index()
     {
-        $licitaciones = Licitacion::with(['empresa', 'estado'])
-            ->orderBy('id', 'desc')
+        $licitaciones = Licitacion::orderBy('id', 'desc')
             ->paginate(8)
             ->withQueryString();
 
@@ -60,6 +59,8 @@ class LicitacionController extends Controller
             'estados' => $estados,
             'documentos_tecnicos' => $documentosTecnicos,
             'documentos_legales' => $documentosLegales,
+            'routeName' => $this->routeName,
+
         ]);
     }
 
@@ -67,7 +68,7 @@ class LicitacionController extends Controller
     {
         $documentosTecnicos = $empresa->documentosTecnicos()
             ->where('nombre_documento', 'Documento Técnico')
-            ->with(['archivos:id,documento_id,nombre_original,ruta_archivo','tipoDeDocumento:id,nombre_documento'])
+            ->with(['archivos:id,documento_id,nombre_original,ruta_archivo', 'tipoDeDocumento:id,nombre_documento'])
             ->select('id', 'tipo_de_documento_id')
             ->get();
 
@@ -83,7 +84,7 @@ class LicitacionController extends Controller
         ]);
     }
 
-    
+
 
 
 
@@ -92,7 +93,43 @@ class LicitacionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'fecha' => 'required|date',
+            'empresa_id' => 'required|array|min:1',
+            'estados' => 'required|array|min:1',
+            'archivos_legales' => 'nullable|array',
+            'archivos_tecnicos' => 'nullable|array',
+        ]);
+
+        $licitacion = Licitacion::create([
+            'nombre' => $request->nombre,
+            'fecha' => $request->fecha,
+        ]);
+
+        // Relacionar empresas
+        $licitacion->empresas()->attach($request->empresa_id);
+
+        // Relacionar estados
+        $licitacion->estados()->attach($request->estados);
+
+        // Relacionar archivos legales
+        if ($request->filled('archivos_legales')) {
+            foreach ($request->archivos_legales as $archivoId) {
+                $licitacion->archivos()->attach($archivoId, ['tipo' => 'legal']);
+            }
+        }
+
+        // Relacionar archivos técnicos
+        if ($request->filled('archivos_tecnicos')) {
+            foreach ($request->archivos_tecnicos as $archivoId) {
+                $licitacion->archivos()->attach($archivoId, ['tipo' => 'tecnico']);
+            }
+        }
+
+        return redirect()->route('licitacion.index')->with('success', 'Licitación creada correctamente.');
+
+
     }
 
     /**

@@ -44,7 +44,7 @@
   // };
 
 const redirectToCreate = () => {
-  router.get(route('documento.create', {
+  router.get(route('documento.index', {
     redirect: route('dashboard') // O el nombre correcto de tu ruta de dashboard
   }))
 };

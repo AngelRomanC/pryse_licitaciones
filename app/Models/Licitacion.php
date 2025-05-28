@@ -12,29 +12,20 @@ class Licitacion extends Model
     protected $fillable = [
         'nombre',
         'fecha',
-        'empresa_id',
-        'estado_id',
-
 
 
     ];
-    public function empresa()
+    public function empresas()
     {
-        return $this->belongsTo(Empresa::class);
+        return $this->belongsToMany(Empresa::class, 'empresa_licitacion')->withTimestamps();
     }
 
-    public function estado()
+    public function estados()
     {
-        return $this->belongsTo(Estado::class);
+        return $this->belongsToMany(Estado::class, 'estado_licitacion')->withTimestamps();
     }
-
-    public function documentosTecnicos()
+    public function archivos()
     {
-        return $this->hasMany(Documento::class);
-    }
-
-    public function documentosLegales()
-    {
-        return $this->hasMany(DocumentoLegal::class);
+        return $this->belongsToMany(DocumentoArchivo::class, 'archivo_licitacion')->withPivot('tipo')->withTimestamps();
     }
 }

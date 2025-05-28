@@ -46,7 +46,7 @@ class Documento extends Model
 
     public function modalidades()
     {
-        return $this->belongsToMany(Modalidad::class, 'documentos_modalidades') ->withTimestamps();;
+        return $this->belongsToMany(Modalidad::class, 'documentos_modalidades') ->withTimestamps();
 
     }
 

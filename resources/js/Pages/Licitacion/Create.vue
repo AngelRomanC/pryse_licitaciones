@@ -17,6 +17,11 @@ import { ref, watch } from 'vue'
 import axios from 'axios'
 import MultiSelectEmpresas  from '@/Components/MultiSelectEmpresas.vue';
 
+import TransferFiles from '@/Components/TransferFiles.vue'
+import DocumentSelector from '@/Components/DocumentSelector.vue'
+
+
+
 
 
 
@@ -31,18 +36,26 @@ const props = defineProps({
 
 const form = useForm({
     nombre: '',
-    fecha_licitacion: '',
+    fecha: '',
     empresa_id: [],
     estados: [],   
     archivos_legales: [],    // Para el select multiple
     archivos_tecnicos: []    // Para el select multiple
 });
 
-const handleSubmit = () => {
-    form.post(route('licitacion.store'), {
-        forceFormData: true,
-    });
-};
+ const handleSubmit = () => {
+     form.post(route(`${props.routeName}store`), {
+         forceFormData: true,
+     });
+ };
+
+// const handleSubmit = () => {    
+//     //form.post(route(`${props.routeName}store`)); // Corregida sintaxis de ruta
+//         form.post(route(`${props.routeName}store`));
+
+   
+
+// };
 
 const archivosTecnicos = ref([])
 const archivosLegales = ref([])
@@ -140,9 +153,9 @@ watch(() => form.empresa_id, async (nuevasEmpresas) => {
                 </FormField>
 
                 <!-- Fecha de Licitación -->
-                <FormField label="Fecha de Licitación" :error="form.errors.fecha_licitacion">
+                <FormField label="Fecha de Licitación" :error="form.errors.fecha">
                     <FormControl
-                        v-model="form.fecha_licitacion"
+                        v-model="form.fecha"
                         type="date"
                         :icon="mdiCalendar"
                         required
@@ -180,47 +193,59 @@ watch(() => form.empresa_id, async (nuevasEmpresas) => {
                     />
                 </FormField>
 
-                <TransferList :estados="estados" />
+           <!--     <TransferList :estados="estados" /> 
 
                
-
-
+          
 
 
               
 
-<select v-model="form.archivos_legales" multiple>
-  <option v-for="archivo in archivosLegales" :key="archivo.id" :value="archivo.id">
-    {{ archivo.documento }} - {{ archivo.nombre }}
-  </option>
-</select>
-
-<select v-model="form.archivos_tecnicos" multiple>
-  <option v-for="archivo in archivosTecnicos" :key="archivo.id" :value="archivo.id">
-    {{ archivo.documento }} - {{ archivo.nombre }}
-  </option>
-</select>
 
 
+<!-- Transferencias de archivos legales
+<FormField label="Documentos Legales" :error="form.errors.archivos_legales">
+  <TransferFiles
+    :archivos="archivosLegales"
+    v-model="form.archivos_legales"
+  />
+</FormField>
 
-
-
-
-
+<!-- Transferencias de archivos técnicos 
+<FormField label="Documentos Técnicos" :error="form.errors.archivos_tecnicos">
+  <TransferFiles
+    :archivos="archivosTecnicos"
+    v-model="form.archivos_tecnicos"
+  />
+</FormField>  -->
 
 
                 
 
             </div>
 
+
+
+<FormField label="Documentos Requeridos">
+  <DocumentSelector
+    :documentosTecnicos="archivosTecnicos"
+    :documentosLegales="archivosLegales"
+    v-model:modelValueTecnicos="form.archivos_tecnicos"
+    v-model:modelValueLegales="form.archivos_legales"
+  />
+</FormField>
+
+
+
+
+
             <template #footer>
                 <BaseButtons>
                     <BaseButton 
+                      @click="handleSubmit"
                         type="submit" 
                         color="info" 
-                        label="Crear Licitación"
-                        :disabled="form.processing"
-                        :loading="form.processing"
+                        outline label="Crear"
                     />
                     <BaseButton 
                         :href="route('licitacion.index')" 

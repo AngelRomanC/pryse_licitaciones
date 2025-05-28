@@ -58,12 +58,12 @@ const destroy = (id) => {
         </CardBox>
 
         <CardBox v-else class="mb-6" has-table>
-           { <table class="w-full border-collapse border mt-4">
+           <table class="w-full border-collapse border mt-4">
                 <thead>
                     <tr>
                         <th />
-                        <th class="border p-2">Nombre de Documento</th>
-                        <th class="border p-2">Empresa</th>
+                        <th class="border p-2">Nombre de Licitación</th>
+                        <th class="border p-2">Fecha</th>
                         <th class="border p-2">Documento</th>
                         <th class="border p-2">Departamento</th>
                         <th class="border p-2">Revalidación</th>
@@ -76,13 +76,10 @@ const destroy = (id) => {
                     <tr v-for="documento in licitaciones.data" :key="documento.id">
                         <td class="align-items-center">
                         </td>
-                        <td data-label="Nombre de Documento" class="border p-2">{{ documento.nombre_documento }}</td>
-                        <td data-label="Empresa" class="border p-2">{{ documento.empresa.nombre}}</td>
-                        <td data-label="Documento" class="border p-2">{{ documento.tipo_de_documento.nombre_documento}}</td>
-                        <td data-label="Departamento" class="border p-2">{{ documento.departamento.nombre_departamento}}</td>
-                        <td data-label="Fecha Revalidación" class="border p-2">{{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }}</td>
-                        <td data-label="Fecha Vigencia" class="border p-2">{{ moment(documento.fecha_vigencia).format("DD/MM/YYYY") }}</td>               
-                     
+                        <td data-label="Nombre Licitación" class="border p-2">{{ documento.nombre }}</td>
+                        <td data-label="Fecha" class="border p-2">{{ documento.fecha}}</td>
+
+                       
                         <td class="before:hidden lg:w-1 whitespace-nowrap">
                             <BaseButtons type="justify-start lg:justify-end" no-wrap>
                                 <BaseButton color="info" :icon="mdiTagEdit" small
@@ -93,7 +90,7 @@ const destroy = (id) => {
                         </td>
                     </tr>
                 </tbody>
-            </table>}
+            </table>
             <Pagination :currentPage="licitaciones.current_page" :links="licitaciones.links"
                 :total="licitaciones.links.length - 2" />
         </CardBox>

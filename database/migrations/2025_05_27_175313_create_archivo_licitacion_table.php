@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('licitacions', function (Blueprint $table) {
+        Schema::create('archivo_licitacion', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->date('fecha');
-            // $table->foreignId('empresa_id')->constrained()->onDelete('cascade');
-            // $table->foreignId('estado_id')->constrained()->onDelete('cascade');          
-
+            $table->foreignId('licitacion_id')->constrained()->onDelete('cascade');
+            $table->foreignId('documento_archivo_id')->constrained()->onDelete('cascade');
+            $table->enum('tipo', ['tecnico', 'legal']); // Para diferenciar tipo de documento
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('licitacions');
+        Schema::dropIfExists('archivo_licitacion');
     }
 };
