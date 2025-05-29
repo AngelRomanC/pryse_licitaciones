@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Documento;
 use App\Models\DocumentoLegal;
 use App\Models\Licitacion;
+use App\Models\Modalidad;
 use Illuminate\Http\Request;
 use App\Models\Empresa;
 use App\Models\Estado;
@@ -45,21 +46,25 @@ class LicitacionController extends Controller
     {
         $empresas = Empresa::select('id', 'nombre as name')->get();
         $estados = Estado::select('id', 'nombre as name')->get();
+        $modalidades = Modalidad::select('id', 'nombre_modalidad as name')->get();
 
-        $documentosTecnicos = Documento::where('nombre_documento', 'Documento Técnico')
-            ->select('id', 'nombre_documento as name')
-            ->get();
 
-        $documentosLegales = DocumentoLegal::where('nombre_documento', 'Documento Legal')
-            ->select('id', 'nombre_documento as name')
-            ->get();
+
+        // $documentosTecnicos = Documento::where('nombre_documento', 'Documento Técnico')
+        //     ->select('id', 'nombre_documento as name')
+        //     ->get();
+
+        // $documentosLegales = DocumentoLegal::where('nombre_documento', 'Documento Legal')
+        //     ->select('id', 'nombre_documento as name')
+        //     ->get();
 
         return Inertia::render('Licitacion/Create', [
             'empresas' => $empresas,
             'estados' => $estados,
-            'documentos_tecnicos' => $documentosTecnicos,
-            'documentos_legales' => $documentosLegales,
+            // 'documentos_tecnicos' => $documentosTecnicos,
+            // 'documentos_legales' => $documentosLegales,
             'routeName' => $this->routeName,
+            'modalidades' => $modalidades,
 
         ]);
     }
@@ -100,6 +105,8 @@ class LicitacionController extends Controller
             'estados' => 'required|array|min:1',
             'archivos_legales' => 'nullable|array',
             'archivos_tecnicos' => 'nullable|array',
+            'modalidades_id' => 'required|array|min:1',
+
         ]);
 
         $licitacion = Licitacion::create([
@@ -112,6 +119,9 @@ class LicitacionController extends Controller
 
         // Relacionar estados
         $licitacion->estados()->attach($request->estados);
+
+        $licitacion->modalidades()->attach($request->modalidades_id);
+
 
         // Relacionar archivos legales
         if ($request->filled('archivos_legales')) {

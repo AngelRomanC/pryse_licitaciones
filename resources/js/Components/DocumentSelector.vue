@@ -5,35 +5,42 @@
       <h3 class="section-title">Documentos Técnicos</h3>
       <div class="document-list">
         <div 
-          v-for="doc in groupedTecnicos" 
-          :key="'tec-'+doc.tipo"
-          class="document-group"
+          v-for="empresa in empresasConDocumentosTecnicos" 
+          :key="'tec-emp-'+empresa.id"
+          class="empresa-group"
         >
-          <h4 class="document-type">{{ doc.tipo }}</h4>
-          <div class="document-items">
-            <label 
-              v-for="archivo in doc.archivos" 
-              :key="'tecnico-'+archivo.id"
-              class="document-item"
-            >
-              <input
-                type="checkbox"
-                :value="archivo.id"
-                v-model="selectedTecnicos"
-                class="document-checkbox"
+          <h4 class="empresa-name">{{ empresa.nombre }}</h4>
+          <div 
+            v-for="doc in empresa.documentos" 
+            :key="'tec-'+empresa.id+'-'+doc.tipo"
+            class="document-group"
+          >
+            <h5 class="document-type">{{ doc.tipo }}</h5>
+            <div class="document-items">
+              <label 
+                v-for="archivo in doc.archivos" 
+                :key="'tecnico-'+archivo.id"
+                class="document-item"
               >
-              <span class="document-name">{{ archivo.nombre }}</span>
-              <button 
-                @click.stop="openModal(archivo.url)"
-                class="document-preview"
-                type="button"
-              >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-              </button>
-            </label>
+                <input
+                  type="checkbox"
+                  :value="archivo.id"
+                  v-model="selectedTecnicos"
+                  class="document-checkbox"
+                >
+                <span class="document-name">{{ archivo.nombre }}</span>
+                <button 
+                  @click.stop="openModal(archivo.url)"
+                  class="document-preview"
+                  type="button"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                </button>
+              </label>
+            </div>
           </div>
         </div>
       </div>
@@ -44,35 +51,42 @@
       <h3 class="section-title">Documentos Legales</h3>
       <div class="document-list">
         <div 
-          v-for="doc in groupedLegales" 
-          :key="'leg-'+doc.tipo"
-          class="document-group"
+          v-for="empresa in empresasConDocumentosLegales" 
+          :key="'leg-emp-'+empresa.id"
+          class="empresa-group"
         >
-          <h4 class="document-type">{{ doc.tipo }}</h4>
-          <div class="document-items">
-            <label 
-              v-for="archivo in doc.archivos" 
-              :key="'legal-'+archivo.id"
-              class="document-item"
-            >
-              <input
-                type="checkbox"
-                :value="archivo.id"
-                v-model="selectedLegales"
-                class="document-checkbox"
+          <h4 class="empresa-name">{{ empresa.nombre }}</h4>
+          <div 
+            v-for="doc in empresa.documentos" 
+            :key="'leg-'+empresa.id+'-'+doc.tipo"
+            class="document-group"
+          >
+            <h5 class="document-type">{{ doc.tipo }}</h5>
+            <div class="document-items">
+              <label 
+                v-for="archivo in doc.archivos" 
+                :key="'legal-'+archivo.id"
+                class="document-item"
               >
-              <span class="document-name">{{ archivo.nombre }}</span>
-              <button 
-                @click.stop="openModal(archivo.url)"
-                class="document-preview"
-                type="button"
-              >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-              </button>
-            </label>
+                <input
+                  type="checkbox"
+                  :value="archivo.id"
+                  v-model="selectedLegales"
+                  class="document-checkbox"
+                >
+                <span class="document-name">{{ archivo.nombre }}</span>
+                <button 
+                  @click.stop="openModal(archivo.url)"
+                  class="document-preview"
+                  type="button"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                </button>
+              </label>
+            </div>
           </div>
         </div>
       </div>
@@ -114,15 +128,18 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
+import axios from 'axios';
 
 const props = defineProps({
-  documentosTecnicos: {
+  empresas: {
     type: Array,
+    required: true,
     default: () => []
   },
-  documentosLegales: {
+  modelValueEmpresas: {
     type: Array,
+    required: true,
     default: () => []
   },
   modelValueTecnicos: {
@@ -135,7 +152,7 @@ const props = defineProps({
   },
   baseUrl: {
     type: String,
-    default: '/storage/' // Ruta base donde se almacenan los documentos
+    default: '/storage/'
   }
 });
 
@@ -144,40 +161,156 @@ const emit = defineEmits([
   'update:modelValueLegales'
 ]);
 
-// Estado del modal
+// Datos reactivos
+const archivosTecnicos = ref([]);
+const archivosLegales = ref([]);
 const showModal = ref(false);
 const currentDocument = ref(null);
 
-// Agrupar documentos por tipo (igual que antes)
-const groupedTecnicos = computed(() => {
-  const groups = {};
-  props.documentosTecnicos.forEach(archivo => {
-    if (!groups[archivo.documento]) {
-      groups[archivo.documento] = [];
+// Watcher para controlar cambios en las empresas seleccionadas
+watch(() => props.modelValueEmpresas, async (nuevasEmpresas, oldEmpresas) => {
+  // Si no hay empresas seleccionadas, limpiar todo
+  if (!nuevasEmpresas || nuevasEmpresas.length === 0) {
+    archivosTecnicos.value = [];
+    archivosLegales.value = [];
+    emit('update:modelValueTecnicos', []);
+    emit('update:modelValueLegales', []);
+    return;
+  }
+
+  // Obtener empresas que se eliminaron
+  const empresasRemovidas = oldEmpresas?.filter(e => !nuevasEmpresas.includes(e)) || [];
+  
+  // Si solo estamos agregando empresas (no quitando), no limpiar selecciones
+  if (empresasRemovidas.length === 0) {
+    // Solo cargar documentos de las nuevas empresas (las que no estaban antes)
+    const nuevasEmpresasACargar = oldEmpresas 
+      ? nuevasEmpresas.filter(e => !oldEmpresas.includes(e))
+      : nuevasEmpresas;
+    
+    for (const empresaId of nuevasEmpresasACargar) {
+      await cargarDocumentosEmpresa(empresaId);
     }
-    groups[archivo.documento].push(archivo);
+    return;
+  }
+
+  // Si estamos quitando empresas:  
+  // 1. Primero cargar todos los documentos de las empresas actuales
+  archivosTecnicos.value = [];
+  archivosLegales.value = [];
+  
+  for (const empresaId of nuevasEmpresas) {
+    await cargarDocumentosEmpresa(empresaId);
+  }
+
+  // 2. Filtrar las selecciones para mantener solo las de empresas que siguen seleccionadas
+  if (props.modelValueTecnicos.length > 0) {
+    const archivosTecnicosEmpresasActuales = archivosTecnicos.value.map(a => a.id);
+    emit('update:modelValueTecnicos', props.modelValueTecnicos.filter(
+      id => archivosTecnicosEmpresasActuales.includes(id)
+    ));
+  }
+
+  if (props.modelValueLegales.length > 0) {
+    const archivosLegalesEmpresasActuales = archivosLegales.value.map(a => a.id);
+    emit('update:modelValueLegales', props.modelValueLegales.filter(
+      id => archivosLegalesEmpresasActuales.includes(id)
+    ));
+  }
+}, { immediate: true });
+
+// Función para cargar documentos de una empresa
+async function cargarDocumentosEmpresa(empresaId) {
+  const empresa = props.empresas.find(e => e.id === empresaId);
+  const response = await axios.get(`/empresa/${empresaId}/documentos`);
+  const documentos = response.data.documentos_tecnicos;
+  const documentosLegales = response.data.documentos_legales;
+
+  const nuevosTecnicos = documentos.flatMap(doc =>
+    doc.archivos.map(archivo => ({
+      id: archivo.id,
+      nombre: archivo.nombre_original,
+      url: archivo.ruta_archivo,
+      documento: doc.tipo_de_documento.nombre_documento,
+      empresa_id: empresaId,
+      empresa_nombre: empresa?.name || empresa?.nombre || 'Empresa desconocida'
+    }))
+  );
+
+  const nuevosLegales = documentosLegales.flatMap(doc =>
+    doc.archivos.map(archivo => ({
+      id: archivo.id,
+      nombre: archivo.nombre_original,
+      url: archivo.ruta_archivo,
+      documento: doc.tipo_de_documento.nombre_documento,
+      empresa_id: empresaId,
+      empresa_nombre: empresa?.name || empresa?.nombre || 'Empresa desconocida'
+    }))
+  );
+
+  archivosTecnicos.value.push(...nuevosTecnicos);
+  archivosLegales.value.push(...nuevosLegales);
+}
+
+// Agrupar documentos técnicos por empresa y luego por tipo
+const empresasConDocumentosTecnicos = computed(() => {
+  const empresasMap = {};
+  
+  archivosTecnicos.value.forEach(archivo => {
+    if (!empresasMap[archivo.empresa_id]) {
+      empresasMap[archivo.empresa_id] = {
+        id: archivo.empresa_id,
+        nombre: archivo.empresa_nombre,
+        documentos: {}
+      };
+    }
+    
+    if (!empresasMap[archivo.empresa_id].documentos[archivo.documento]) {
+      empresasMap[archivo.empresa_id].documentos[archivo.documento] = [];
+    }
+    
+    empresasMap[archivo.empresa_id].documentos[archivo.documento].push(archivo);
   });
-  return Object.keys(groups).map(tipo => ({
-    tipo,
-    archivos: groups[tipo]
+  
+  return Object.values(empresasMap).map(empresa => ({
+    ...empresa,
+    documentos: Object.keys(empresa.documentos).map(tipo => ({
+      tipo,
+      archivos: empresa.documentos[tipo]
+    }))
   }));
 });
 
-const groupedLegales = computed(() => {
-  const groups = {};
-  props.documentosLegales.forEach(archivo => {
-    if (!groups[archivo.documento]) {
-      groups[archivo.documento] = [];
+// Agrupar documentos legales por empresa y luego por tipo
+const empresasConDocumentosLegales = computed(() => {
+  const empresasMap = {};
+  
+  archivosLegales.value.forEach(archivo => {
+    if (!empresasMap[archivo.empresa_id]) {
+      empresasMap[archivo.empresa_id] = {
+        id: archivo.empresa_id,
+        nombre: archivo.empresa_nombre,
+        documentos: {}
+      };
     }
-    groups[archivo.documento].push(archivo);
+    
+    if (!empresasMap[archivo.empresa_id].documentos[archivo.documento]) {
+      empresasMap[archivo.empresa_id].documentos[archivo.documento] = [];
+    }
+    
+    empresasMap[archivo.empresa_id].documentos[archivo.documento].push(archivo);
   });
-  return Object.keys(groups).map(tipo => ({
-    tipo,
-    archivos: groups[tipo]
+  
+  return Object.values(empresasMap).map(empresa => ({
+    ...empresa,
+    documentos: Object.keys(empresa.documentos).map(tipo => ({
+      tipo,
+      archivos: empresa.documentos[tipo]
+    }))
   }));
 });
 
-// Modelos para los checkboxes (igual que antes)
+// Modelos para los checkboxes
 const selectedTecnicos = computed({
   get: () => props.modelValueTecnicos,
   set: (value) => emit('update:modelValueTecnicos', value)
@@ -205,7 +338,7 @@ const getDocumentUrl = (path) => {
 </script>
 
 <style scoped>
-/* Estilos anteriores del document-selector */
+/* Estilos del componente (igual que antes) */
 .document-selector {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -213,31 +346,33 @@ const getDocumentUrl = (path) => {
   margin-top: 1.5rem;
 }
 
-.document-section {
-  border: 1px solid #e5e7eb;
+.empresa-group {
+  margin-bottom: 1.5rem;
+  border: 1px solid #e2e8f0;
   border-radius: 0.5rem;
   padding: 1rem;
-  background-color: #f9fafb;
+  background-color: #f7fafc;
 }
 
-.section-title {
-  font-size: 1.125rem;
+.empresa-name {
+  font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 1rem;
-  color: #111827;
+  color: #2d3748;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .document-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+  margin-left: 0.5rem;
 }
 
 .document-type {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #4b5563;
+  color: #4a5568;
   margin-bottom: 0.5rem;
-  padding-bottom: 0.25rem;
-  border-bottom: 1px dashed #d1d5db;
 }
 
 .document-items {
@@ -288,7 +423,6 @@ const getDocumentUrl = (path) => {
   color: #2563eb;
 }
 
-/* Estilos del modal */
 .document-modal {
   position: fixed;
   top: 0;

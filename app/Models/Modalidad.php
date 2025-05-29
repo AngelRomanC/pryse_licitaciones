@@ -11,7 +11,12 @@ class Modalidad extends Model
     protected $fillable = ['nombre_modalidad'];
     public function documentos()
 {
-    return $this->belongsToMany(Documento::class, 'documentos_modalidades') ->withTimestamps();;
+    return $this->belongsToMany(Documento::class, 'documentos_modalidades') ->withTimestamps();
 }
+public function licitaciones()
+{
+    return $this->belongsToMany(Licitacion::class);
+}
+
 
 }

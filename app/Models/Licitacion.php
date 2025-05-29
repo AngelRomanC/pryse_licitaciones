@@ -28,4 +28,10 @@ class Licitacion extends Model
     {
         return $this->belongsToMany(DocumentoArchivo::class, 'archivo_licitacion')->withPivot('tipo')->withTimestamps();
     }
+
+    public function modalidades()
+    {
+        return $this->belongsToMany(Modalidad::class, 'modalidad_licitacion')->withTimestamps();
+    }
+
 }
