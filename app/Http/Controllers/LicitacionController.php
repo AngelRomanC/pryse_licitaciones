@@ -10,7 +10,8 @@ use Illuminate\Http\Request;
 use App\Models\Empresa;
 use App\Models\Estado;
 use Inertia\Inertia;
-
+use Illuminate\Support\Facades\Storage;
+use ZipArchive;
 
 class LicitacionController extends Controller
 {
@@ -25,9 +26,15 @@ class LicitacionController extends Controller
         // $this->middleware("permission:{$this->module}.update")->only(['edit', 'update']);
         // $this->middleware("permission:{$this->module}.delete")->only(['destroy']);
     }
-    public function index()
+    public function index(Request $request)
     {
-        $licitaciones = Licitacion::orderBy('id', 'desc')
+        $query = Licitacion::query();
+
+        if ($request->filled('search')) {
+            $query->where('nombre', 'like', '%' . $request->search . '%');
+        }
+
+        $licitaciones = $query->orderBy('id', 'desc')
             ->paginate(8)
             ->withQueryString();
 
@@ -35,6 +42,8 @@ class LicitacionController extends Controller
             'titulo' => 'Lista de Licitaciones',
             'licitaciones' => $licitaciones,
             'routeName' => $this->routeName,
+            'filters' => $request->only('search'), // <- para que Vue sepa el valor actual del filtro
+
         ]);
 
     }
@@ -48,21 +57,9 @@ class LicitacionController extends Controller
         $estados = Estado::select('id', 'nombre as name')->get();
         $modalidades = Modalidad::select('id', 'nombre_modalidad as name')->get();
 
-
-
-        // $documentosTecnicos = Documento::where('nombre_documento', 'Documento Técnico')
-        //     ->select('id', 'nombre_documento as name')
-        //     ->get();
-
-        // $documentosLegales = DocumentoLegal::where('nombre_documento', 'Documento Legal')
-        //     ->select('id', 'nombre_documento as name')
-        //     ->get();
-
         return Inertia::render('Licitacion/Create', [
             'empresas' => $empresas,
             'estados' => $estados,
-            // 'documentos_tecnicos' => $documentosTecnicos,
-            // 'documentos_legales' => $documentosLegales,
             'routeName' => $this->routeName,
             'modalidades' => $modalidades,
 
@@ -112,6 +109,8 @@ class LicitacionController extends Controller
         $licitacion = Licitacion::create([
             'nombre' => $request->nombre,
             'fecha' => $request->fecha,
+            'ruta_expediente' => '', // o algo como 'pendiente'
+
         ]);
 
         // Relacionar empresas
@@ -121,7 +120,6 @@ class LicitacionController extends Controller
         $licitacion->estados()->attach($request->estados);
 
         $licitacion->modalidades()->attach($request->modalidades_id);
-
 
         // Relacionar archivos legales
         if ($request->filled('archivos_legales')) {
@@ -136,6 +134,8 @@ class LicitacionController extends Controller
                 $licitacion->archivos()->attach($archivoId, ['tipo' => 'tecnico']);
             }
         }
+
+        $this->generarZipLicitacion($licitacion);
 
         return redirect()->route('licitacion.index')->with('success', 'Licitación creada correctamente.');
 
@@ -173,4 +173,56 @@ class LicitacionController extends Controller
     {
         //
     }
+
+    public function generarZipLicitacion(Licitacion $licitacion)
+    {
+        $folderName = "expedientes/licitacion_{$licitacion->id}";
+        Storage::makeDirectory($folderName);
+
+        $zip = new ZipArchive;
+        // $folderName = "expedientes/licitacion_{$licitacion->nombre}";
+        $zipPath = storage_path("app/{$folderName}.zip");
+
+        // Crear ZIP
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
+            foreach ($licitacion->empresas as $empresa) {
+                foreach (['legal', 'tecnico'] as $tipo) {
+                    $archivos = $licitacion->archivos()->wherePivot('tipo', $tipo)->get();
+
+                    foreach ($archivos as $archivo) {
+                        $ruta = $archivo->ruta_archivo;
+                        $nombreEmpresa = $empresa->nombre;
+                        $tipoDocumento = $archivo->documento->tipo;
+                        $subtipo = $archivo->tipo === 'principal' ? 'principales' : 'anexos';
+
+                        $pathDentroZip = "{$nombreEmpresa}/{$tipo}s/{$tipoDocumento}/{$subtipo}/" . basename($ruta);
+                        //$zip->addFile(storage_path("app/{$ruta}"), $pathDentroZip);
+
+                        $fullPath = storage_path("app/{$ruta}");
+
+                        if (file_exists($fullPath)) {
+                            $zip->addFile($fullPath, $pathDentroZip);
+                        }
+                    }
+                }
+            }
+
+            $zip->close();
+        }
+
+        // Guardar ruta en la base de datos
+        $licitacion->update(['ruta_expediente' => $folderName . '.zip']);
+    }
+
+    public function descargarExpediente($id)
+    {
+        $path = "expedientes/licitacion_{$id}.zip";
+
+        if (!Storage::exists($path)) {
+            abort(404, 'El archivo ZIP no existe.');
+        }
+
+        return Storage::download($path, "expediente_licitacion_{$id}.zip");
+    }
+
 }

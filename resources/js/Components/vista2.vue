@@ -1,77 +1,31 @@
 <template>
   <div class="document-selector">
-    <!-- Documentos Técnicos -->
+    <!-- Sección de documentos -->
     <div class="document-section">
-      <h3 class="section-title">Documentos Técnicos</h3>
+      <h3 class="section-title">{{ title }}</h3>
       <div class="document-list">
         <div 
-          v-for="empresa in empresasConDocumentosTecnicos" 
-          :key="'tec-emp-'+empresa.id"
+          v-for="empresa in empresasConDocumentos" 
+          :key="`${type}-emp-${empresa.id}`"
           class="empresa-group"
         >
           <h4 class="empresa-name">{{ empresa.nombre }}</h4>
           <div 
             v-for="doc in empresa.documentos" 
-            :key="'tec-'+empresa.id+'-'+doc.tipo"
+            :key="`${type}-${empresa.id}-${doc.tipo}`"
             class="document-group"
           >
             <h5 class="document-type">{{ doc.tipo }}</h5>
             <div class="document-items">
               <label 
                 v-for="archivo in doc.archivos" 
-                :key="'tecnico-'+archivo.id"
+                :key="`${type}-${archivo.id}`"
                 class="document-item"
               >
                 <input
                   type="checkbox"
                   :value="archivo.id"
-                  v-model="selectedTecnicos"
-                  class="document-checkbox"
-                >
-                <span class="document-name">{{ archivo.nombre }}</span>
-                <button 
-                  @click.stop="openModal(archivo.url)"
-                  class="document-preview"
-                  type="button"
-                >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                </button>
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Documentos Legales -->
-    <div class="document-section">
-      <h3 class="section-title">Documentos Legales</h3>
-      <div class="document-list">
-        <div 
-          v-for="empresa in empresasConDocumentosLegales" 
-          :key="'leg-emp-'+empresa.id"
-          class="empresa-group"
-        >
-          <h4 class="empresa-name">{{ empresa.nombre }}</h4>
-          <div 
-            v-for="doc in empresa.documentos" 
-            :key="'leg-'+empresa.id+'-'+doc.tipo"
-            class="document-group"
-          >
-            <h5 class="document-type">{{ doc.tipo }}</h5>
-            <div class="document-items">
-              <label 
-                v-for="archivo in doc.archivos" 
-                :key="'legal-'+archivo.id"
-                class="document-item"
-              >
-                <input
-                  type="checkbox"
-                  :value="archivo.id"
-                  v-model="selectedLegales"
+                  v-model="selectedDocuments"
                   class="document-checkbox"
                 >
                 <span class="document-name">{{ archivo.nombre }}</span>
@@ -131,6 +85,7 @@
 import { computed, ref, watch } from 'vue';
 import axios from 'axios';
 
+
 const props = defineProps({
   empresas: {
     type: Array,
@@ -142,13 +97,14 @@ const props = defineProps({
     required: true,
     default: () => []
   },
-  modelValueTecnicos: {
+  modelValue: {
     type: Array,
     default: () => []
   },
-  modelValueLegales: {
-    type: Array,
-    default: () => []
+  type: {
+    type: String,
+    required: true,
+    validator: (value) => ['tecnico', 'legal'].includes(value)
   },
   baseUrl: {
     type: String,
@@ -156,25 +112,24 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits([
-  'update:modelValueTecnicos',
-  'update:modelValueLegales'
-]);
+const emit = defineEmits(['update:modelValue']);
 
 // Datos reactivos
-const archivosTecnicos = ref([]);
-const archivosLegales = ref([]);
+const documentos = ref([]);
 const showModal = ref(false);
 const currentDocument = ref(null);
+
+// Título dinámico
+const title = computed(() => 
+  props.type === 'tecnico' ? 'Documentos Técnicos' : 'Documentos Legales'
+);
 
 // Watcher para controlar cambios en las empresas seleccionadas
 watch(() => props.modelValueEmpresas, async (nuevasEmpresas, oldEmpresas) => {
   // Si no hay empresas seleccionadas, limpiar todo
   if (!nuevasEmpresas || nuevasEmpresas.length === 0) {
-    archivosTecnicos.value = [];
-    archivosLegales.value = [];
-    emit('update:modelValueTecnicos', []);
-    emit('update:modelValueLegales', []);
+    documentos.value = [];
+    emit('update:modelValue', []);
     return;
   }
 
@@ -196,25 +151,17 @@ watch(() => props.modelValueEmpresas, async (nuevasEmpresas, oldEmpresas) => {
 
   // Si estamos quitando empresas:  
   // 1. Primero cargar todos los documentos de las empresas actuales
-  archivosTecnicos.value = [];
-  archivosLegales.value = [];
+  documentos.value = [];
   
   for (const empresaId of nuevasEmpresas) {
     await cargarDocumentosEmpresa(empresaId);
   }
 
   // 2. Filtrar las selecciones para mantener solo las de empresas que siguen seleccionadas
-  if (props.modelValueTecnicos.length > 0) {
-    const archivosTecnicosEmpresasActuales = archivosTecnicos.value.map(a => a.id);
-    emit('update:modelValueTecnicos', props.modelValueTecnicos.filter(
-      id => archivosTecnicosEmpresasActuales.includes(id)
-    ));
-  }
-
-  if (props.modelValueLegales.length > 0) {
-    const archivosLegalesEmpresasActuales = archivosLegales.value.map(a => a.id);
-    emit('update:modelValueLegales', props.modelValueLegales.filter(
-      id => archivosLegalesEmpresasActuales.includes(id)
+  if (props.modelValue.length > 0) {
+    const documentosEmpresasActuales = documentos.value.map(a => a.id);
+    emit('update:modelValue', props.modelValue.filter(
+      id => documentosEmpresasActuales.includes(id)
     ));
   }
 }, { immediate: true });
@@ -223,10 +170,11 @@ watch(() => props.modelValueEmpresas, async (nuevasEmpresas, oldEmpresas) => {
 async function cargarDocumentosEmpresa(empresaId) {
   const empresa = props.empresas.find(e => e.id === empresaId);
   const response = await axios.get(`/empresa/${empresaId}/documentos`);
-  const documentos = response.data.documentos_tecnicos;
-  const documentosLegales = response.data.documentos_legales;
+  const docs = props.type === 'tecnico' 
+    ? response.data.documentos_tecnicos 
+    : response.data.documentos_legales;
 
-  const nuevosTecnicos = documentos.flatMap(doc =>
+  const nuevosDocumentos = docs.flatMap(doc =>
     doc.archivos.map(archivo => ({
       id: archivo.id,
       nombre: archivo.nombre_original,
@@ -237,26 +185,14 @@ async function cargarDocumentosEmpresa(empresaId) {
     }))
   );
 
-  const nuevosLegales = documentosLegales.flatMap(doc =>
-    doc.archivos.map(archivo => ({
-      id: archivo.id,
-      nombre: archivo.nombre_original,
-      url: archivo.ruta_archivo,
-      documento: doc.tipo_de_documento.nombre_documento,
-      empresa_id: empresaId,
-      empresa_nombre: empresa?.name || empresa?.nombre || 'Empresa desconocida'
-    }))
-  );
-
-  archivosTecnicos.value.push(...nuevosTecnicos);
-  archivosLegales.value.push(...nuevosLegales);
+  documentos.value.push(...nuevosDocumentos);
 }
 
-// Agrupar documentos técnicos por empresa y luego por tipo
-const empresasConDocumentosTecnicos = computed(() => {
+// Agrupar documentos por empresa y luego por tipo
+const empresasConDocumentos = computed(() => {
   const empresasMap = {};
   
-  archivosTecnicos.value.forEach(archivo => {
+  documentos.value.forEach(archivo => {
     if (!empresasMap[archivo.empresa_id]) {
       empresasMap[archivo.empresa_id] = {
         id: archivo.empresa_id,
@@ -281,44 +217,10 @@ const empresasConDocumentosTecnicos = computed(() => {
   }));
 });
 
-// Agrupar documentos legales por empresa y luego por tipo
-const empresasConDocumentosLegales = computed(() => {
-  const empresasMap = {};
-  
-  archivosLegales.value.forEach(archivo => {
-    if (!empresasMap[archivo.empresa_id]) {
-      empresasMap[archivo.empresa_id] = {
-        id: archivo.empresa_id,
-        nombre: archivo.empresa_nombre,
-        documentos: {}
-      };
-    }
-    
-    if (!empresasMap[archivo.empresa_id].documentos[archivo.documento]) {
-      empresasMap[archivo.empresa_id].documentos[archivo.documento] = [];
-    }
-    
-    empresasMap[archivo.empresa_id].documentos[archivo.documento].push(archivo);
-  });
-  
-  return Object.values(empresasMap).map(empresa => ({
-    ...empresa,
-    documentos: Object.keys(empresa.documentos).map(tipo => ({
-      tipo,
-      archivos: empresa.documentos[tipo]
-    }))
-  }));
-});
-
-// Modelos para los checkboxes
-const selectedTecnicos = computed({
-  get: () => props.modelValueTecnicos,
-  set: (value) => emit('update:modelValueTecnicos', value)
-});
-
-const selectedLegales = computed({
-  get: () => props.modelValueLegales,
-  set: (value) => emit('update:modelValueLegales', value)
+// Modelo para los checkboxes
+const selectedDocuments = computed({
+  get: () => props.modelValue,
+  set: (value) => emit('update:modelValue', value)
 });
 
 // Métodos para el modal
@@ -338,6 +240,7 @@ const getDocumentUrl = (path) => {
 </script>
 
 <style scoped>
+/* Estilos del componente */
 .document-selector {
   display: grid;
   grid-template-columns: 1fr;
@@ -531,7 +434,7 @@ const getDocumentUrl = (path) => {
 
 @media (min-width: 768px) {
   .document-selector {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 2rem;
     margin-top: 1.5rem;
   }

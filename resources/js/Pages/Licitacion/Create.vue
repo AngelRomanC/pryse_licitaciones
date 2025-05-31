@@ -16,6 +16,8 @@ import axios from 'axios'
 import MultiSelectEmpresas from '@/Components/MultiSelectEmpresas.vue';
 import DocumentSelector from '@/Components/DocumentSelector.vue'
 import FormControlV7 from '@/Components/FormControlV7.vue'
+import Vista2 from '@/Components/vista2.vue'
+
 
 
 const props = defineProps({
@@ -85,11 +87,24 @@ const handleSubmit = () => {
         </FormField>
 
         <!--     <TransferList :estados="estados" />  -->
+             <!-- Para documentos técnicos -->
+<Vista2
+  :empresas="empresas"
+  :modelValueEmpresas="form.empresa_id"
+  v-model="form.archivos_tecnicos"
+  type="tecnico"
+  baseUrl="/storage/"
+/>
 
-
+<!-- Para documentos legales -->
+<vista2
+  :empresas="empresas"
+  :modelValueEmpresas="form.empresa_id"
+  v-model="form.archivos_legales"
+  type="legal"
+  baseUrl="/storage/"
+/>
       </div>
-
-
 
       <FormField label="Documentos Requeridos">
              <DocumentSelector
@@ -100,9 +115,6 @@ const handleSubmit = () => {
                 baseUrl="/storage/"
               />
       </FormField>
-
-
-
 
               <!-- Selector de Modalidad -->
                 <FormField label="Modalidades" :error="form.errors.modalidades_id">

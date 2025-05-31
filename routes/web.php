@@ -100,6 +100,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('licitacion', LicitacionController::class);
     Route::get('/empresa/{empresa}/documentos', [LicitacionController::class, 'getDocumentosByEmpresa']);
     
+    Route::get('/licitaciones/{licitacion}/descargar-expediente', [LicitacionController::class, 'descargarExpediente'])->name('licitaciones.descargar');
+
 
 });
 

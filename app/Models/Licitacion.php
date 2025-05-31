@@ -12,6 +12,7 @@ class Licitacion extends Model
     protected $fillable = [
         'nombre',
         'fecha',
+        'ruta_expediente',
 
 
     ];
