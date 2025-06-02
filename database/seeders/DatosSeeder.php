@@ -45,6 +45,7 @@ class DatosSeeder extends Seeder
         ]);
 
         DB::table('modalidads')->insert([
+            ['nombre_modalidad' => 'Ninguna'],
             ['nombre_modalidad' => 'Seguridad privada a personas'],
             ['nombre_modalidad' => 'Seguridad privada en los bienes'],
             ['nombre_modalidad' => 'Seguridad privada en el traslado de bienes o valores '],

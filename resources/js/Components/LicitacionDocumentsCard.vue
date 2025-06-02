@@ -13,7 +13,7 @@
           </svg>
         </div>
         <div>
-          <h3 class="text-sm font-medium text-gray-500">Documentos Legales</h3>
+          <h3 class="text-sm font-medium text-gray-500">Licitaciones</h3>
           <p class="text-2xl font-bold text-green-600">{{ count }}</p>
         </div>
       </div>
@@ -32,7 +32,7 @@
     },
     tooltip: {
       type: String,
-      default: 'Crear nuevo documento legal'
+      default: 'Crear nuevo Licitación'
     }
   });
   
@@ -42,7 +42,7 @@
   //   });
   // };
   const redirectToCreate = () => {
-  router.get(route('documento-legal.index', {
+  router.get(route('licitacion.index', {
     redirect: route('dashboard') // O el nombre correcto de tu ruta de dashboard
   }))
 };

@@ -176,7 +176,7 @@ class LicitacionController extends Controller
 
     public function generarZipLicitacion(Licitacion $licitacion)
     {
-        $folderName = "expedientes/licitacion_{$licitacion->id}";
+        $folderName = "expedientes/licitacion_{$licitacion->nombre}";
         Storage::makeDirectory($folderName);
 
         $zip = new ZipArchive;
@@ -192,13 +192,19 @@ class LicitacionController extends Controller
                     foreach ($archivos as $archivo) {
                         $ruta = $archivo->ruta_archivo;
                         $nombreEmpresa = $empresa->nombre;
-                        $tipoDocumento = $archivo->documento->tipo;
+                        $tipoDocumento = optional(optional($archivo->documento)->tipoDeDocumento)->nombre_documento ?? 'Desconocido';
+
                         $subtipo = $archivo->tipo === 'principal' ? 'principales' : 'anexos';
 
-                        $pathDentroZip = "{$nombreEmpresa}/{$tipo}s/{$tipoDocumento}/{$subtipo}/" . basename($ruta);
-                        //$zip->addFile(storage_path("app/{$ruta}"), $pathDentroZip);
 
-                        $fullPath = storage_path("app/{$ruta}");
+
+
+                        //$pathDentroZip = "{$nombreEmpresa}/{$tipo}/{$tipoDocumento}/{$subtipo}/" . basename($ruta);
+                        $pathDentroZip = "{$nombreEmpresa}/{$tipoDocumento}/{$tipo}/{$subtipo}/" . basename($ruta);
+
+                        $fullPath = storage_path("app/public/{$ruta}");
+
+
 
                         if (file_exists($fullPath)) {
                             $zip->addFile($fullPath, $pathDentroZip);
@@ -214,15 +220,27 @@ class LicitacionController extends Controller
         $licitacion->update(['ruta_expediente' => $folderName . '.zip']);
     }
 
-    public function descargarExpediente($id)
+    public function descargarExpediente($nombre)
     {
-        $path = "expedientes/licitacion_{$id}.zip";
+        $path = "expedientes/licitacion_{$nombre}.zip";
 
         if (!Storage::exists($path)) {
             abort(404, 'El archivo ZIP no existe.');
         }
 
-        return Storage::download($path, "expediente_licitacion_{$id}.zip");
+        return Storage::download($path, "expediente_licitacion_{$nombre}.zip");
     }
+
+  /*  public function descargarExpediente($nombre)
+    {
+        $nombreNormalizado = Str::slug($nombre, '_');
+        $path = "expedientes/licitacion_{$nombreNormalizado}.zip";
+
+        if (!Storage::exists($path)) {
+            abort(404, 'Archivo no encontrado.');
+        }
+
+        return Storage::download($path, "expediente_{$nombreNormalizado}.zip");
+    }*/
 
 }

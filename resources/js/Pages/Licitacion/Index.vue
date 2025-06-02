@@ -5,7 +5,7 @@ import BaseButton from '@/components/BaseButton.vue';
 import BaseButtons from "@/components/BaseButtons.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 import Swal from "sweetalert2";
-import { mdiTagEdit, mdiDeleteOutline,mdiInformation } from "@mdi/js";
+import { mdiTagEdit, mdiDeleteOutline,mdiInformation,mdiDownload } from "@mdi/js";
 import Pagination from '@/Shared/Pagination.vue';
 import CardBoxComponentEmpty from "@/components/CardBoxComponentEmpty.vue";
 import CardBox from "@/components/CardBox.vue";
@@ -138,13 +138,16 @@ const destroy = (id) => {
                                     :href="route(`${props.routeName}edit`, documento.id)" />
                                 <BaseButton color="danger" :icon="mdiDeleteOutline" small
                                     @click="destroy(documento.id)" />
-                                    <a
-                                        :href="route('licitaciones.descargar', documento.id)"
+                                 
+
+                                        <BaseButton color="success" :icon="mdiDownload" small
+                                        :href="route('licitaciones.descargar', documento.nombre)"
                                         class="btn btn-success"
                                         target="_blank"
-                                        >
-                                        Descargar expediente
-                                    </a>
+                                        title="Descargar expediente"
+                                        />
+                                        
+                                    
 
                             </BaseButtons>
                             

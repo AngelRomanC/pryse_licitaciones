@@ -14,6 +14,7 @@ import Swal from 'sweetalert2';
 import { mdiEye } from "@mdi/js";
 import TechnicalDocumentsCard from '@/Components/TechnicalDocumentsCard.vue';
 import LegalDocumentsCard from '@/Components/LegalDocumentsCard.vue';
+import LicitacionDocumentsCard from '@/Components/LicitacionDocumentsCard.vue';
 import { onMounted } from 'vue'
 import NotificationBar from "@/components/NotificationBar.vue";
 import DocumentDetailsModal from "@/components/DocumentDetailsModal.vue";
@@ -71,6 +72,10 @@ onMounted(() => {
         :count="totalDocumentosLegales" 
         tooltip="Haz clic para crear un nuevo documento legal"
       />   
+      <LicitacionDocumentsCard 
+        :count="totalDocumentosLegales" 
+        tooltip="Haz clic para crear un nuevo documento legal"
+      />  
     </div>
     
     <!-- Secciones de Documentos -->

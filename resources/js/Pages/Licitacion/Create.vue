@@ -106,7 +106,7 @@ const handleSubmit = () => {
 />
       </div>
 
-      <FormField label="Documentos Requeridos">
+  <!--     <FormField label="Documentos Requeridos">
              <DocumentSelector
                 :empresas="empresas"
                 :modelValueEmpresas="form.empresa_id"
@@ -114,7 +114,7 @@ const handleSubmit = () => {
                 v-model:modelValueLegales="form.archivos_legales"
                 baseUrl="/storage/"
               />
-      </FormField>
+      </FormField> -->
 
               <!-- Selector de Modalidad -->
                 <FormField label="Modalidades" :error="form.errors.modalidades_id">
