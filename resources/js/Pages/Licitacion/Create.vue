@@ -18,6 +18,24 @@ import DocumentSelector from '@/Components/DocumentSelector.vue'
 import FormControlV7 from '@/Components/FormControlV7.vue'
 import Vista2 from '@/Components/vista2.vue'
 
+import Swal from 'sweetalert2';
+import { onMounted } from 'vue';
+import { usePage } from '@inertiajs/vue3';
+
+const page = usePage();
+
+onMounted(() => {
+  const alertas = page.props.flash.alerta_modalidades;
+  if (alertas && alertas.length > 0) {
+    Swal.fire({
+      title: 'Aviso sobre modalidades',
+      icon: 'info',
+      html: alertas.map(a => `<p>${a}</p>`).join(''),
+      confirmButtonText: 'Entendido',
+    });
+  }
+});
+
 
 
 const props = defineProps({

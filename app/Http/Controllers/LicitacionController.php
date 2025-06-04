@@ -93,54 +93,76 @@ class LicitacionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'fecha' => 'required|date',
-            'empresa_id' => 'required|array|min:1',
-            'estados' => 'required|array|min:1',
-            'archivos_legales' => 'nullable|array',
-            'archivos_tecnicos' => 'nullable|array',
-            'modalidades_id' => 'required|array|min:1',
+public function store(Request $request)
+{
+    $request->validate([
+        'nombre' => 'required|string|max:255',
+        'fecha' => 'required|date',
+        'empresa_id' => 'required|array|min:1',
+        'estados' => 'required|array|min:1',
+        'archivos_legales' => 'nullable|array',
+        'archivos_tecnicos' => 'nullable|array',
+        'modalidades_id' => 'required|array|min:1',
+    ]);
 
-        ]);
+    $modalidadesSeleccionadas = $request->modalidades_id;
+    $empresasSeleccionadas = $request->empresa_id;
+    $errores = [];
 
-        $licitacion = Licitacion::create([
-            'nombre' => $request->nombre,
-            'fecha' => $request->fecha,
-            'ruta_expediente' => '', // o algo como 'pendiente'
+    foreach ($empresasSeleccionadas as $empresaId) {
+        $empresa = Empresa::find($empresaId);
 
-        ]);
+        foreach ($modalidadesSeleccionadas as $modalidadId) {
+            $tieneDocumento = Documento::where('empresa_id', $empresaId)
+                ->where('nombre_documento', 'Documento Técnico')
+                ->whereHas('modalidades', function ($query) use ($modalidadId) {
+                    $query->where('modalidad_id', $modalidadId);
+                })
+                ->exists();
 
-        // Relacionar empresas
-        $licitacion->empresas()->attach($request->empresa_id);
-
-        // Relacionar estados
-        $licitacion->estados()->attach($request->estados);
-
-        $licitacion->modalidades()->attach($request->modalidades_id);
-
-        // Relacionar archivos legales
-        if ($request->filled('archivos_legales')) {
-            foreach ($request->archivos_legales as $archivoId) {
-                $licitacion->archivos()->attach($archivoId, ['tipo' => 'legal']);
+            if (!$tieneDocumento) {
+                $nombreEmpresa = $empresa->nombre;
+                $nombreModalidad = Modalidad::find($modalidadId)?->nombre_modalidad ?? 'Desconocida';
+                $errores[] = "La empresa '{$nombreEmpresa}' no tiene documentos técnicos con la modalidad '{$nombreModalidad}'.";
             }
         }
-
-        // Relacionar archivos técnicos
-        if ($request->filled('archivos_tecnicos')) {
-            foreach ($request->archivos_tecnicos as $archivoId) {
-                $licitacion->archivos()->attach($archivoId, ['tipo' => 'tecnico']);
-            }
-        }
-
-        $this->generarZipLicitacion($licitacion);
-
-        return redirect()->route('licitacion.index')->with('success', 'Licitación creada correctamente.');
-
-
     }
+
+    // Aquí asignamos los errores a la sesión para que el frontend los reciba
+    if (!empty($errores)) {
+        session()->flash('alerta_modalidades', $errores);
+    }
+    //dd(session()->all());
+
+
+
+    $licitacion = Licitacion::create([
+        'nombre' => $request->nombre,
+        'fecha' => $request->fecha,
+        'ruta_expediente' => '',
+    ]);
+
+    $licitacion->empresas()->attach($request->empresa_id);
+    $licitacion->estados()->attach($request->estados);
+    $licitacion->modalidades()->attach($request->modalidades_id);
+
+    if ($request->filled('archivos_legales')) {
+        foreach ($request->archivos_legales as $archivoId) {
+            $licitacion->archivos()->attach($archivoId, ['tipo' => 'legal']);
+        }
+    }
+
+    if ($request->filled('archivos_tecnicos')) {
+        foreach ($request->archivos_tecnicos as $archivoId) {
+            $licitacion->archivos()->attach($archivoId, ['tipo' => 'tecnico']);
+        }
+    }
+
+    $this->generarZipLicitacion($licitacion);
+
+    return redirect()->route('licitacion.index')->with('success', 'Licitación creada correctamente.');
+}
+
 
     /**
      * Display the specified resource.
@@ -200,7 +222,9 @@ class LicitacionController extends Controller
 
 
                         //$pathDentroZip = "{$nombreEmpresa}/{$tipo}/{$tipoDocumento}/{$subtipo}/" . basename($ruta);
-                        $pathDentroZip = "{$nombreEmpresa}/{$tipoDocumento}/{$tipo}/{$subtipo}/" . basename($ruta);
+                        //$pathDentroZip = "{$nombreEmpresa}/{$tipo}/{$tipoDocumento}/{$subtipo}/" . basename($ruta);
+                        $pathDentroZip = "{$nombreEmpresa}/{$tipo}/" . basename($ruta);
+
 
                         $fullPath = storage_path("app/public/{$ruta}");
 
@@ -231,16 +255,16 @@ class LicitacionController extends Controller
         return Storage::download($path, "expediente_licitacion_{$nombre}.zip");
     }
 
-  /*  public function descargarExpediente($nombre)
-    {
-        $nombreNormalizado = Str::slug($nombre, '_');
-        $path = "expedientes/licitacion_{$nombreNormalizado}.zip";
+    /*  public function descargarExpediente($nombre)
+      {
+          $nombreNormalizado = Str::slug($nombre, '_');
+          $path = "expedientes/licitacion_{$nombreNormalizado}.zip";
 
-        if (!Storage::exists($path)) {
-            abort(404, 'Archivo no encontrado.');
-        }
+          if (!Storage::exists($path)) {
+              abort(404, 'Archivo no encontrado.');
+          }
 
-        return Storage::download($path, "expediente_{$nombreNormalizado}.zip");
-    }*/
+          return Storage::download($path, "expediente_{$nombreNormalizado}.zip");
+      }*/
 
 }
