@@ -15,6 +15,7 @@ class EstadosSeeder extends Seeder
     public function run(): void
     {
         $estados = [
+            'Ninguno',
             'Aguascalientes',
             'Baja California',
             'Baja California Sur',

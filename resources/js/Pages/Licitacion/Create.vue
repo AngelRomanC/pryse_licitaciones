@@ -17,24 +17,9 @@ import MultiSelectEmpresas from '@/Components/MultiSelectEmpresas.vue';
 import DocumentSelector from '@/Components/DocumentSelector.vue'
 import FormControlV7 from '@/Components/FormControlV7.vue'
 import Vista2 from '@/Components/vista2.vue'
-
 import Swal from 'sweetalert2';
-import { onMounted } from 'vue';
-import { usePage } from '@inertiajs/vue3';
+import Vista3 from '@/Components/vista3.vue'
 
-const page = usePage();
-
-onMounted(() => {
-  const alertas = page.props.flash.alerta_modalidades;
-  if (alertas && alertas.length > 0) {
-    Swal.fire({
-      title: 'Aviso sobre modalidades',
-      icon: 'info',
-      html: alertas.map(a => `<p>${a}</p>`).join(''),
-      confirmButtonText: 'Entendido',
-    });
-  }
-});
 
 
 
@@ -57,11 +42,116 @@ const form = useForm({
 
 });
 
-const handleSubmit = () => {
-  form.post(route(`${props.routeName}store`), {
-    forceFormData: true,
-  });
+// const handleSubmit = async () => {
+//   try {
+//     const response = await axios.post(route('licitacion.verificarModalidades'), {
+//       empresa_id: form.empresa_id,
+//       modalidades_id: form.modalidades_id,
+//     });
+
+//     const errores = response.data.errores;
+
+//     if (errores.length > 0) {
+//       const { isConfirmed } = await Swal.fire({
+//         title: 'Aviso sobre modalidades',
+//         icon: 'info',
+//         html: errores.map(e => `<p>${e}</p>`).join(''),
+//         confirmButtonText: 'Continuar de todos modos',
+//         showCancelButton: true,
+//         cancelButtonText: 'Cancelar',
+//         width: 'auto', // Cambia este valor a lo que necesites
+//         customClass: {
+//     htmlContainer: 'swal-text-left'
+//   }
+        
+
+//       });
+
+//       if (!isConfirmed) return; // si cancela, no continúa
+//     }
+
+//     form.post(route(`${props.routeName}store`), {
+//       forceFormData: true,
+//     });
+
+//   } catch (error) {
+//     console.error('Error al verificar modalidades', error);
+//   }
+// };
+const handleSubmit = async () => {
+  try {
+    const response = await axios.post(route('licitacion.verificarModalidades'), {
+      empresa_id: form.empresa_id,
+      modalidades_id: form.modalidades_id,
+    });
+
+    const errores = response.data.errores;
+    const esPlural = errores.length > 1;
+
+    if (errores.length > 0) {
+      const { isConfirmed } = await Swal.fire({
+        title: `<strong>${esPlural ? 'Empresas con documentos faltantes' : 'Empresa con documentos faltantes'}</strong>`,
+        icon: 'warning',
+        html: `
+          <div class="text-left">
+            <p class="text-gray-700 mb-4">
+              ${esPlural ? 'Las siguientes empresas no tienen' : 'La siguiente empresa no tiene'} documentos técnicos para las modalidades seleccionadas:
+            </p>
+            
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4 max-h-[300px] overflow-y-auto">
+              ${errores.map(e => `
+                <div class="flex items-start mb-3">
+                  <svg class="h-5 w-5 text-yellow-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                  </svg>
+                  <span class="text-gray-800 break-words">${e}</span>
+                </div>
+              `).join('')}
+            </div>
+            
+            <p class="text-sm text-gray-600">
+              Puedes continuar con la licitación, pero ${esPlural ? 'estas empresas no podrán' : 'esta empresa no podrá'} participar en las modalidades mencionadas.
+            </p>
+          </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Continuar',
+        cancelButtonText: 'Revisar documentos',
+        confirmButtonColor: '#4CAF50',
+        cancelButtonColor: '#F44336',
+        focusConfirm: false,
+        width: '650px',
+        scrollbarPadding: false,
+        customClass: {
+          popup: 'rounded-lg shadow-xl border-t-4 border-yellow-500',
+          title: 'text-xl text-gray-800 mb-2',
+          htmlContainer: 'text-left',
+          confirmButton: 'px-4 py-2 rounded-md font-medium hover:bg-green-600 transition-colors',
+          cancelButton: 'px-4 py-2 rounded-md font-medium hover:bg-red-600 transition-colors ml-3',
+          container: 'scrollbar-gutter-stable'
+        },
+        buttonsStyling: false
+      });
+
+      if (!isConfirmed) return;
+    }
+
+    form.post(route(`${props.routeName}store`), {
+      forceFormData: true,
+    });
+
+  } catch (error) {
+    console.error('Error al verificar modalidades', error);
+    Swal.fire({
+      title: 'Error',
+      text: 'Ocurrió un error al verificar las modalidades',
+      icon: 'error',
+      confirmButtonColor: '#2196F3',
+      confirmButtonText: 'Entendido'
+    });
+  }
 };
+
 
 // const handleSubmit = () => {    
 //     //form.post(route(`${props.routeName}store`)); // Corregida sintaxis de ruta
@@ -105,34 +195,54 @@ const handleSubmit = () => {
         </FormField>
 
         <!--     <TransferList :estados="estados" />  -->
-             <!-- Para documentos técnicos -->
-<Vista2
-  :empresas="empresas"
-  :modelValueEmpresas="form.empresa_id"
-  v-model="form.archivos_tecnicos"
-  type="tecnico"
-  baseUrl="/storage/"
-/>
-
-<!-- Para documentos legales -->
-<vista2
-  :empresas="empresas"
-  :modelValueEmpresas="form.empresa_id"
-  v-model="form.archivos_legales"
-  type="legal"
-  baseUrl="/storage/"
-/>
-      </div>
-
-  <!--     <FormField label="Documentos Requeridos">
-             <DocumentSelector
+             <!-- Para documentos técnicos 
+              
+             <Vista2
                 :empresas="empresas"
                 :modelValueEmpresas="form.empresa_id"
-                v-model:modelValueTecnicos="form.archivos_tecnicos"
-                v-model:modelValueLegales="form.archivos_legales"
+                v-model="form.archivos_tecnicos"
+                type="tecnico"
                 baseUrl="/storage/"
               />
-      </FormField> -->
+
+                <!-- Para documentos legales 
+                <vista2
+                  :empresas="empresas"
+                  :modelValueEmpresas="form.empresa_id"
+                  v-model="form.archivos_legales"
+                  type="legal"
+                  baseUrl="/storage/"
+                /> -->
+
+
+
+                  <Vista3
+                    :empresas="empresas"
+                    :modelValueEmpresas="form.empresa_id"
+                    v-model="form.archivos_tecnicos"
+                    type="tecnico"
+                    baseUrl="/storage/"
+                  />
+
+                  <Vista3
+                    :empresas="empresas"
+                    :modelValueEmpresas="form.empresa_id"
+                    v-model="form.archivos_legales"
+                    type="legal"
+                    baseUrl="/storage/"
+                  />
+
+      </div>
+
+          <!--     <FormField label="Documentos Requeridos">
+                    <DocumentSelector
+                        :empresas="empresas"
+                        :modelValueEmpresas="form.empresa_id"
+                        v-model:modelValueTecnicos="form.archivos_tecnicos"
+                        v-model:modelValueLegales="form.archivos_legales"
+                        baseUrl="/storage/"
+                      />
+              </FormField> -->
 
               <!-- Selector de Modalidad -->
                 <FormField label="Modalidades" :error="form.errors.modalidades_id">

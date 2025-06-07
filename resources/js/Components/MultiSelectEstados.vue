@@ -47,7 +47,30 @@ const toggleEstado = (estadoId) => {
   emit('update:modelValue', newValue);
 };
 
+const toggleAll = () => {
+  if (props.disabled) return;
+  
+  if (areAllSelected.value) {
+    // Si todos están seleccionados, deseleccionar todos
+    emit('update:modelValue', []);
+  } else {
+    // Si no todos están seleccionados, seleccionar todos
+    emit('update:modelValue', props.estados.map(estado => estado.id));
+  }
+};
+
+const areAllSelected = computed(() => {
+  return props.estados.length > 0 && props.modelValue.length === props.estados.length;
+});
+
+const areSomeSelected = computed(() => {
+  return props.modelValue.length > 0 && !areAllSelected.value;
+});
+
 const selectedEstadosNames = computed(() => {
+  if (areAllSelected.value) return 'Todos seleccionados';
+  if (props.modelValue.length === 0) return 'Seleccione estados...';
+  
   return props.estados
     .filter(estado => props.modelValue.includes(estado.id))
     .map(estado => estado.name)
@@ -94,7 +117,7 @@ const inputElClass = computed(() => {
       :class="inputElClass"
     >
       <span class="block truncate">
-        {{ selectedEstadosNames || 'Seleccione estados...' }}
+        {{ selectedEstadosNames }}
       </span>
       <FormControlIcon v-if="icon" :icon="icon" :h="controlIconH" />
     </div>
@@ -120,6 +143,22 @@ const inputElClass = computed(() => {
           />
         </div>
         <div class="max-h-60 overflow-y-auto">
+          <!-- Opción "Seleccionar todos" -->
+          <div
+            @click.stop="toggleAll"
+            class="cursor-pointer hover:bg-indigo-50 dark:hover:bg-slate-700 p-2 flex items-center border-b border-gray-200 dark:border-gray-600"
+          >
+            <input
+              type="checkbox"
+              :checked="areAllSelected"
+              :indeterminate="areSomeSelected"
+              class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              readonly
+            />
+            <span class="ml-2 dark:text-white font-medium">Seleccionar todos</span>
+          </div>
+          
+          <!-- Lista de estados -->
           <div
             v-for="estado in filteredEstados"
             :key="estado.id"
