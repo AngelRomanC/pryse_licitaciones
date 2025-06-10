@@ -25,7 +25,7 @@ class DepartamentoController extends Controller
         return Inertia::render("Departamento/Index", [
             'titulo' => 'Lista de Áreas',
             'departamentos' => $departamentos,
-            'routeName' => $this->routeName           
+            'routeName' => $this->routeName
         ]);
     }
 
@@ -48,13 +48,15 @@ class DepartamentoController extends Controller
         // Validar los datos recibidos
         $validated = $request->validate([
             'nombre_departamento' => 'required|string|max:50',
-            'email' => 'required|email|max:50', 
+            'email' => 'required|email|max:50|unique:departamentos,email',
 
+        ], [
+            'email.unique' => 'El correo electrónico ya está registrado.',
         ]);
 
         Departamento::create($validated);
 
-        if ($request->filled('redirect')) { 
+        if ($request->filled('redirect')) {
             return redirect($request->input('redirect'))
                 ->with('success', 'Empresa creada correctamente');
         }
@@ -88,8 +90,8 @@ class DepartamentoController extends Controller
     public function update(Request $request, Departamento $departamento)
     {
         $validated = $request->validate([
-            'nombre_departamento' => 'required|string|max:50',  
-            'email' => 'required|email|max:50',          
+            'nombre_departamento' => 'required|string|max:50',
+            'email' => 'required|email|max:50',
         ]);
         $departamento->update($validated);
 

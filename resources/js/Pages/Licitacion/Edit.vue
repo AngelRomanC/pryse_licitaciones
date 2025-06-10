@@ -23,8 +23,6 @@ const props = defineProps({
   estados: Array,
   modalidades: Array,
   routeName: String,
-  archivos_legales_initial: Array,
-  archivos_tecnicos_initial: Array,
 });
 
 // Inicializar el formulario con los datos de la licitación
@@ -34,33 +32,15 @@ const form = useForm({
   empresa_id: props.licitacion.empresas.map(e => e.id),
   estados: props.licitacion.estados.map(e => e.id),
   modalidades_id: props.licitacion.modalidades.map(m => m.id),
-  archivos_legales: props.archivos_legales_initial,
-  archivos_tecnicos: props.archivos_tecnicos_initial,
-  archivos_a_eliminar: [] // Nuevo campo para archivos a eliminar
+  archivos_legales: props.licitacion.archivos
+    .filter(a => a.pivot.tipo === 'legal')
+    .map(a => a.id),
+  archivos_tecnicos: props.licitacion.archivos
+    .filter(a => a.pivot.tipo === 'tecnico')
+    .map(a => a.id),
 });
-console.log( props.archivos_legales_initial);
-// Función para manejar cambios en los documentos
-const handleDocumentChange = (type, newValues) => {
-  // Identificar archivos eliminados
-  const previousValues = type === 'legal' 
-    ? props.archivos_legales_initial 
-    : props.archivos_tecnicos_initial;
-  
-  const removedFiles = previousValues.filter(id => !newValues.includes(id));
-  
-  // Actualizar el formulario
-  if (type === 'legal') {
-    form.archivos_legales = newValues;
-  } else {
-    form.archivos_tecnicos = newValues;
-  }
-  
-  // Agregar a archivos a eliminar (sin duplicados)
-  form.archivos_a_eliminar = [
-    ...new Set([...form.archivos_a_eliminar, ...removedFiles])
-  ];
-};
-
+console.log('Legales seleccionados:', form.archivos_legales)
+console.log('Técnicos seleccionados:', form.archivos_tecnicos)
 
 const handleSubmit = async () => {
   try {
@@ -119,10 +99,9 @@ const handleSubmit = async () => {
 
       if (!isConfirmed) return;
     }
+console.log('Datos enviados:', form.data());
 
-    form.put(route(`${props.routeName}update`, props.licitacion.id), {
-      forceFormData: true,
-    });
+    form.put(route(`${props.routeName}update`, props.licitacion.id));
 
   } catch (error) {
     console.error('Error al verificar modalidades', error);
@@ -203,33 +182,7 @@ const descargarExpediente = () => {
           type="legal"
           baseUrl="/storage/"
         />
-
-
-
-
-
-
-          <Vista3
-    :empresas="empresas"
-    :modelValueEmpresas="form.empresa_id"
-    :initialSelected="form.archivos_tecnicos"
-    @update:modelValue="(val) => handleDocumentChange('tecnico', val)"
-    type="tecnico"
-    baseUrl="/storage/"
-  />
-
-  <Vista3
-    :empresas="empresas"
-    :modelValueEmpresas="form.empresa_id"
-    :initialSelected="form.archivos_legales"
-    @update:modelValue="(val) => handleDocumentChange('legal', val)"
-    type="legal"
-    baseUrl="/storage/"
-  />
       </div>
-
-
-
 
       <!-- Modalidades -->
       <FormField label="Modalidades" :error="form.errors.modalidades_id">

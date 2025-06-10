@@ -45,15 +45,19 @@ class EmpresaController extends Controller
 
     public function store(Request $request)
     {
-        logger('Redirect recibido:', ['redirect' => $request->input('redirect')]);
+        //logger('Redirect recibido:', ['redirect' => $request->input('redirect')]);
 
         // Validar los datos recibidos
         $validated = $request->validate([
             'nombre' => 'required|string|max:50',
             'descripcion' => 'required|string|max:50',
             'direccion' => 'required|string|max:50',
-            'telefono' => 'required|string|max:50',
-            'email' => 'required|email|max:50',
+            //'telefono' => 'required|string|max:50|unique:empresas,telefono',
+            'telefono' => 'required|digits:10|unique:empresas,telefono',
+            'email' => 'required|email|max:50|unique:empresas,email',
+        ], [
+            'telefono.unique' => 'El número de teléfono ya está registrado.',
+            'email.unique' => 'El correo electrónico ya está registrado.',
         ]);
 
         Empresa::create($validated);

@@ -204,41 +204,43 @@ class LicitacionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-public function edit(Licitacion $licitacion)
-{
-    $licitacion->load(['empresas', 'estados', 'modalidades', 'archivos']);
+    public function edit(Licitacion $licitacion)
+    {
+        $licitacion->load(['empresas', 'estados', 'modalidades', 'archivos']);
 
-    // Obtener IDs de archivos por tipo
-    $archivosLegales = $licitacion->archivos
-        ->where('pivot.tipo', 'legal')
-        ->pluck('id')
-        ->toArray();
+        // Obtener IDs de archivos por tipo
+        $archivosLegales = $licitacion->archivos
+            ->where('pivot.tipo', 'legal')
+            ->pluck('id')
+            ->all();
 
-    $archivosTecnicos = $licitacion->archivos
-        ->where('pivot.tipo', 'tecnico')
-        ->pluck('id')
-        ->toArray();
+        $archivosTecnicos = $licitacion->archivos
+            ->where('pivot.tipo', 'tecnico')
+            ->pluck('id')
+            ->all();
 
-    $empresas = Empresa::select('id', 'nombre as name')->get();
-    $estados = Estado::select('id', 'nombre as name')->get();
-    $modalidades = Modalidad::select('id', 'nombre_modalidad as name')->get();
+        $empresas = Empresa::select('id', 'nombre as name')->get();
+        $estados = Estado::select('id', 'nombre as name')->get();
+        $modalidades = Modalidad::select('id', 'nombre_modalidad as name')->get();
 
-    return Inertia::render('Licitacion/Edit', [
-        'licitacion' => $licitacion,
-        'empresas' => $empresas,
-        'estados' => $estados,
-        'modalidades' => $modalidades,
-        'routeName' => $this->routeName,
-        'archivos_legales_initial' => $archivosLegales,
-        'archivos_tecnicos_initial' => $archivosTecnicos,
-    ]);
-}
+        return Inertia::render('Licitacion/Edit', [
+            'licitacion' => $licitacion,
+            'empresas' => $empresas,
+            'estados' => $estados,
+            'modalidades' => $modalidades,
+            'routeName' => $this->routeName,
+            'archivos_legales_initial' => $archivosLegales,
+            'archivos_tecnicos_initial' => $archivosTecnicos,
+        ]);
+    }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Licitacion $licitacion)
     {
+       // dd($request->all());
+
         $request->validate([
             'nombre' => 'required|string|max:255',
             'fecha' => 'required|date',
@@ -247,6 +249,8 @@ public function edit(Licitacion $licitacion)
             'modalidades_id' => 'required|array|min:1',
             'archivos_legales' => 'nullable|array',
             'archivos_tecnicos' => 'nullable|array',
+            'archivos_a_eliminar' => 'nullable|array',
+
         ]);
 
         $licitacion->update([
@@ -260,12 +264,16 @@ public function edit(Licitacion $licitacion)
 
         $licitacion->archivos()->detach();
 
+        // Sincronizar archivos legales
+        $licitacion->archivos()->wherePivot('tipo', 'legal')->detach();
         if ($request->filled('archivos_legales')) {
             foreach ($request->archivos_legales as $archivoId) {
                 $licitacion->archivos()->attach($archivoId, ['tipo' => 'legal']);
             }
         }
 
+        // Sincronizar archivos técnicos
+        $licitacion->archivos()->wherePivot('tipo', 'tecnico')->detach();
         if ($request->filled('archivos_tecnicos')) {
             foreach ($request->archivos_tecnicos as $archivoId) {
                 $licitacion->archivos()->attach($archivoId, ['tipo' => 'tecnico']);

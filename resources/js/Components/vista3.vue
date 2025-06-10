@@ -147,6 +147,9 @@ async function cargarDocumentosEmpresa(empresaId) {
     
     archivosIds.forEach(id => documentTypeMap.value[tipo].archivos.add(id));
     documentTypeMap.value[tipo].empresas.add(empresaId);
+    // Forzar actualización de selectedDocumentTypes después de cargar documentos
+    updateSelectedDocumentTypesFromModelValue();
+
   });
 }
 
@@ -198,6 +201,25 @@ watch(() => props.modelValue, (newValue) => {
   
   selectedDocumentTypes.value = Array.from(tiposSeleccionados);
 }, { immediate: true });
+
+//Funcion para la carga de edit.vue
+function updateSelectedDocumentTypesFromModelValue() {
+  const tiposSeleccionados = new Set();
+  const archivosSeleccionados = new Set(props.modelValue);
+  
+  groupedDocumentTypes.value.forEach(doc => {
+    const todosArchivosSeleccionados = doc.archivos.every(archivo =>
+      archivosSeleccionados.has(archivo)
+    );
+    
+    if (todosArchivosSeleccionados && doc.archivos.length > 0) {
+      tiposSeleccionados.add(doc.tipo);
+    }
+  });
+
+  selectedDocumentTypes.value = Array.from(tiposSeleccionados);
+}
+
 </script>
 
 <style scoped>

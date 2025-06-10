@@ -14,8 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->string('nombre');
             $table->date('fecha');
-            // $table->foreignId('empresa_id')->constrained()->onDelete('cascade');
-            // $table->foreignId('estado_id')->constrained()->onDelete('cascade');  
+             
             $table->string('ruta_expediente');
 
 

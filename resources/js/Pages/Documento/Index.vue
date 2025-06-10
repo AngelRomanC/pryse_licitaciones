@@ -77,7 +77,7 @@ const destroy = (id) => {
                         <td class="align-items-center">
                         </td>
                         <td data-label="Nombre de Documento" class="border p-2">{{ documento.nombre_documento }}</td>
-                        <td data-label="Empresa" class="border p-2">{{ documento.empresa.nombre}}</td>
+                        <td data-label="Empresa" class="border p-2">  {{ documento.empresa ? documento.empresa.nombre : 'Sin nombre' }}</td>
                         <td data-label="Documento" class="border p-2">{{ documento.tipo_de_documento.nombre_documento}}</td>
                         <td data-label="Departamento" class="border p-2">{{ documento.departamento.nombre_departamento}}</td>
                         <td data-label="Fecha Revalidación" class="border p-2">{{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }} </td>
