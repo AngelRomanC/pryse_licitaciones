@@ -49,9 +49,9 @@ class EmpresaController extends Controller
 
         // Validar los datos recibidos
         $validated = $request->validate([
-            'nombre' => 'required|string|max:50',
-            'descripcion' => 'required|string|max:50',
-            'direccion' => 'required|string|max:50',
+            'nombre' => 'required|string|max:100',
+            'descripcion' => 'required|string|max:100',
+            'direccion' => 'required|string|max:100',
             //'telefono' => 'required|string|max:50|unique:empresas,telefono',
             'telefono' => 'required|digits:10|unique:empresas,telefono',
             'email' => 'required|email|max:50|unique:empresas,email',

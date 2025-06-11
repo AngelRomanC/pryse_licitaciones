@@ -28,7 +28,7 @@ class Documento extends Model
 
     public function tipoDeDocumento()
     {
-        return $this->belongsTo(TipoDeDocumento::class, );
+        return $this->belongsTo(TipoDeDocumento::class, ); //Recuerda que el nombre de función es la que usaras en el Controlador Docuement
     }
     public function estado()
     {

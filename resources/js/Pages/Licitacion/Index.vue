@@ -31,7 +31,7 @@ let timeout = null
 function buscar() {
   clearTimeout(timeout)
   timeout = setTimeout(() => {
-    router.get(route('licitacion.index'), filters.value, {
+    router.get(route(`${props.routeName}index`), filters.value, {
       preserveState: true,
       replace: true,
     })
@@ -39,7 +39,7 @@ function buscar() {
 }
 function limpiar() {
   filters.value.search = ''
-  router.get(route('licitacion.index'), {}, {
+  router.get(route(`${props.routeName}index`), {}, {
     preserveState: false,
     replace: true,
   })

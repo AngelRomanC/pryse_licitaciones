@@ -47,7 +47,7 @@ class DepartamentoController extends Controller
     {
         // Validar los datos recibidos
         $validated = $request->validate([
-            'nombre_departamento' => 'required|string|max:50',
+            'nombre_departamento' => 'required|string|max:100',
             'email' => 'required|email|max:50|unique:departamentos,email',
 
         ], [

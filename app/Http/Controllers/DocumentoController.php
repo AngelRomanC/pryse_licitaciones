@@ -33,20 +33,55 @@ class DocumentoController extends Controller
         $this->middleware("permission:{$this->module}.update")->only(['edit', 'update']);
         $this->middleware("permission:{$this->module}.delete")->only(['destroy']);
     }
-    public function index()
+    public function index(Request $request)
     {
 
-        $documentos = Documento::with(['empresa', 'tipoDeDocumento', 'estado', 'departamento', 'modalidades'])
-            ->where('nombre_documento', 'Documento Técnico') // Filtra solo los documentos técnicos
-            ->orderBy('id', 'desc')
-            ->paginate(8)
-            ->withQueryString();
+        $query = Documento::with(['empresa', 'tipoDeDocumento', 'departamento']);
+
+        // if ($request->filled('search')) {
+        //     $query->where('nombre_documento', 'like', '%' . $request->search . '%');
+        // }
+        if ($request->filled('search')) {
+            $searchTerm = '%' . $request->search . '%';
+
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('nombre_documento', 'like', $searchTerm)
+                    ->orWhereHas('empresa', function ($q) use ($searchTerm) {
+                        $q->where('nombre', 'like', $searchTerm);
+                    })
+                    ->orWhereHas('tipoDeDocumento', function ($q) use ($searchTerm) {
+                        $q->where('nombre_documento', 'like', $searchTerm);
+                    })
+                    ->orWhereHas('departamento', function ($q) use ($searchTerm) {
+                        $q->where('nombre_departamento', 'like', $searchTerm);
+                    });
+            });
+        }
+
+        if ($request->filled('empresa')) {
+            $query->where('empresa_id', $request->empresa);
+        }
+
+        if ($request->filled('tipo_de_documento')) {
+            $query->where('tipo_de_documento_id', $request->tipo_de_documento);
+        }
+
+        if ($request->filled('departamento')) {
+            $query->where('departamento_id', $request->departamento);
+        }
+
+        $documentos = $query->paginate(10)->withQueryString();
 
         return Inertia::render('Documento/Index', [
             'titulo' => 'Lista de Documentos Técnicos',
             'documentos' => $documentos,
             'routeName' => $this->routeName,
-            'loadingResults' => false
+            'loadingResults' => false,
+            'empresas' => Empresa::select('id', 'nombre as name')->get(), // Añadido as name
+            'tipos_documento' => TipoDeDocumento::select('id', 'nombre_documento as name')->get(), // Añadido as name
+            'departamentos' => Departamento::select('id', 'nombre_departamento as name')->get(), // Añadido as name
+            'filters' => $request->all(['search', 'empresa', 'tipo_de_documento', 'departamento']),
+
         ]);
     }
 
@@ -343,48 +378,48 @@ class DocumentoController extends Controller
     }
 
     public function descargarTodos(Documento $documento)
-{
-    return $this->procesarDescarga($documento);
-}
-
-protected function procesarDescarga($documento)
-{
-   $zip = new ZipArchive;
-    $zipFileName = "documento-{$documento->id}-archivos-".now()->format('YmdHis').".zip";
-    $zipPath = storage_path("app/public/temp/{$zipFileName}");
-
-    // Crear directorio temporal si no existe
-    if (!file_exists(dirname($zipPath))) {
-        mkdir(dirname($zipPath), 0755, true);
+    {
+        return $this->procesarDescarga($documento);
     }
 
-    if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
-        // Carpeta para archivos principales
-        foreach ($documento->archivos->where('tipo', 'principal') as $archivo) {
-            $filePath = storage_path("app/public/{$archivo->ruta_archivo}");
-            if (file_exists($filePath)) {
-                $nombreArchivo = $archivo->nombre_original ?: basename($archivo->ruta_archivo);
-                $zip->addFile($filePath, "Principales/{$nombreArchivo}");
-            }
+    protected function procesarDescarga($documento)
+    {
+        $zip = new ZipArchive;
+        $zipFileName = "documento-{$documento->id}-archivos-" . now()->format('YmdHis') . ".zip";
+        $zipPath = storage_path("app/public/temp/{$zipFileName}");
+
+        // Crear directorio temporal si no existe
+        if (!file_exists(dirname($zipPath))) {
+            mkdir(dirname($zipPath), 0755, true);
         }
 
-        // Carpeta para archivos anexos
-        foreach ($documento->archivos->where('tipo', 'anexo') as $archivo) {
-            $filePath = storage_path("app/public/{$archivo->ruta_archivo}");
-            if (file_exists($filePath)) {
-                $nombreArchivo = $archivo->nombre_original ?: basename($archivo->ruta_archivo);
-                $zip->addFile($filePath, "Anexos/{$nombreArchivo}");
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+            // Carpeta para archivos principales
+            foreach ($documento->archivos->where('tipo', 'principal') as $archivo) {
+                $filePath = storage_path("app/public/{$archivo->ruta_archivo}");
+                if (file_exists($filePath)) {
+                    $nombreArchivo = $archivo->nombre_original ?: basename($archivo->ruta_archivo);
+                    $zip->addFile($filePath, "Principales/{$nombreArchivo}");
+                }
             }
+
+            // Carpeta para archivos anexos
+            foreach ($documento->archivos->where('tipo', 'anexo') as $archivo) {
+                $filePath = storage_path("app/public/{$archivo->ruta_archivo}");
+                if (file_exists($filePath)) {
+                    $nombreArchivo = $archivo->nombre_original ?: basename($archivo->ruta_archivo);
+                    $zip->addFile($filePath, "Anexos/{$nombreArchivo}");
+                }
+            }
+
+            $zip->close();
+
+            return response()
+                ->download($zipPath)
+                ->deleteFileAfterSend(true);
         }
-        
-        $zip->close();
-        
-        return response()
-            ->download($zipPath)
-            ->deleteFileAfterSend(true);
+
+        return back()->with('error', 'No se pudo crear el archivo ZIP');
     }
-
-    return back()->with('error', 'No se pudo crear el archivo ZIP');
-}
 
 }

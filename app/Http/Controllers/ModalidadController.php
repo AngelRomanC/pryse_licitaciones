@@ -47,7 +47,7 @@ class ModalidadController extends Controller
     {
          // Validar los datos recibidos
          $validated = $request->validate([
-            'nombre_modalidad' => 'required|string|max:50',
+            'nombre_modalidad' => 'required|string|max:100',
         ]);
 
         Modalidad::create($validated);

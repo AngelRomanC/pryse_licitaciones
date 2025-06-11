@@ -49,7 +49,7 @@ class TipoDeDocumentoController extends Controller
     {
         // Validar los datos recibidos
         $validated = $request->validate([
-            'nombre_documento' => 'required|string|max:50',
+            'nombre_documento' => 'required|string|max:100',
         ]);
 
         TipoDeDocumento::create($validated);

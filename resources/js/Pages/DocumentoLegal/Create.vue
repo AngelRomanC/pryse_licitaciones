@@ -60,6 +60,10 @@ const handleSubmit = () => {
                         placeholder="Nombre del documento"
                         :icon="mdiFormatListChecks"
                         required
+                        disabled
+                        class="bg-gray-100 cursor-not-allowed"
+                        title="Campo no editable - Documento Legal fijo"
+
                     />
                 </FormField>
 
