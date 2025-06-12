@@ -2,25 +2,10 @@
   <div class="document-selector">
     <!-- Sección de documentos -->
     <div class="document-section">
-      <div class="section-header">
-        <h3 class="section-title">{{ title }}</h3>
-        <div class="pagination-controls" v-if="paginatedDocumentTypes.length > 0">
-          <button @click="prevPage" :disabled="currentPage === 1" class="pagination-button">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
-          </button>
-          <span class="page-indicator">Página {{ currentPage }} de {{ totalPages }}</span>
-          <button @click="nextPage" :disabled="currentPage === totalPages" class="pagination-button">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
-          </button>
-        </div>
-      </div>
+      <h3 class="section-title">{{ title }}</h3>
       <div class="document-types-container">
         <div 
-          v-for="doc in paginatedDocumentTypes" 
+          v-for="doc in groupedDocumentTypes" 
           :key="`${type}-${doc.tipo}`"
           class="document-type-card"
         >
@@ -41,9 +26,6 @@
             </div>
           </label>
         </div>
-      </div>
-      <div class="no-documents" v-if="groupedDocumentTypes.length === 0">
-        No hay documentos disponibles
       </div>
     </div>
   </div>
@@ -86,37 +68,10 @@ const documentos = ref([]);
 const selectedDocumentTypes = ref([]);
 const documentTypeMap = ref({});
 
-// Variables para paginación
-const itemsPerPage = 4;
-const currentPage = ref(1);
-
 // Título dinámico
 const title = computed(() => 
   props.type === 'tecnico' ? 'Documentos Técnicos' : 'Documentos Legales'
 );
-
-// Computed para documentos paginados
-const paginatedDocumentTypes = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-  return groupedDocumentTypes.value.slice(start, end);
-});
-
-const totalPages = computed(() => {
-  return Math.ceil(groupedDocumentTypes.value.length / itemsPerPage);
-});
-
-function nextPage() {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value++;
-  }
-}
-
-function prevPage() {
-  if (currentPage.value > 1) {
-    currentPage.value--;
-  }
-}
 
 // Watcher para controlar cambios en las empresas seleccionadas
 watch(() => props.modelValueEmpresas, async (nuevasEmpresas, oldEmpresas) => {
@@ -194,6 +149,7 @@ async function cargarDocumentosEmpresa(empresaId) {
     documentTypeMap.value[tipo].empresas.add(empresaId);
     // Forzar actualización de selectedDocumentTypes después de cargar documentos
     updateSelectedDocumentTypesFromModelValue();
+
   });
 }
 
@@ -264,10 +220,6 @@ function updateSelectedDocumentTypesFromModelValue() {
   selectedDocumentTypes.value = Array.from(tiposSeleccionados);
 }
 
-// Resetear página cuando cambian los documentos
-watch(groupedDocumentTypes, () => {
-  currentPage.value = 1;
-});
 </script>
 
 <style scoped>
@@ -278,55 +230,13 @@ watch(groupedDocumentTypes, () => {
   margin-top: 1rem;
 }
 
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
 .section-title {
   font-size: 1.125rem;
   font-weight: 600;
   color: #2d3748;
-  margin: 0;
-}
-
-.pagination-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.pagination-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  width: 2rem;
-  height: 2rem;
-}
-
-.pagination-button:hover:not(:disabled) {
-  background: #f1f5f9;
-  border-color: #cbd5e0;
-}
-
-.pagination-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.page-indicator {
-  font-size: 0.875rem;
-  color: #4a5568;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .document-types-container {
@@ -388,14 +298,6 @@ watch(groupedDocumentTypes, () => {
 
 .document-empresas::before {
   content: "🏢 ";
-}
-
-.no-documents {
-  padding: 1.5rem;
-  text-align: center;
-  color: #718096;
-  border: 1px dashed #e2e8f0;
-  border-radius: 0.5rem;
 }
 
 @media (min-width: 768px) {
