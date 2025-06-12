@@ -86,6 +86,12 @@ export default [
     icon: mdiScaleBalance,
     role: "Admin",
   }, 
+    {
+    href:"/licitacion",
+    label: "Licitaciones",
+    icon: mdiGavel ,
+    role: "Admin",
+  }, 
  
 
   //Modulos a Usuario de sistema 
