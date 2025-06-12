@@ -70,7 +70,7 @@ class DocumentoController extends Controller
             $query->where('departamento_id', $request->departamento);
         }
 
-        $documentos = $query->paginate(10)->withQueryString();
+        $documentos = $query->paginate(8)->withQueryString();
 
         return Inertia::render('Documento/Index', [
             'titulo' => 'Lista de Documentos Técnicos',
