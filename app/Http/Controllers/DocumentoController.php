@@ -36,7 +36,9 @@ class DocumentoController extends Controller
     public function index(Request $request)
     {
 
-        $query = Documento::with(['empresa', 'tipoDeDocumento', 'departamento']);
+        //$query = Documento::with(['empresa', 'tipoDeDocumento', 'departamento']);
+        $query = Documento::with(['empresa', 'tipoDeDocumento', 'departamento'])
+        ->where('nombre_documento', 'Documento Técnico'); // Filtro base para documentos legales
 
         // if ($request->filled('search')) {
         //     $query->where('nombre_documento', 'like', '%' . $request->search . '%');
