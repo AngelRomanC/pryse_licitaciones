@@ -39,8 +39,8 @@ const form = useForm({
     .filter(a => a.pivot.tipo === 'tecnico')
     .map(a => a.id),
 });
-console.log('Legales seleccionados:', form.archivos_legales)
-console.log('Técnicos seleccionados:', form.archivos_tecnicos)
+// console.log('Legales seleccionados:', form.archivos_legales)
+// console.log('Técnicos seleccionados:', form.archivos_tecnicos)
 
 const handleSubmit = async () => {
   try {
@@ -115,10 +115,7 @@ console.log('Datos enviados:', form.data());
   }
 };
 
-// Botón para descargar el expediente
-const descargarExpediente = () => {
-  window.location.href = route('licitacion.descargarExpediente', props.licitacion.nombre);
-};
+
 </script>
 
 <template>
@@ -215,13 +212,7 @@ const descargarExpediente = () => {
             label="Actualizar" 
             :disabled="form.processing"
           />
-          <BaseButton 
-            @click="descargarExpediente" 
-            type="button" 
-            color="success" 
-            outline 
-            label="Descargar Expediente" 
-          />
+      
           <BaseButton 
             :href="route('licitacion.index')" 
             type="button" 

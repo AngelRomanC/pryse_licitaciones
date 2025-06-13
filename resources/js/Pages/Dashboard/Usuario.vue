@@ -37,11 +37,11 @@ const totalDocumentosTecnicos = computed(() => props.documentos.total);
 const totalDocumentosLegales = computed(() => props.documentosLegal.total);
 
 //checar la relacion archivos
-onMounted(() => {
-  props.documentosLegal.data.forEach((doc, index) => {
-    console.log(`Archivos del  documento #${index + 1}:`, doc.archivos);
-  });
-});
+// onMounted(() => {
+//   props.documentosLegal.data.forEach((doc, index) => {
+//     console.log(`Archivos del  documento #${index + 1}:`, doc.archivos);
+//   });
+// });
 
 </script>
 

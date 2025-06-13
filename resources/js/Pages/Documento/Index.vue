@@ -27,11 +27,11 @@ const props = defineProps({
 });
 import { onMounted } from 'vue';
 
-onMounted(() => {
-    console.log('empresas:', props.empresas);
-    console.log('tipos_documento:', props.tipos_documento);
-    console.log('departamentos:', props.departamentos);
-});
+// onMounted(() => {
+//     console.log('empresas:', props.empresas);
+//     console.log('tipos_documento:', props.tipos_documento);
+//     console.log('departamentos:', props.departamentos);
+// });
 
 // Filtros reactivos
 const filters = ref({
@@ -119,7 +119,7 @@ const resetFilters = () => {
                 </FormField>
 
                 <!-- Filtro por tipo de documento -->
-                <FormField label="Tipo de documento">
+                <FormField label="Documento">
                     <FormControl
                         v-model="filters.tipo_de_documento"
                         :options="tipos_documento"

@@ -36,20 +36,50 @@ class DocumentoLegalController extends Controller
         $this->middleware("permission:{$this->module}.delete")->only(['destroy']);
 
     }
-    public function index()
+    public function index(Request $request)
     {
 
-        $documentos = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento'])
-            ->where('nombre_documento', 'Documento Legal') // Filtra solo los documentos técnicos
-            ->orderBy('id', 'desc')
-            ->paginate(8)
-            ->withQueryString();
+        $query = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento']);
+        if ($request->filled('search')) {
+            $searchTerm = '%' . $request->search . '%';
+
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('nombre_documento', 'like', $searchTerm)
+                    ->orWhereHas('empresa', function ($q) use ($searchTerm) {
+                        $q->where('nombre', 'like', $searchTerm);
+                    })
+                    ->orWhereHas('tipoDeDocumento', function ($q) use ($searchTerm) {
+                        $q->where('nombre_documento', 'like', $searchTerm);
+                    })
+                    ->orWhereHas('departamento', function ($q) use ($searchTerm) {
+                        $q->where('nombre_departamento', 'like', $searchTerm);
+                    });
+            });
+        }
+
+        if ($request->filled('empresa')) {
+            $query->where('empresa_id', $request->empresa);
+        }
+
+        if ($request->filled('tipo_de_documento')) {
+            $query->where('tipo_de_documento_id', $request->tipo_de_documento);
+        }
+
+        if ($request->filled('departamento')) {
+            $query->where('departamento_id', $request->departamento);
+        }
+
+        $documentos = $query->paginate(7)->withQueryString();
 
         return Inertia::render('DocumentoLegal/Index', [
             'titulo' => 'Lista de Documentos Legales',
             'documentos' => $documentos,
             'routeName' => $this->routeName,
-            'loadingResults' => false
+            'loadingResults' => false,
+            'empresas' => Empresa::select('id', 'nombre as name')->get(), // Añadido as name
+            'tipos_documento' => TipoDeDocumento::select('id', 'nombre_documento as name')->get(), // Añadido as name
+            'departamentos' => Departamento::select('id', 'nombre_departamento as name')->get(), // Añadido as name
+            'filters' => $request->all(['search', 'empresa', 'tipo_de_documento', 'departamento']),
         ]);
     }
 

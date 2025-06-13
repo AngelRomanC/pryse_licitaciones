@@ -158,14 +158,15 @@ const agregarDocumentosAnexos = (files) => {
                         placeholder="Selecciona una empresa"
                         required
                     />
-                    <Link 
-  :href="route('empresa.create', { redirect: route('documento.edit', documento.id) })" 
-  class="ml-2 text-blue-600 hover:underline"
->
-  + Nueva Empresa
-</Link>
-
                 </FormField>
+                <!--     <Link 
+                        :href="route('empresa.create', { redirect: route('documento.edit', documento.id) })" 
+                        class="ml-2 text-blue-600 hover:underline"
+                        >
+                        + Nueva Empresa
+                    </Link> -->
+
+                
 
                 <!-- Selector de Tipo de Documento -->
                 <FormField label="Tipo de documento" :error="form.errors.tipo_de_documento_id">

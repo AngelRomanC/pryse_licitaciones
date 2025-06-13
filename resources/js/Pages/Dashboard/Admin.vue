@@ -28,11 +28,11 @@ const props = defineProps({
   latestUsers: Object,
 });
 //checar la relacion archivos
-onMounted(() => {
-  props.documentosLegal.data.forEach((doc, index) => {
-    console.log(`Archivos del  documento #${index + 1}:`, doc.archivos);
-  });
-});
+// onMounted(() => {
+//   props.documentosLegal.data.forEach((doc, index) => {
+//     console.log(`Archivos del  documento #${index + 1}:`, doc.archivos);
+//   });
+// });
 
 // Contar total de documentos
 const totalDocumentosTecnicos = computed(() => props.documentos.total);
