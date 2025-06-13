@@ -4,7 +4,7 @@ import { computed } from "vue";
 import LayoutDashboard from "@/Layouts/LayoutDashboard.vue";
 import SectionMain from "@/Components/SectionMain.vue";
 import SectionTitleLineWithButton from "@/Components/SectionTitleLineWithButton.vue";
-import Pagination from '@/Shared/Pagination.vue';
+import PaginationDashboard from '@/Shared/PaginationDashboard.vue';
 import { Chart as ChartJS, CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement, ArcElement, PointElement, LineElement } from 'chart.js';
 import { Bar, Doughnut } from 'vue-chartjs';
 import CardBoxComponentEmpty from "@/components/CardBoxComponentEmpty.vue";
@@ -163,8 +163,8 @@ onMounted(() => {
           </table>
         </div>
         <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 text-right">
-          <Pagination :currentPage="documentos.current_page" :links="documentos.links"
-            :total="documentos.links.length - 2" />
+          <PaginationDashboard :currentPage="documentos.current_page" :links="documentos.links"
+            :total="documentos.links.length - 2" pageParam="page_tecnico" />
         </div>
       </CardBox>
 
@@ -253,8 +253,8 @@ onMounted(() => {
           </table>
         </div>
         <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 text-right">
-          <Pagination :currentPage="documentosLegal.current_page" :links="documentosLegal.links"
-            :total="documentosLegal.links.length - 2" />
+          <PaginationDashboard :currentPage="documentosLegal.current_page" :links="documentosLegal.links"
+            :total="documentosLegal.links.length - 2" pageParam="page_legal"/>
         </div>
       </CardBox>
     </div>

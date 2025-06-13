@@ -16,7 +16,7 @@
     </div>
 
     <div class="vl-parent">
-        <loading v-model:active="isLoading" :can-cancel="false" :is-full-page="true" />
+        <loading v-model:active="isLoading" :can-cancel="false" :is-full-page="false" />
     </div>
 </template>
 

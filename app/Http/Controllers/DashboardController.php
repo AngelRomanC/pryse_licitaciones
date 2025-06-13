@@ -38,7 +38,7 @@ class DashboardController extends Controller
             $documentosLegal = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento','archivos'])
                 ->where('nombre_documento', 'Documento Legal')
                 ->orderBy('fecha_vigencia', 'asc')
-                ->paginate(8, ['*'], 'page_legal')               
+                ->paginate(8, ['*'], pageName: 'page_legal')               
                 ->through(fn($documentoLegal) => $documentoLegal->setAttribute(
                     'dias_restantes',
                     now()->startOfDay()->diffInDays(Carbon::parse($documentoLegal->fecha_vigencia)->startOfDay(), false) 
@@ -72,7 +72,7 @@ class DashboardController extends Controller
                 ->where('nombre_documento', 'Documento Técnico')
                 ->where('fecha_vigencia', '>=', now())
                 ->orderBy('fecha_vigencia', 'asc')
-                ->paginate(8)
+                ->paginate(8, ['*'], 'page_tecnico')
                 ->through(fn($documento) => $documento->setAttribute(
                     'dias_restantes',
                    now()->startOfDay()->diffInDays(Carbon::parse($documento->fecha_vigencia)->startOfDay(), false) 
@@ -88,7 +88,7 @@ class DashboardController extends Controller
                 ->where('nombre_documento', 'Documento Legal')
                 ->where('fecha_vigencia', '>=', now())
                 ->orderBy('fecha_vigencia', 'asc')
-                ->paginate(8)
+                ->paginate(8, ['*'], pageName: 'page_legal')               
                 ->through(fn($documentoLegal) => $documentoLegal->setAttribute(
                     'dias_restantes',
                     //Carbon::parse($documentoLegal->fecha_vigencia)->diffInDays(now())
