@@ -7,7 +7,7 @@ import SectionMain from "@/Components/SectionMain.vue";
 import SectionTitleLineWithButton from "@/Components/SectionTitleLineWithButton.vue";
 import CardBox from "@/components/CardBox.vue";
 import { Chart as ChartJS, CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement } from 'chart.js';
-import Pagination from '@/Shared/Pagination.vue';
+import PaginationDashboard from '@/Shared/PaginationDashboard.vue';
 import moment from "moment";
 import UsersCard from '@/Components/UsersCard.vue';
 import TechnicalDocumentsCard from '@/Components/TechnicalDocumentsCard.vue';
@@ -142,8 +142,8 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
             </tbody>
           </table>
         </div>
-        <Pagination :currentPage="documentos.current_page" :links="documentos.links"
-          :total="documentos.links.length - 2" />
+        <PaginationDashboard :currentPage="documentos.current_page" :links="documentos.links"
+          :total="documentos.links.length - 2" pageParam="page_tecnico" />
       </CardBox>
 
       <!-- Documentos Legales -->
@@ -217,8 +217,8 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
             </tbody>
           </table>
         </div>
-        <Pagination :currentPage="documentosLegal.current_page" :links="documentosLegal.links"
-          :total="documentosLegal.links.length - 2" />
+        <PaginationDashboard :currentPage="documentosLegal.current_page" :links="documentosLegal.links"
+          :total="documentosLegal.links.length - 2" pageParam="page_legal"/>
       </CardBox>
     </div>
   </LayoutDashboard>

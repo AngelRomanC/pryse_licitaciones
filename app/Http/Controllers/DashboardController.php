@@ -21,7 +21,7 @@ class DashboardController extends Controller
             $documentos = Documento::with(['empresa', 'tipoDeDocumento', 'estado', 'departamento', 'modalidades','archivos'])
                 -> where('nombre_documento', 'Documento Técnico')
                 ->orderBy('fecha_vigencia', 'asc')
-                ->paginate(10)
+                ->paginate(8, ['*'], 'page_tecnico')
                 ->through(fn($documento) => $documento->setAttribute(
                     'dias_restantes',
                     now()->startOfDay()->diffInDays(Carbon::parse($documento->fecha_vigencia)->startOfDay(), false) 
@@ -38,7 +38,7 @@ class DashboardController extends Controller
             $documentosLegal = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento','archivos'])
                 ->where('nombre_documento', 'Documento Legal')
                 ->orderBy('fecha_vigencia', 'asc')
-                ->paginate(10)
+                ->paginate(8, ['*'], 'page_legal')               
                 ->through(fn($documentoLegal) => $documentoLegal->setAttribute(
                     'dias_restantes',
                     now()->startOfDay()->diffInDays(Carbon::parse($documentoLegal->fecha_vigencia)->startOfDay(), false) 
