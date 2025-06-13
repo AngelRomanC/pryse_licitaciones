@@ -41,15 +41,50 @@ class DatosSeeder extends Seeder
                 'telefono' => '1234567890',
                 'email' => 'pryse@pryse.com',
             ],
+            [
+                'nombre' => 'ERI',
+                'descripcion' => 'Empresa dedicada a soluciones tecnológicas.',
+                'direccion' => 'Avenida Rio Mayo 123, Cuernavaca, Morelos',
+                'telefono' => '7772087458',
+                'email' => 'eri@pryse.com',
+            ],
+            [
+                'nombre' => 'MAXI',
+                'descripcion' => 'Empresa dedicada a soluciones tecnológicas.',
+                'direccion' => 'Avenida Rio Mayo 123, Cuernavaca, Morelos',
+                'telefono' => '7772089635',
+                'email' => 'maxi@pryse.com',
+            ],
+            [
+                'nombre' => 'PROTECCIÓN',
+                'descripcion' => 'Empresa dedicada a soluciones tecnológicas.',
+                'direccion' => 'Avenida Rio Mayo 123, Cuernavaca, Morelos',
+                'telefono' => '7772089635',
+                'email' => 'proteccion@pryse.com',
+            ],
+            [
+                'nombre' => 'VALBON',
+                'descripcion' => 'Empresa dedicada a soluciones tecnológicas.',
+                'direccion' => 'Avenida Rio Mayo 123, Cuernavaca, Morelos',
+                'telefono' => '7772089635',
+                'email' => 'valbon@pryse.com',
+            ],
+            [
+                'nombre' => 'LAGUNA',
+                'descripcion' => 'Empresa dedicada a soluciones tecnológicas.',
+                'direccion' => 'Avenida Rio Mayo 123, Cuernavaca, Morelos',
+                'telefono' => '7772089635',
+                'email' => 'laguna@pryse.com',
+            ],
 
         ]);
 
         DB::table('modalidads')->insert([
             ['nombre_modalidad' => 'Ninguna'],
-            ['nombre_modalidad' => 'Seguridad privada a personas'],
-            ['nombre_modalidad' => 'Seguridad privada en los bienes'],
-            ['nombre_modalidad' => 'Seguridad privada en el traslado de bienes o valores '],
-            ['nombre_modalidad' => 'Servicios de alarmas y de monitoreo electrónico '],
+            ['nombre_modalidad' => 'I. Seguridad privada a personas'],
+            ['nombre_modalidad' => 'II. Seguridad privada en los bienes'],
+            ['nombre_modalidad' => 'III. Seguridad privada en el traslado de bienes o valores '],
+            ['nombre_modalidad' => 'IV. Servicios de alarmas y de monitoreo electrónico '],
 
         ]);
 
