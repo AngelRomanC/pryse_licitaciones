@@ -46,7 +46,7 @@ class UserController extends Controller
 
         
         //$admin = User::where('role', 'Admin')->get();
-        $admin = User::where('role', 'Admin')->paginate(5); // Puedes ajustar el 10 al número de elementos por página que desees
+        $admin = User::where('role', 'Admin')->paginate(8); // Puedes ajustar el 10 al número de elementos por página que desees
 
 
         $usuarios = $this->model::with('roles')

@@ -27,7 +27,7 @@ class UsuarioGeneralController extends Controller
 
     public function index()
     {
-        $usuarios = User::role('Usuario')->with('roles')->paginate(5);
+        $usuarios = User::role('Usuario')->with('roles')->paginate(8);
 
         return Inertia::render("{$this->source}Index", [
             'usuarios' => $usuarios,
