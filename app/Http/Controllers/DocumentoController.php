@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DocumentoTecnicoRequest;
 use App\Models\Departamento;
 use App\Models\Documento;
 use App\Models\Empresa;
@@ -112,7 +113,7 @@ class DocumentoController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(DocumentoTecnicoRequest $request)
     {
         // Validar los datos recibidos
         $validated = $request->validate([
@@ -126,9 +127,9 @@ class DocumentoController extends Controller
             'modalidad_id' => 'required|array',
             'modalidad_id.*' => 'exists:modalidads,id',
             'ruta_documento' => 'required|array',
-            'ruta_documento.*' => 'file|mimes:pdf|max:10240',
+            'ruta_documento.*' => 'file|mimes:pdf|max:102400',
             'ruta_documento_anexo' => 'nullable|array',
-            'ruta_documento_anexo.*' => 'file|mimes:pdf|max:10240',
+            'ruta_documento_anexo.*' => 'file|mimes:pdf|max:102400',
         ]);
 
         // Definir carpeta base para documentos técnicos
@@ -270,6 +271,7 @@ class DocumentoController extends Controller
     {
         // logger('Archivos pdf en updateControlador:', $request->allFiles());
         // Log::info('Datos recibidos en update:', $request->all());
+        //dd(vars: $request->all());
 
         // Validar los datos recibidos
         $validated = $request->validate([
@@ -282,9 +284,9 @@ class DocumentoController extends Controller
             'fecha_vigencia' => 'required|date',
             'modalidad_id' => 'nullable|array|exists:modalidads,id',
             'nuevos_documentos_principales' => 'nullable|array',
-            'nuevos_documentos_principales.*' => 'file|mimes:pdf|max:10240',
+            'nuevos_documentos_principales.*' => 'file|mimes:pdf|max:102400',
             'nuevos_documentos_anexos' => 'nullable|array',
-            'nuevos_documentos_anexos.*' => 'file|mimes:pdf|max:10240',
+            'nuevos_documentos_anexos.*' => 'file|mimes:pdf|max:102400',
             'archivos_a_eliminar' => 'nullable|array', // Para manejar eliminación de archivos existentes
             'archivos_a_eliminar.*' => 'integer|exists:documento_archivos,id'
         ]);

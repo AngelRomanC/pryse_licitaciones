@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DocumentoLegalRequest;
 use App\Models\Departamento;
 use App\Models\Documento;
 use App\Models\DocumentoLegal;
@@ -41,7 +42,7 @@ class DocumentoLegalController extends Controller
 
         //$query = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento']);
         $query = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento'])
-        ->where('nombre_documento', 'Documento Legal'); // Filtro base para documentos legales
+            ->where('nombre_documento', 'Documento Legal'); // Filtro base para documentos legales
 
         if ($request->filled('search')) {
             $searchTerm = '%' . $request->search . '%';
@@ -111,7 +112,7 @@ class DocumentoLegalController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(DocumentoLegalRequest $request)
     {
         // Validar los datos recibidos
         $validated = $request->validate([
@@ -122,9 +123,9 @@ class DocumentoLegalController extends Controller
             'fecha_revalidacion' => 'required|date',
             'fecha_vigencia' => 'required|date',
             'ruta_documento' => 'required|array',
-            'ruta_documento.*' => 'file|mimes:pdf|max:10240',
+            'ruta_documento.*' => 'file|mimes:pdf|max:102400',
             'ruta_documento_anexo' => 'nullable|array',
-            'ruta_documento_anexo.*' => 'file|mimes:pdf|max:10240',
+            'ruta_documento_anexo.*' => 'file|mimes:pdf|max:102400',
         ]);
 
         // Definir carpeta base para documentos técnicos
@@ -251,20 +252,32 @@ class DocumentoLegalController extends Controller
     {
         // logger('Archivos pdf en updateControlador:', $request->allFiles());
         // Log::info('Datos recibidos en update:', $request->all());
+        //dd(vars: $request->all(), $request->allFiles());
 
         // Validar los datos recibidos
-        $validated = $request->validate([
-            'nombre_documento' => 'required|string|max:255',
-            'empresa_id' => 'required|exists:empresas,id',
-            'tipo_de_documento_id' => 'required|exists:tipo_de_documentos,id',
-            'departamento_id' => 'required|exists:departamentos,id',
-            'fecha_revalidacion' => 'required|date',
-            'fecha_vigencia' => 'required|date',
-            'nuevos_documentos_anexos' => 'nullable|array',
-            'nuevos_documentos_anexos.*' => 'file|mimes:pdf|max:10240',
-            'archivos_a_eliminar' => 'nullable|array', // Para manejar eliminación de archivos existentes
-            'archivos_a_eliminar.*' => 'integer|exists:documento_archivos,id'
-        ]);
+        $validated = $request->validate(
+            [
+                'nombre_documento' => 'required|string|max:255',
+                'empresa_id' => 'required|exists:empresas,id',
+                'tipo_de_documento_id' => 'required|exists:tipo_de_documentos,id',
+                'departamento_id' => 'required|exists:departamentos,id',
+                'fecha_revalidacion' => 'required|date',
+                'fecha_vigencia' => 'required|date',
+                'nuevos_documentos_principales' => 'nullable|array',
+                'nuevos_documentos_principales.*' => 'file|mimes:pdf|max:102400',
+                'nuevos_documentos_anexos' => 'nullable|array',
+                'nuevos_documentos_anexos.*' => 'file|mimes:pdf|max:102400',
+                'archivos_a_eliminar' => 'nullable|array', // Para manejar eliminación de archivos existentes
+                'archivos_a_eliminar.*' => 'integer|exists:documento_archivos,id'
+            ],
+            [
+                // Mensajes personalizados
+                'nuevos_documentos_principales.*.max' => 'Cada archivo principal debe pesar máximo 100 MB.',
+                'nuevos_documentos_principales.*.mimes' => 'Los archivos principales deben ser PDF.',
+                'nuevos_documentos_anexos.*.max' => 'Cada archivo anexo debe pesar máximo 100 MB.',
+                'nuevos_documentos_anexos.*.mimes' => 'Los archivos anexos deben ser PDF.',
+            ]
+        );
 
         // Si no se sube archivo, conservar el archivo actual
         $documentoLegal->update([
@@ -353,43 +366,43 @@ class DocumentoLegalController extends Controller
         return $this->procesarDescarga($documento);
     }
     protected function procesarDescarga($documento)
-{
-   $zip = new ZipArchive;
-    $zipFileName = "documento-{$documento->id}-archivos-".now()->format('YmdHis').".zip";
-    $zipPath = storage_path("app/public/temp/{$zipFileName}");
+    {
+        $zip = new ZipArchive;
+        $zipFileName = "documento-{$documento->id}-archivos-" . now()->format('YmdHis') . ".zip";
+        $zipPath = storage_path("app/public/temp/{$zipFileName}");
 
-    // Crear directorio temporal si no existe
-    if (!file_exists(dirname($zipPath))) {
-        mkdir(dirname($zipPath), 0755, true);
-    }
-
-    if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
-        // Carpeta para archivos principales
-        foreach ($documento->archivos->where('tipo', 'principal') as $archivo) {
-            $filePath = storage_path("app/public/{$archivo->ruta_archivo}");
-            if (file_exists($filePath)) {
-                $nombreArchivo = $archivo->nombre_original ?: basename($archivo->ruta_archivo);
-                $zip->addFile($filePath, "Principales/{$nombreArchivo}");
-            }
+        // Crear directorio temporal si no existe
+        if (!file_exists(dirname($zipPath))) {
+            mkdir(dirname($zipPath), 0755, true);
         }
 
-        // Carpeta para archivos anexos
-        foreach ($documento->archivos->where('tipo', 'anexo') as $archivo) {
-            $filePath = storage_path("app/public/{$archivo->ruta_archivo}");
-            if (file_exists($filePath)) {
-                $nombreArchivo = $archivo->nombre_original ?: basename($archivo->ruta_archivo);
-                $zip->addFile($filePath, "Anexos/{$nombreArchivo}");
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+            // Carpeta para archivos principales
+            foreach ($documento->archivos->where('tipo', 'principal') as $archivo) {
+                $filePath = storage_path("app/public/{$archivo->ruta_archivo}");
+                if (file_exists($filePath)) {
+                    $nombreArchivo = $archivo->nombre_original ?: basename($archivo->ruta_archivo);
+                    $zip->addFile($filePath, "Principales/{$nombreArchivo}");
+                }
             }
-        }
-        
-        $zip->close();
-        
-        return response()
-            ->download($zipPath)
-            ->deleteFileAfterSend(true);
-    }
 
-    return back()->with('error', 'No se pudo crear el archivo ZIP');
-}
+            // Carpeta para archivos anexos
+            foreach ($documento->archivos->where('tipo', 'anexo') as $archivo) {
+                $filePath = storage_path("app/public/{$archivo->ruta_archivo}");
+                if (file_exists($filePath)) {
+                    $nombreArchivo = $archivo->nombre_original ?: basename($archivo->ruta_archivo);
+                    $zip->addFile($filePath, "Anexos/{$nombreArchivo}");
+                }
+            }
+
+            $zip->close();
+
+            return response()
+                ->download($zipPath)
+                ->deleteFileAfterSend(true);
+        }
+
+        return back()->with('error', 'No se pudo crear el archivo ZIP');
+    }
 
 }

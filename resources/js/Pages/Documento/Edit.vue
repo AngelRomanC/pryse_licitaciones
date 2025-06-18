@@ -82,7 +82,7 @@ const marcarParaEliminar = (id, tipo) => {
 };
 
 // Función para guardar
-const guardar = () => {
+const guardar2 = () => {
     // Crear FormData para enviar archivos
     const formData = new FormData();
     
@@ -113,6 +113,44 @@ const guardar = () => {
     }, {
         forceFormData: true,
       
+    });
+};
+const guardar = () => {
+    const formData = new FormData();
+
+    // Serializar todos los campos excepto los archivos
+    Object.entries(form.data()).forEach(([key, value]) => {
+        if (key === 'nuevos_documentos_principales' || key === 'nuevos_documentos_anexos') return;
+
+        if (Array.isArray(value)) {
+            value.forEach(v => formData.append(`${key}[]`, v));
+        } else {
+            formData.append(key, value);
+        }
+    });
+
+    // Archivos principales
+    form.nuevos_documentos_principales.forEach((file, index) => {
+        formData.append(`nuevos_documentos_principales[${index}]`, file);
+    });
+
+    // Archivos anexos
+    form.nuevos_documentos_anexos.forEach((file, index) => {
+        formData.append(`nuevos_documentos_anexos[${index}]`, file);
+    });
+
+    // PATCH override
+    formData.append('_method', 'PATCH');
+
+    // Usar router.post pero enviando FormData REAL
+    router.post(route(`${props.routeName}update`, props.documento.id), formData, {
+        forceFormData: true,
+        preserveScroll: true,
+        onError: (errors) => {
+                form.setError(errors); // <- ASÍ se vinculan manualmente
+
+            console.log('Errores de validación:', errors);
+        }
     });
 };
 
