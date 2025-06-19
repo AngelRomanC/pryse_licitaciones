@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\DocumentoLegalRequest;
+use App\Http\Requests\UpdateDocumentoLegalRequest;
 use App\Models\Departamento;
 use App\Models\Documento;
 use App\Models\DocumentoLegal;
@@ -248,36 +249,38 @@ class DocumentoLegalController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, DocumentoLegal $documentoLegal)
+    public function update(UpdateDocumentoLegalRequest $request, DocumentoLegal $documentoLegal)
     {
         // logger('Archivos pdf en updateControlador:', $request->allFiles());
         // Log::info('Datos recibidos en update:', $request->all());
         //dd(vars: $request->all(), $request->allFiles());
 
         // Validar los datos recibidos
-        $validated = $request->validate(
-            [
-                'nombre_documento' => 'required|string|max:255',
-                'empresa_id' => 'required|exists:empresas,id',
-                'tipo_de_documento_id' => 'required|exists:tipo_de_documentos,id',
-                'departamento_id' => 'required|exists:departamentos,id',
-                'fecha_revalidacion' => 'required|date',
-                'fecha_vigencia' => 'required|date',
-                'nuevos_documentos_principales' => 'nullable|array',
-                'nuevos_documentos_principales.*' => 'file|mimes:pdf|max:102400',
-                'nuevos_documentos_anexos' => 'nullable|array',
-                'nuevos_documentos_anexos.*' => 'file|mimes:pdf|max:102400',
-                'archivos_a_eliminar' => 'nullable|array', // Para manejar eliminación de archivos existentes
-                'archivos_a_eliminar.*' => 'integer|exists:documento_archivos,id'
-            ],
-            [
-                // Mensajes personalizados
-                'nuevos_documentos_principales.*.max' => 'Cada archivo principal debe pesar máximo 100 MB.',
-                'nuevos_documentos_principales.*.mimes' => 'Los archivos principales deben ser PDF.',
-                'nuevos_documentos_anexos.*.max' => 'Cada archivo anexo debe pesar máximo 100 MB.',
-                'nuevos_documentos_anexos.*.mimes' => 'Los archivos anexos deben ser PDF.',
-            ]
-        );
+        // $validated = $request->validate(
+        //     [
+        //         'nombre_documento' => 'required|string|max:255',
+        //         'empresa_id' => 'required|exists:empresas,id',
+        //         'tipo_de_documento_id' => 'required|exists:tipo_de_documentos,id',
+        //         'departamento_id' => 'required|exists:departamentos,id',
+        //         'fecha_revalidacion' => 'required|date',
+        //         'fecha_vigencia' => 'required|date',
+        //         'nuevos_documentos_principales' => 'nullable|array',
+        //         'nuevos_documentos_principales.*' => 'file|mimes:pdf|max:102400',
+        //         'nuevos_documentos_anexos' => 'nullable|array',
+        //         'nuevos_documentos_anexos.*' => 'file|mimes:pdf|max:102400',
+        //         'archivos_a_eliminar' => 'nullable|array', // Para manejar eliminación de archivos existentes
+        //         'archivos_a_eliminar.*' => 'integer|exists:documento_archivos,id'
+        //     ],
+        //     [
+        //         // Mensajes personalizados
+        //         'nuevos_documentos_principales.*.max' => 'Cada archivo principal debe pesar máximo 100 MB.',
+        //         'nuevos_documentos_principales.*.mimes' => 'Los archivos principales deben ser PDF.',
+        //         'nuevos_documentos_anexos.*.max' => 'Cada archivo anexo debe pesar máximo 100 MB.',
+        //         'nuevos_documentos_anexos.*.mimes' => 'Los archivos anexos deben ser PDF.',
+        //     ]
+        // );
+        $validated = $request->validated();
+
 
         // Si no se sube archivo, conservar el archivo actual
         $documentoLegal->update([

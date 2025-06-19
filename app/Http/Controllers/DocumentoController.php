@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\DocumentoTecnicoRequest;
+use App\Http\Requests\UpdateDocumentoTecnicoRequest;
 use App\Models\Departamento;
 use App\Models\Documento;
 use App\Models\Empresa;
@@ -267,29 +268,31 @@ class DocumentoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Documento $documento)
+    public function update(UpdateDocumentoTecnicoRequest $request, Documento $documento)
     {
         // logger('Archivos pdf en updateControlador:', $request->allFiles());
         // Log::info('Datos recibidos en update:', $request->all());
         //dd(vars: $request->all());
 
         // Validar los datos recibidos
-        $validated = $request->validate([
-            'nombre_documento' => 'required|string|max:255',
-            'empresa_id' => 'required|exists:empresas,id',
-            'tipo_de_documento_id' => 'required|exists:tipo_de_documentos,id',
-            'estado_id' => 'nullable|exists:estados,id',
-            'departamento_id' => 'required|exists:departamentos,id',
-            'fecha_revalidacion' => 'required|date',
-            'fecha_vigencia' => 'required|date',
-            'modalidad_id' => 'nullable|array|exists:modalidads,id',
-            'nuevos_documentos_principales' => 'nullable|array',
-            'nuevos_documentos_principales.*' => 'file|mimes:pdf|max:102400',
-            'nuevos_documentos_anexos' => 'nullable|array',
-            'nuevos_documentos_anexos.*' => 'file|mimes:pdf|max:102400',
-            'archivos_a_eliminar' => 'nullable|array', // Para manejar eliminación de archivos existentes
-            'archivos_a_eliminar.*' => 'integer|exists:documento_archivos,id'
-        ]);
+        // $validated = $request->validate([
+        //     'nombre_documento' => 'required|string|max:255',
+        //     'empresa_id' => 'required|exists:empresas,id',
+        //     'tipo_de_documento_id' => 'required|exists:tipo_de_documentos,id',
+        //     'estado_id' => 'nullable|exists:estados,id',
+        //     'departamento_id' => 'required|exists:departamentos,id',
+        //     'fecha_revalidacion' => 'required|date',
+        //     'fecha_vigencia' => 'required|date',
+        //     'modalidad_id' => 'nullable|array|exists:modalidads,id',
+        //     'nuevos_documentos_principales' => 'nullable|array',
+        //     'nuevos_documentos_principales.*' => 'file|mimes:pdf|max:102400',
+        //     'nuevos_documentos_anexos' => 'nullable|array',
+        //     'nuevos_documentos_anexos.*' => 'file|mimes:pdf|max:102400',
+        //     'archivos_a_eliminar' => 'nullable|array', // Para manejar eliminación de archivos existentes
+        //     'archivos_a_eliminar.*' => 'integer|exists:documento_archivos,id'
+        // ]);
+        $validated = $request->validated();
+
 
         // Si no se sube archivo, conservar el archivo actual
         $documento->update([

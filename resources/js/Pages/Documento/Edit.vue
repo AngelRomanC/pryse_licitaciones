@@ -178,6 +178,9 @@ const agregarDocumentosAnexos = (files) => {
                         placeholder="Nombre del documento"
                         :icon="mdiFileDocument"
                         required
+                        disabled
+                        class="bg-gray-100 cursor-not-allowed"
+                        title="Campo no editable - Documento Técnico fijo"
                     />
                 </FormField>
 
