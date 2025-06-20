@@ -43,7 +43,9 @@ class DocumentoLegalController extends Controller
 
         //$query = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento']);
         $query = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento'])
-            ->where('nombre_documento', 'Documento Legal'); // Filtro base para documentos legales
+            ->where('nombre_documento', 'Documento Legal') // Filtro base para documentos legales
+            ->orderByDesc('created_at'); // o ->latest()
+
 
         if ($request->filled('search')) {
             $searchTerm = '%' . $request->search . '%';
