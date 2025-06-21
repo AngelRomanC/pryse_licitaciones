@@ -42,7 +42,7 @@ const form = useForm({
 // console.log('Legales seleccionados:', form.archivos_legales)
 // console.log('Técnicos seleccionados:', form.archivos_tecnicos)
 
-const handleSubmit = async () => {
+const handleSubmit2 = async () => {
   try {
     const response = await axios.post(route('licitacion.verificarModalidades'), {
       empresa_id: form.empresa_id,
@@ -102,6 +102,98 @@ const handleSubmit = async () => {
 console.log('Datos enviados:', form.data());
 
     form.put(route(`${props.routeName}update`, props.licitacion.id));
+
+  } catch (error) {
+    console.error('Error al verificar modalidades', error);
+    Swal.fire({
+      title: 'Error',
+      text: 'Ocurrió un error al verificar las modalidades',
+      icon: 'error',
+      confirmButtonColor: '#2196F3',
+      confirmButtonText: 'Entendido'
+    });
+  }
+};
+
+const handleSubmit = async () => {
+  try {
+    // Verificar si solo está seleccionada la modalidad "Ninguna"
+    const soloNinguna = form.modalidades_id.length === 1 &&
+      props.modalidades.some(mod =>
+        form.modalidades_id.includes(mod.id) &&
+        mod.name === 'Ninguna'
+      );
+
+    if (!soloNinguna) {
+      // Excluir "Ninguna" de la verificación
+      const modalidadesAVerificar = props.modalidades.filter(
+        mod => form.modalidades_id.includes(mod.id) && mod.name !== 'Ninguna'
+      ).map(mod => mod.id);
+
+      const response = await axios.post(route('licitacion.verificarModalidades'), {
+        empresa_id: form.empresa_id,
+        modalidades_id: modalidadesAVerificar,
+      });
+
+      const errores = response.data.errores;
+      const esPlural = errores.length > 1;
+
+      if (errores.length > 0) {
+        const { isConfirmed } = await Swal.fire({
+          title: `<strong>${esPlural ? 'Empresas con documentos faltantes' : 'Empresa con documentos faltantes'}</strong>`,
+          icon: 'warning',
+          html: `
+            <div class="text-left">
+              <p class="text-gray-700 mb-4">
+                ${esPlural ? 'Las siguientes empresas no tienen' : 'La siguiente empresa no tiene'} documentos técnicos para las modalidades seleccionadas:
+              </p>
+              <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4 max-h-[300px] overflow-y-auto">
+                ${errores.map(e => `
+                  <div class="flex items-start mb-3">
+                    <svg class="h-5 w-5 text-yellow-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                    <span class="text-gray-800 break-words">${e}</span>
+                  </div>
+                `).join('')}
+              </div>
+              <p class="text-sm text-gray-600">
+                ${form.modalidades_id.length > modalidadesAVerificar.length 
+                  ? 'Nota: La modalidad "Ninguna" no requiere documentos. ' 
+                  : ''}
+                Puedes continuar con la licitación, pero ${esPlural ? 'estas empresas no podrán' : 'esta empresa no podrá'} participar en las modalidades mencionadas.
+              </p>
+            </div>
+          `,
+          showCancelButton: true,
+          confirmButtonText: 'Continuar',
+          cancelButtonText: 'Revisar documentos',
+          confirmButtonColor: '#4CAF50',
+          cancelButtonColor: '#F44336',
+          focusConfirm: false,
+          width: '650px',
+          scrollbarPadding: false,
+          customClass: {
+            popup: 'rounded-lg shadow-xl border-t-4 border-yellow-500',
+            title: 'text-xl text-gray-800 mb-2',
+            htmlContainer: 'text-left',
+            confirmButton: 'px-4 py-2 rounded-md font-medium hover:bg-green-600 transition-colors',
+            cancelButton: 'px-4 py-2 rounded-md font-medium hover:bg-red-600 transition-colors ml-3',
+            container: 'scrollbar-gutter-stable'
+          },
+          buttonsStyling: false
+        });
+
+        if (!isConfirmed) return;
+      }
+    }
+
+    console.log('Datos enviados:', form.data());
+
+    // Realiza la actualización
+   
+    form.put(route(`${props.routeName}update`, props.licitacion.id));
+
 
   } catch (error) {
     console.error('Error al verificar modalidades', error);

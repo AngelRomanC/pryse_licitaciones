@@ -192,9 +192,11 @@ const handleSubmit = async () => {
       }
     }
 
-    form.post(route(`${props.routeName}store`), {
-      forceFormData: true,
-    });
+    // form.post(route(`${props.routeName}store`), {
+    //   forceFormData: true,
+    // });
+    form.post(route(`${props.routeName}store`));
+
 
   } catch (error) {
     console.error('Error al verificar modalidades', error);
