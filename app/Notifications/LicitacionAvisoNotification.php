@@ -31,9 +31,9 @@ class LicitacionAvisoNotification extends Notification
         $fechaVencimiento = $nombreDia . $fecha->isoFormat(', D [de] MMMM [de] YYYY');
         
         return (new MailMessage)
-                    ->subject('Aviso Importante: Licitación Próxima a Vencer')
+                    ->subject('Aviso Importante: Documento Próximo a Vencer')
                     ->greeting('Estimado/a Responsable,')
-                    ->line('Le informamos que la licitación:')
+                    ->line('Le informamos que la documentación de:')
                     ->line('**"' . $this->documento->nombre_documento . '"**')
                     ->line('del departamento **' . $this->documento->departamento->nombre_departamento . '**')
                     ->line('vencerá en **' . $this->documento->dias_restantes . ' días** ('.$fechaVencimiento.')')
@@ -51,6 +51,8 @@ class LicitacionAvisoNotification extends Notification
             'dias_restantes' => $this->documento->dias_restantes,
             'nombre_departamento' => $this->documento->nombre_departamento,
             'fecha_vigencia' => $this->documento->fecha_vigencia,
+            'tipoDocumento' => $this->documento->fecha_vigencia,
+
             
 
         ];

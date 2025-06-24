@@ -188,10 +188,9 @@ const handleSubmit = async () => {
       }
     }
 
-    console.log('Datos enviados:', form.data());
-
-    // Realiza la actualización
-   
+    //console.log('Datos enviados:', form.data());
+    
+    // Realiza la actualización   
     form.put(route(`${props.routeName}update`, props.licitacion.id));
 
 
