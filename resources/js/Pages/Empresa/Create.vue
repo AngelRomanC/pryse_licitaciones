@@ -78,9 +78,12 @@ const handleSubmit = () => {
                 <FormField label="Teléfono" :error="form.errors.telefono">
                     <FormControl
                         v-model="form.telefono"
-                        type="text"
                         placeholder="Teléfono"
                         :icon="mdiPhone"
+                         type="tel"
+                        maxlength="10"
+                        pattern="^\d{10}$"
+                        title="El número debe contener exactamente 10 dígitos"
                     />
                 </FormField>
 
