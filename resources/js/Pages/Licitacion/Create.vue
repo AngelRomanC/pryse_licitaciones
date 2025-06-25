@@ -19,7 +19,10 @@ import FormControlV7 from '@/Components/FormControlV7.vue'
 import Vista2 from '@/Components/vista2.vue'
 import Swal from 'sweetalert2';
 import Vista3 from '@/Components/vista3.vue'
+import LoadingOverlay from '@/components/LoadingOverlay.vue';
 
+
+const isUploading = ref(false)
 
 
 const props = defineProps({
@@ -117,6 +120,8 @@ const form = useForm({
 
 const handleSubmit = async () => {
   try {
+    isUploading.value = true; // Mostrar overlay al iniciar
+
     // Verificar si solo está seleccionada "Ninguna"
     const soloNinguna = form.modalidades_id.length === 1 && 
       props.modalidades.some(mod => 
@@ -188,17 +193,27 @@ const handleSubmit = async () => {
           buttonsStyling: false
         });
 
-        if (!isConfirmed) return;
+        //if (!isConfirmed) return;
+        if (!isConfirmed) {
+          isUploading.value = false;
+          return;
+        }
       }
     }
 
     // form.post(route(`${props.routeName}store`), {
     //   forceFormData: true,
     // });
-    form.post(route(`${props.routeName}store`));
+    //form.post(route(`${props.routeName}store`));
+    form.post(route(`${props.routeName}store`), {
+      onFinish: () => {
+        isUploading.value = false;
+      },      
+    });
 
 
   } catch (error) {
+    isUploading.value = false; // Ocultar overlay si falla
     console.error('Error al verificar modalidades', error);
     Swal.fire({
       title: 'Error',
@@ -327,4 +342,5 @@ const handleSubmit = async () => {
       </template>
     </CardBox>
   </LayoutMain>
+ <LoadingOverlay :visible="isUploading" title="Cargando archivo(s)..." subtitle="Por favor, no cierres esta ventana." />
 </template>

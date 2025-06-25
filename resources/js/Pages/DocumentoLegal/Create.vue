@@ -10,7 +10,10 @@ import FormControl from "@/components/FormControl.vue";
 import { mdiBallotOutline, mdiFormatListChecks, mdiOfficeBuilding, mdiFileDocument, mdiMapMarker, mdiCalendar,mdiPlus } from "@mdi/js";
 import FileUploader from '@/Components/FileUploader.vue';
 import CatalogoRedirectButton from '@/Components/CatalogoRedirectButton.vue';
+import { ref } from 'vue'
+import LoadingOverlay from '@/components/LoadingOverlay.vue';
 
+const isUploading = ref(false)
 
 const props = defineProps({
     titulo: String,
@@ -40,8 +43,18 @@ const form = useForm({
     redirect: redirectParam, 
 });
 
-const handleSubmit = () => {    
+const handleSubmit2 = () => {    
     form.post(route(`${props.routeName}store`));
+};
+
+const handleSubmit = () => {
+  isUploading.value = true;
+
+  form.post(route(`${props.routeName}store`), {
+    onFinish: () => {
+      isUploading.value = false;
+    },
+  });
 };
 </script>
 
@@ -197,4 +210,5 @@ const handleSubmit = () => {
             </template>
         </CardBox>
     </LayoutMain>
+ <LoadingOverlay :visible="isUploading" title="Subiendo archivo(s)..." subtitle="Por favor, no cierres esta ventana." />
 </template>

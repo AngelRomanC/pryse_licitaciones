@@ -12,6 +12,11 @@ import FormControlV7 from '@/Components/FormControlV7.vue';
 import FileUploader from '@/Components/FileUploader.vue';
 import CatalogoRedirectButton from '@/Components/CatalogoRedirectButton.vue';
 
+import { ref } from 'vue'
+import LoadingOverlay from '@/components/LoadingOverlay.vue';
+
+
+const isUploading = ref(false)
 
 const props = defineProps({
     titulo: String,
@@ -41,13 +46,23 @@ const form = useForm({
 
 });
 
-const handleSubmit = () => {    
-    //form.post(route(`${props.routeName}store`)); // Corregida sintaxis de ruta
-        form.post(route(`${props.routeName}store`));
+// const handleSubmit = () => {    
+//     //form.post(route(`${props.routeName}store`)); // Corregida sintaxis de ruta
+//         form.post(route(`${props.routeName}store`));
 
    
 
+// };
+const handleSubmit = () => {
+  isUploading.value = true;
+
+  form.post(route(`${props.routeName}store`), {
+    onFinish: () => {
+      isUploading.value = false;
+    },
+  });
 };
+
 </script>
 
 <template>
@@ -243,4 +258,7 @@ const handleSubmit = () => {
             </template>
         </CardBox>
     </LayoutMain>
+    <!-- Overlay de carga -->
+ <LoadingOverlay :visible="isUploading" title="Subiendo archivo(s)..." subtitle="Por favor, no cierres esta ventana." />
+
 </template>

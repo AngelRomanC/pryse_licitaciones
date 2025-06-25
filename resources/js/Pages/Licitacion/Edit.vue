@@ -16,6 +16,10 @@ import FormControlV7 from '@/Components/FormControlV7.vue'
 import Swal from 'sweetalert2';
 import { ref, computed } from 'vue';
 import axios from 'axios';
+import LoadingOverlay from '@/components/LoadingOverlay.vue';
+
+
+const isUploading = ref(false)
 
 const props = defineProps({
   licitacion: Object,
@@ -117,6 +121,8 @@ console.log('Datos enviados:', form.data());
 
 const handleSubmit = async () => {
   try {
+    isUploading.value = true; // Mostrar overlay al iniciar
+
     // Verificar si solo está seleccionada la modalidad "Ninguna"
     const soloNinguna = form.modalidades_id.length === 1 &&
       props.modalidades.some(mod =>
@@ -184,17 +190,27 @@ const handleSubmit = async () => {
           buttonsStyling: false
         });
 
-        if (!isConfirmed) return;
+        //if (!isConfirmed) return;
+        if (!isConfirmed) {
+          isUploading.value = false;
+          return;
+        }
       }
     }
 
     //console.log('Datos enviados:', form.data());
     
     // Realiza la actualización   
-    form.put(route(`${props.routeName}update`, props.licitacion.id));
+    //form.put(route(`${props.routeName}update`, props.licitacion.id));
+    form.put(route(`${props.routeName}update`, props.licitacion.id), {
+      onFinish: () => {
+        isUploading.value = false;
+      },      
+    });
 
 
   } catch (error) {
+    isUploading.value = false;
     console.error('Error al verificar modalidades', error);
     Swal.fire({
       title: 'Error',
@@ -315,4 +331,6 @@ const handleSubmit = async () => {
       </template>
     </CardBox>
   </LayoutMain>
+<LoadingOverlay :visible="isUploading" title="Cargando archivo(s)..." subtitle="Por favor, no cierres esta ventana." />
+
 </template>

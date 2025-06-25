@@ -13,7 +13,9 @@ import Swal from 'sweetalert2';
 import { router } from '@inertiajs/vue3';
 import FileUploader from '@/Components/FileUploader.vue';
 import { Link } from '@inertiajs/vue3'
+import LoadingOverlay from '@/components/LoadingOverlay.vue';
 
+const isUploading = ref(false);
 
 const props = defineProps({
     titulo: String,
@@ -118,6 +120,8 @@ const guardar2 = () => {
     });
 };
 const guardar = () => {
+    isUploading.value = true;
+
     const formData = new FormData();
 
     // Serializar todos los campos excepto los archivos
@@ -148,7 +152,11 @@ const guardar = () => {
     router.post(route(`${props.routeName}update`, props.documento.id), formData, {
         forceFormData: true,
         preserveScroll: true,
+        onFinish: () => {
+            isUploading.value = false;
+        },
         onError: (errors) => {
+                isUploading.value = false;
                 form.setError(errors); // <- ASÍ se vinculan manualmente
 
             console.log('Errores de validación:', errors);
@@ -337,4 +345,5 @@ const agregarDocumentosAnexos = (files) => {
             </template>
         </CardBox>
     </LayoutMain>
+  <LoadingOverlay :visible="isUploading" title="Actualizando dato(s)..." subtitle="Por favor, no cierres esta ventana." />
 </template>
