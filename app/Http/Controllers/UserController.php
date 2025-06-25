@@ -93,7 +93,7 @@ class UserController extends Controller
 
         $newUser->notify(instance: new CredencialesEstudianteNotification($request->email, $request->password));
 
-        return redirect()->route("usuarios.index")->with('message', 'Usuario Admin generado con éxito');
+        return redirect()->route("usuarios.index")->with('success', 'Usuario Admin generado con éxito');
     }
 
 
@@ -126,7 +126,7 @@ class UserController extends Controller
 
       
 
-        return redirect()->route("usuarios.index")->with('message', '¡Usuario Admin actualizado correctamente!');
+        return redirect()->route("usuarios.index")->with('success', '¡Usuario Admin actualizado correctamente!');
     }
 
 
