@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\Documento;
 
-class LicitacionAvisoNotification extends Notification
+class LicitacionAvisoNotificationRevalidation extends Notification
 {
     use Queueable;
 
@@ -26,7 +26,7 @@ class LicitacionAvisoNotification extends Notification
 
     public function toMail(object $notifiable): MailMessage
     {
-        $fecha = \Carbon\Carbon::parse($this->documento->fecha_vigencia)->locale('es');
+        $fecha = \Carbon\Carbon::parse($this->documento->fecha_revalidacion)->locale('es');
         $nombreDia = ucfirst($fecha->isoFormat('dddd'));
         $fechaVencimiento = $nombreDia . $fecha->isoFormat(', D [de] MMMM [de] YYYY');
         
@@ -39,7 +39,7 @@ class LicitacionAvisoNotification extends Notification
                     ->line('del departamento **' . $this->documento->departamento->nombre_departamento . '**')
                     //->line('vencerá en **' . $this->documento->dias_restantes . ' días** ('.$fechaVencimiento.')')
                     //->line('El documento tiene una **fecha de vigencia** hasta el **' . $fechaVencimiento . '**, es decir, en **' . $this->documento->dias_restantes . ' días**.')
-                    ->line('Vencerá la **fecha de vigencia** en **' . $this->documento->dias_restantes . ' días** (' . $fechaVencimiento . ')')
+                    ->line('Vencerá la **fecha de revalidación** en **' . $this->documento->dias_restantes . ' días** (' . $fechaVencimiento . ')')
 
 
                     ->action('Acceder al Sistema', url('/login'))

@@ -6,7 +6,7 @@ use App\Models\Documento;
 use App\Models\DocumentoLegal;
 use App\Models\User;
 use App\Mail\LicitacionAviso; // Asegúrate de tener el Mailable
-use App\Notifications\LicitacionAvisoNotification; // La notificación
+use App\Notifications\LicitacionAvisoNotificationRevalidation; // La notificación
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
@@ -14,7 +14,8 @@ use Carbon\Carbon;
 
 class SendLicitacionReminderRevalidation extends Command
 {
-    protected $signature = 'documents:send-licitacion-reminder';
+    protected $signature = 'documents:send-licitacion-revalidation-reminder';
+    
     protected $description = 'Envía recordatorios de licitación y notificaciones a los usuarios.';
 
     public function __construct()
@@ -36,12 +37,14 @@ class SendLicitacionReminderRevalidation extends Command
             $documento->setAttribute(
                 'dias_restantes',
                 now()->startOfDay()->diffInDays(
-                    Carbon::parse($documento->fecha_vigencia)->startOfDay(),
+                    Carbon::parse($documento->fecha_revalidacion)->startOfDay(),
                     false
                 )
             );
 
-            if ($documento->dias_restantes === 35) {
+            if ($documento->dias_restantes === 7) {
+                    //dump(' Documento Técnico cumple con 7 días: Tipo → ' . optional($documento->tipoDeDocumento)->nombre_documento);
+
                 $this->enviarCorreoLicitacion($documento);
             }
         }
@@ -50,12 +53,12 @@ class SendLicitacionReminderRevalidation extends Command
             $documento->setAttribute(
                 'dias_restantes', 
                 now()->startOfDay()->diffInDays(
-                    Carbon::parse($documento->fecha_vigencia)->startOfDay(), 
+                    Carbon::parse($documento->fecha_revalidacion)->startOfDay(), 
                     false
                 )
             );
         
-            if ($documento->dias_restantes === 35) {
+            if ($documento->dias_restantes === 7) {
                 $this->enviarCorreoLicitacion($documento);
             }
         }
@@ -64,20 +67,20 @@ class SendLicitacionReminderRevalidation extends Command
     }
     private function enviarCorreoLicitacion($documento)
     {
-        // $usuarios = User::all(); // Obtener todos los usuarios
+        
+         $usuarios = User::all(); // Obtener todos los usuarios
 
-        // foreach ($usuarios as $usuario) {
-        //     // Mail::to($usuario->email)->send(new LicitacionAviso($documento));
-        //     $usuario->notify(new LicitacionAvisoNotification($documento));
-        // }
+         foreach ($usuarios as $usuario) {
+            $usuario->notify(new LicitacionAvisoNotificationRevalidation($documento));
+         }
         // //$documento->departamento->notify(new LicitacionAvisoNotification($documento));
           
-        // // Enviar también al departamento responsable del documento
-        // if ($documento->departamento && $documento->departamento->email) {
-        //     $documento->departamento->notify(new LicitacionAvisoNotification($documento));
-        //     dd('Enviado al departamento:', $documento->departamento->email);
+        //Enviar también al departamento responsable del documento
+         if ($documento->departamento && $documento->departamento->email) {
+             $documento->departamento->notify(new LicitacionAvisoNotificationRevalidation($documento));
+            //dd('Enviado al departamento:', $documento->departamento->email);
 
-        // }
+        }
 
     }
 }
