@@ -35,8 +35,13 @@ class LicitacionAvisoNotification extends Notification
                     ->greeting('Estimado/a Responsable,')
                     ->line('Le informamos que la documentación de:')
                     ->line('**"' . $this->documento->nombre_documento . '"**')
+                    ->line('Tipo de documento: **' . $this->documento->tipoDeDocumento->nombre_documento . '**') // 
                     ->line('del departamento **' . $this->documento->departamento->nombre_departamento . '**')
-                    ->line('vencerá en **' . $this->documento->dias_restantes . ' días** ('.$fechaVencimiento.')')
+                    //->line('vencerá en **' . $this->documento->dias_restantes . ' días** ('.$fechaVencimiento.')')
+                    //->line('El documento tiene una **fecha de vigencia** hasta el **' . $fechaVencimiento . '**, es decir, en **' . $this->documento->dias_restantes . ' días**.')
+                    ->line('Vencerá su **fecha de vigencia** expirará en **' . $this->documento->dias_restantes . ' días** (' . $fechaVencimiento . ')')
+
+
                     ->action('Acceder al Sistema', url('/login'))
                     ->line('**Acción requerida:**')
                     ->line('Por favor, revise los documentos y realice las gestiones necesarias antes de la fecha límite indicada.')
@@ -46,12 +51,14 @@ class LicitacionAvisoNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'documento_id' => $this->documento->id,
-            'nombre_documento' => $this->documento->nombre_documento,
-            'dias_restantes' => $this->documento->dias_restantes,
-            'nombre_departamento' => $this->documento->nombre_departamento,
-            'fecha_vigencia' => $this->documento->fecha_vigencia,
-            'tipoDocumento' => $this->documento->fecha_vigencia,
+                // ← BORRABLE si solo usas canal de correo
+            // 'documento_id' => $this->documento->id,
+            // 'nombre_documento' => $this->documento->nombre_documento,
+            // 'dias_restantes' => $this->documento->dias_restantes,
+            // 'nombre_departamento' => $this->documento->nombre_departamento,
+            // 'fecha_vigencia' => $this->documento->fecha_vigencia,
+            // 'tipoDocumento' => $this->documento->tipoDeDocumento->nombre_documento,
+
 
             
 

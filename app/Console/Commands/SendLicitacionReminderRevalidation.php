@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 
 
-class SendLicitacionReminder extends Command
+class SendLicitacionReminderRevalidation extends Command
 {
     protected $signature = 'documents:send-licitacion-reminder';
     protected $description = 'Envía recordatorios de licitación y notificaciones a los usuarios.';
@@ -64,20 +64,20 @@ class SendLicitacionReminder extends Command
     }
     private function enviarCorreoLicitacion($documento)
     {
-        $usuarios = User::all(); // Obtener todos los usuarios
+        // $usuarios = User::all(); // Obtener todos los usuarios
 
-        foreach ($usuarios as $usuario) {
-            // Mail::to($usuario->email)->send(new LicitacionAviso($documento));
-            $usuario->notify(new LicitacionAvisoNotification($documento));
-        }
-        //$documento->departamento->notify(new LicitacionAvisoNotification($documento));
+        // foreach ($usuarios as $usuario) {
+        //     // Mail::to($usuario->email)->send(new LicitacionAviso($documento));
+        //     $usuario->notify(new LicitacionAvisoNotification($documento));
+        // }
+        // //$documento->departamento->notify(new LicitacionAvisoNotification($documento));
           
-        // Enviar también al departamento responsable del documento
-        if ($documento->departamento && $documento->departamento->email) {
-            $documento->departamento->notify(new LicitacionAvisoNotification($documento));
-            //dd('Enviado al departamento:', $documento->departamento->email);
+        // // Enviar también al departamento responsable del documento
+        // if ($documento->departamento && $documento->departamento->email) {
+        //     $documento->departamento->notify(new LicitacionAvisoNotification($documento));
+        //     dd('Enviado al departamento:', $documento->departamento->email);
 
-        }
+        // }
 
     }
 }

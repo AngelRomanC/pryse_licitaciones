@@ -15,7 +15,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
 
         // Ejecutar el comando todos los días a las 8:00 AM
-        $schedule->command('documents:send-licitacion-reminder')->dailyAt('17:55');
+        $schedule->command('documents:send-licitacion-reminder')->dailyAt('17:17');
         //$schedule->command('documents:send-licitacion-reminder')->everyMinute();
 
     }
