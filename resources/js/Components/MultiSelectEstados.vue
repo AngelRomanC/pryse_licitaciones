@@ -25,6 +25,8 @@ const emit = defineEmits(['update:modelValue']);
 const isOpen = ref(false);
 const searchTerm = ref('');
 const dropdownRef = ref(null);
+const ID_NINGUNO = props.estados.find(e => e.name === 'Ninguno')?.id ?? null
+
 
 const filteredEstados = computed(() => {
   return props.estados.filter(estado =>
@@ -32,14 +34,43 @@ const filteredEstados = computed(() => {
   );
 });
 
+// const toggleEstado = (estadoId) => {
+//   if (props.disabled) return;
+  
+//   const newValue = [...props.modelValue];
+//   const index = newValue.indexOf(estadoId);
+
+//   if (index === -1) {
+//     newValue.push(estadoId);
+//   } else {
+//     newValue.splice(index, 1);
+//   }
+
+//   emit('update:modelValue', newValue);
+// };
+
 const toggleEstado = (estadoId) => {
   if (props.disabled) return;
-  
+
   const newValue = [...props.modelValue];
   const index = newValue.indexOf(estadoId);
 
   if (index === -1) {
     newValue.push(estadoId);
+
+    // Si selecciona "Ninguno", eliminar todos los demás
+    if (estadoId === ID_NINGUNO) {
+      emit('update:modelValue', [ID_NINGUNO]);
+      return;
+    }
+
+    // Si selecciona otro estado, quitar "Ninguno" si está seleccionado
+    if (newValue.includes(ID_NINGUNO)) {
+      const filtered = newValue.filter(id => id !== ID_NINGUNO);
+      emit('update:modelValue', filtered);
+      return;
+    }
+
   } else {
     newValue.splice(index, 1);
   }
@@ -47,21 +78,41 @@ const toggleEstado = (estadoId) => {
   emit('update:modelValue', newValue);
 };
 
+// const toggleAll = () => {
+//   if (props.disabled) return;
+  
+//   if (areAllSelected.value) {
+//     // Si todos están seleccionados, deseleccionar todos
+//     emit('update:modelValue', []);
+//   } else {
+//     // Si no todos están seleccionados, seleccionar todos
+//     emit('update:modelValue', props.estados.map(estado => estado.id));
+//   }
+// };
+
 const toggleAll = () => {
   if (props.disabled) return;
-  
+
+  // Excluir “Ninguno” si está presente
+  const allIdsExceptNinguno = props.estados
+    .filter(e => e.id !== ID_NINGUNO)
+    .map(e => e.id);
+
   if (areAllSelected.value) {
-    // Si todos están seleccionados, deseleccionar todos
     emit('update:modelValue', []);
   } else {
-    // Si no todos están seleccionados, seleccionar todos
-    emit('update:modelValue', props.estados.map(estado => estado.id));
+    emit('update:modelValue', allIdsExceptNinguno);
   }
 };
 
+// const areAllSelected = computed(() => {
+//   return props.estados.length > 0 && props.modelValue.length === props.estados.length;
+// });
 const areAllSelected = computed(() => {
-  return props.estados.length > 0 && props.modelValue.length === props.estados.length;
+  const withoutNinguno = props.estados.filter(e => e.id !== ID_NINGUNO);
+  return withoutNinguno.every(e => props.modelValue.includes(e.id));
 });
+
 
 const areSomeSelected = computed(() => {
   return props.modelValue.length > 0 && !areAllSelected.value;

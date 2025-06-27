@@ -41,7 +41,7 @@ class UserController extends Controller
         
     }
 
-    public function index(Request $request): Response
+    public function index2(Request $request): Response
     {
 
         
@@ -49,22 +49,40 @@ class UserController extends Controller
         $admin = User::where('role', 'Admin')->paginate(8); // Puedes ajustar el 10 al número de elementos por página que desees
 
 
-        $usuarios = $this->model::with('roles')
-            ->orderBy('id')
-            ->paginate(30)
-            ->withQueryString();
+        // $usuarios = $this->model::with('roles')
+        //     ->orderBy('id')
+        //     ->paginate(30)
+        //     ->withQueryString();
 
 
 
         return Inertia::render("{$this->source}Index", [
             'titulo'   => ' Usuarios Admin',
-            'usuarios' => $usuarios,
+            //'usuarios' => $usuarios,
             'admin' => $admin,
-            'profiles' => Role::get(['id', 'name']),
+            //'profiles' => Role::get(['id', 'name']),
             'routeName' => $this->routeName,
-            'loadingResults' => false,
+            //'loadingResults' => false,
         ]);
     }
+public function index(Request $request): Response
+{
+    $query = User::where('role', 'Admin');
+
+    // Aplicar búsqueda si hay un parámetro `search`
+    if ($request->has('search') && $request->search !== null) {
+        $query->where('name', 'like', '%' . $request->search . '%');
+    }
+
+    $admin = $query->orderBy('id','desc')->paginate(8)->withQueryString();
+
+    return Inertia::render("{$this->source}Index", [
+        'titulo'   => 'Usuarios Admin',
+        'admin'    => $admin,
+        'routeName'=> $this->routeName,
+        'filters'  => $request->only(['search']), // Para mantener el valor en el input
+    ]);
+}
 
     public function create()
     {

@@ -10,13 +10,19 @@ import Pagination from '@/Shared/Pagination.vue';
 import CardBoxComponentEmpty from "@/components/CardBoxComponentEmpty.vue";
 import CardBox from "@/components/CardBox.vue";
 import NotificationBar from "@/components/NotificationBar.vue";
-
+import SearchBar from '@/components/SearchBar.vue'
+import { ref } from 'vue'
 
 const props = defineProps({
     tipoDeDocumentos: Object,
     titulo: String, //
-    routeName:String
+    routeName:String,
+    filters: Object,
+
 });
+const filters = ref({
+  search: props.filters?.search ?? ''
+})
 
 const destroy = (id) => {
     Swal.fire({
@@ -44,6 +50,8 @@ const titulo = "Lista de Empresas";
         <SectionTitleLineWithButton :title="props.titulo" main>
             <BaseButton :href="route(`${props.routeName}create`)" color="warning" label="Crear" />
         </SectionTitleLineWithButton>
+
+        <SearchBar   v-model="filters.search"  :routeName="routeName"  placeholder="Buscar documento por nombre..."  />
 
         <NotificationBar v-if="$page.props.flash.success" color="success" :icon="mdiInformation" :outline="false">
             {{ $page.props.flash.success }}

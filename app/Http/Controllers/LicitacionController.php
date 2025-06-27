@@ -103,7 +103,14 @@ class LicitacionController extends Controller
             'archivos_legales' => 'nullable|array',
             'archivos_tecnicos' => 'nullable|array',
             'modalidades_id' => 'required|array|min:1',
-        ]);
+        ],
+        [
+            'modalidades_id.required' => 'El campo modalidades es obligatorio.',
+            'modalidades_id.min' => 'Debes seleccionar al menos una modalidad.',
+            'empresa_id.required' => 'El campo empresa es obligatorio.',
+
+        ]
+    );
 
         $modalidadesSeleccionadas = $request->modalidades_id;
         $empresasSeleccionadas = $request->empresa_id;
@@ -251,7 +258,14 @@ class LicitacionController extends Controller
             'archivos_tecnicos' => 'nullable|array',
             'archivos_a_eliminar' => 'nullable|array',
 
-        ]);
+           ],
+        [
+            'modalidades_id.required' => 'El campo modalidades es obligatorio.',
+            'modalidades_id.min' => 'Debes seleccionar al menos una modalidad.',
+            'empresa_id.required' => 'El campo empresa es obligatorio.',
+
+        ]
+    );
 
         $licitacion->update([
             'nombre' => $request->nombre,
@@ -363,7 +377,9 @@ class LicitacionController extends Controller
         }
 
         // Guardar ruta en la base de datos
-        $licitacion->update(['ruta_expediente' => $zipFileName . '.zip']);
+        //$licitacion->update(['ruta_expediente' => $zipFileName . '.zip']);
+        $licitacion->update(['ruta_expediente' => $zipFileName]);
+
     }
 
     public function descargarExpediente($nombre)

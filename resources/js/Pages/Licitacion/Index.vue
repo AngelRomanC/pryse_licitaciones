@@ -12,8 +12,7 @@ import CardBox from "@/components/CardBox.vue";
 import NotificationBar from "@/components/NotificationBar.vue";
 import moment from "moment";
 import { ref } from 'vue'
-
-
+import SearchBar from '@/components/SearchBar.vue'
 
 
 const props = defineProps({
@@ -70,6 +69,8 @@ const destroy = (id) => {
             <BaseButton :href="route(`${props.routeName}create`)" color="warning" label="Crear" />
         </SectionTitleLineWithButton>
 
+        <SearchBar   v-model="filters.search"  :routeName="routeName"  placeholder="Buscar licitación por nombre..."  />
+
         <NotificationBar v-if="$page.props.flash.success" color="success" :icon="mdiInformation" :outline="false">
             {{ $page.props.flash.success }}
         </NotificationBar>
@@ -81,37 +82,11 @@ const destroy = (id) => {
         <CardBox v-if="licitaciones.data.length < 1">
             <CardBoxComponentEmpty  title="Sin resultados"
             description="No se encontraron licitaciones que coincidan con tu búsqueda." />
-            <button
-                @click="limpiar"
-                class="mt-4 bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
-            >
-            Limpiar filtro
-        </button>
+       
         </CardBox>
 
         <CardBox v-else class="mb-6" has-table>
-                <div class="flex items-center gap-2 mb-4">
-                <input
-                    v-model="filters.search"
-                    @input="buscar"
-                    type="text"
-                    placeholder="Buscar licitación por nombre..."
-                    class="border p-2 rounded w-full"
-                />
-                <button
-                    @click="buscar"
-                    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                    Buscar
-                </button>
-
-                <button
-                    @click="limpiar"
-                    class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
-                >
-                    Limpiar
-                </button>
-                </div>
+              
 
            <table class="w-full border-collapse border mt-4">
                 <thead>

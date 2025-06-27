@@ -17,14 +17,14 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('users')->insert(['name' => 'Admin', 'apellido_paterno' => 'Admin', 'apellido_materno' => 'Admin', 'numero' => '7775420768', 'email' => 'pryselicitaciones@gmail.com', 'email_verified_at' => '2024-01-17 04:50:32', 'password' => Hash::make('Password'), 'role' => 'Admin']);     
-        DB::table('users')->insert(['name' => 'Ricardo', 'apellido_paterno' => 'Perez', 'apellido_materno' => 'Gómez', 'numero' => '7775420768', 'email' => 'ricardo@gmail.com', 'email_verified_at' => '2024-01-17 04:50:32', 'password' => Hash::make('Password'), 'role' => 'Usuario']);
+        DB::table('users')->insert(['name' => 'Admin', 'apellido_paterno' => 'Admin', 'apellido_materno' => 'Admin', 'numero' => '7775420768', 'email' => 'pryselicitaciones@gmail.com', 'email_verified_at' => '2024-01-17 04:50:32', 'password' => Hash::make('Password.1'), 'role' => 'Admin']);     
+        //DB::table('users')->insert(['name' => 'Ricardo', 'apellido_paterno' => 'Perez', 'apellido_materno' => 'Gómez', 'numero' => '7775420768', 'email' => 'ricardo@gmail.com', 'email_verified_at' => '2024-01-17 04:50:32', 'password' => Hash::make('Password'), 'role' => 'Usuario']);
 
         $user1 = User::where('email', 'pryselicitaciones@gmail.com')->first();
         $user1->assignRole('Admin');
     
-        $user4 = User::where('email', 'ricardo@gmail.com')->first();
-        $user4->assignRole('Usuario');
+        // $user4 = User::where('email', 'ricardo@gmail.com')->first();
+        // $user4->assignRole('Usuario');
 
         $perfil = Role::where('name', 'Admin')->first();
         $usuarioSistema = Role::where('name', operator: 'Usuario')->first();

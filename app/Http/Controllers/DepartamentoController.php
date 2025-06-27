@@ -15,17 +15,24 @@ class DepartamentoController extends Controller
         $this->middleware('auth');
         $this->routeName = 'departamento.';
     }
-    public function index()
+    public function index(Request $request)
     {
-        // Obtener todas las empresas ordenadas por ID y paginadas
-        $departamentos = Departamento::orderBy('id',"desc")
+        $query = Departamento::query();
+
+        if ($request->filled('search')) {
+            $query->where('nombre_departamento', 'like', '%' . $request->search . '%');
+        }
+
+        $departamentos = $query->orderBy('id', 'desc')
             ->paginate(8)
             ->withQueryString();
 
         return Inertia::render("Departamento/Index", [
             'titulo' => 'Lista de Departamentos',
             'departamentos' => $departamentos,
-            'routeName' => $this->routeName
+            'routeName' => $this->routeName,
+            'filters' => $request->only('search'), // ← Esto mantiene el valor en el buscador
+
         ]);
     }
 

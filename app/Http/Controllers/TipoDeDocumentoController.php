@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 
+
 class TipoDeDocumentoController extends Controller
 {
     private string $routeName;
@@ -16,10 +17,17 @@ class TipoDeDocumentoController extends Controller
         $this->middleware('auth');
         $this->routeName = 'tipo-de-documento.';
     }
-    public function index()
+    public function index(Request $request)
     {
-        // Obtener todas las empresas ordenadas por ID y paginadas
-        $tipoDeDocumentos = TipoDeDocumento::orderBy('id',"desc")
+        $query = TipoDeDocumento::query();
+
+        // Si se mandó texto para buscar, aplica el filtro por nombre
+        if ($request->filled('search')) {
+            $query->where('nombre_documento', 'like', '%' . $request->search . '%');
+        }
+
+        // Paginar y ordenar
+        $tipoDeDocumentos = $query->orderBy('id', "desc")
             ->paginate(8)
             ->withQueryString();
 
@@ -27,9 +35,11 @@ class TipoDeDocumentoController extends Controller
             'titulo' => 'Lista de Documentos',
             'tipoDeDocumentos' => $tipoDeDocumentos,
             'routeName' => $this->routeName,
+            'filters' => $request->only('search'), // 👈 importante para que el filtro persista en el input
             'loadingResults' => false
         ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -53,7 +63,7 @@ class TipoDeDocumentoController extends Controller
         ]);
 
         TipoDeDocumento::create($validated);
-        if ($request->filled('redirect')) { 
+        if ($request->filled('redirect')) {
             return redirect($request->input('redirect'))
                 ->with('success', 'Empresa creada correctamente');
         }
@@ -87,7 +97,7 @@ class TipoDeDocumentoController extends Controller
     public function update(Request $request, TipoDeDocumento $tipoDeDocumento)
     {
         $validated = $request->validate([
-            'nombre_documento' => 'required|string|max:50',           
+            'nombre_documento' => 'required|string|max:50',
         ]);
         $tipoDeDocumento->update($validated);
 

@@ -61,7 +61,7 @@ function limpiar() {
       Buscar
     </button>
     <button @click="limpiar" class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400">
-      Limpiaryyyyyyyyy
+      Limpiar
     </button>
   </div>
 </template>

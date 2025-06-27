@@ -16,17 +16,26 @@ class ModalidadController extends Controller
         $this->middleware('auth');
         $this->routeName = 'modalidad.';
     }
-    public function index()
+    public function index(Request $request)
     {
-        $modalidades = Modalidad::orderBy('id',"desc")
-        ->paginate(8)
-        ->withQueryString();
+        $query = Modalidad::query();
 
-    return Inertia::render("Modalidad/Index", [
-        'titulo' => 'Lista de Modalidades',
-        'modalidades' => $modalidades,
-        'routeName' => $this->routeName       
-    ]);
+        // Aplicar filtro si se proporciona texto de búsqueda
+        if ($request->filled('search')) {
+            $query->where('nombre_modalidad', 'like', '%' . $request->search . '%');
+        }
+
+        $modalidades = $query->orderBy('id', 'desc')
+            ->paginate(8)
+            ->withQueryString();
+
+        return Inertia::render("Modalidad/Index", [
+            'titulo' => 'Lista de Modalidades',
+            'modalidades' => $modalidades,
+            'routeName' => $this->routeName,
+            'filters' => $request->only('search'),
+
+        ]);
     }
 
     /**
@@ -45,18 +54,18 @@ class ModalidadController extends Controller
      */
     public function store(Request $request)
     {
-         // Validar los datos recibidos
-         $validated = $request->validate([
+        // Validar los datos recibidos
+        $validated = $request->validate([
             'nombre_modalidad' => 'required|string|max:100',
         ]);
 
         Modalidad::create($validated);
 
-        if ($request->filled('redirect')) { 
+        if ($request->filled('redirect')) {
             return redirect($request->input('redirect'))
                 ->with('success', 'Empresa creada correctamente');
         }
-        
+
         return redirect()->route($this->routeName . 'index')->with('success', 'Modalidad creada con éxito.');
     }
 
@@ -86,7 +95,7 @@ class ModalidadController extends Controller
     public function update(Request $request, Modalidad $modalidad)
     {
         $validated = $request->validate([
-            'nombre_modalidad' => 'required|string|max:50',           
+            'nombre_modalidad' => 'required|string|max:50',
         ]);
         $modalidad->update($validated);
 

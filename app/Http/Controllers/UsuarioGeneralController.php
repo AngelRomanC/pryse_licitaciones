@@ -25,7 +25,7 @@ class UsuarioGeneralController extends Controller
         $this->middleware("permission:{$this->module}.delete")->only(['destroy']);
     }
 
-    public function index()
+    public function index2()
     {
         $usuarios = User::role('Usuario')->with('roles')->paginate(8);
 
@@ -33,6 +33,26 @@ class UsuarioGeneralController extends Controller
             'usuarios' => $usuarios,
             'titulo' => 'Usuarios Generales',
             'routeName' => $this->routeName,
+        ]);
+    }
+    
+    public function index(Request $request)
+    {
+        $query = User::role('Usuario')->with('roles');
+
+        if ($request->has('search') && $request->search !== null) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+       // $usuarios = $query->paginate(8)->withQueryString();
+        $usuarios = $query->orderBy('id','desc')->paginate(8)->withQueryString();
+
+
+        return Inertia::render("{$this->source}Index", [
+            'usuarios' => $usuarios,
+            'titulo' => 'Usuarios Generales',
+            'routeName' => $this->routeName,
+            'filters' => $request->only('search'),
         ]);
     }
 
@@ -53,7 +73,7 @@ class UsuarioGeneralController extends Controller
             'numero' => $request->numero,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-           // 'role' => 'Usuario',
+            // 'role' => 'Usuario',
             'role' => $request->role,  // Guardar el rol que viene del formulario            
 
         ]);
@@ -82,7 +102,7 @@ class UsuarioGeneralController extends Controller
         //dd($request->all());
 
         $usuario = User::find($id);
-        
+
         $usuario->update($request->all());
 
         return redirect()->route($this->routeName . 'index')->with('message', 'Usuario actualizado correctamente.');
