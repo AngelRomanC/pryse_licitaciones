@@ -209,7 +209,7 @@ const agregarDocumentosAnexos = (files) => {
                 </FormField>
 
                 <!-- Selector de Tipo de Documento -->
-                <FormField label="Tipo de documento" :error="form.errors.tipo_de_documento_id">
+                <FormField label="Documento" :error="form.errors.tipo_de_documento_id">
                     <FormControl
                         v-model="form.tipo_de_documento_id"
                         :options="tipos_documento"
