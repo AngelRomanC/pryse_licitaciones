@@ -16,20 +16,28 @@ class EmpresaController extends Controller
         $this->middleware('auth');
         $this->routeName = 'empresa.';
     }
-    public function index()
+    public function index(Request $request)
     {
-        // Obtener todas las empresas ordenadas por ID y paginadas
-        $empresas = Empresa::orderBy('id')
+        $query = Empresa::query();
+
+        // Aplicar filtro si se proporciona texto de búsqueda
+        if ($request->filled('search')) {
+            $query->where('nombre', 'like', '%' . $request->search . '%');
+        }
+
+        $empresas = $query->orderBy('id', 'desc')
             ->paginate(8)
             ->withQueryString();
 
         return Inertia::render("Empresa/Index", [
-            'titulo' => 'Lista de Empresas',  // Título de la vista
-            'empresas' => $empresas,  // Datos de las empresas
+            'titulo' => 'Lista de Empresas',
+            'empresas' => $empresas,
             'routeName' => $this->routeName,
-            'loadingResults' => false
+            'filters' => $request->only('search'), // ← Esto mantiene el valor en el buscador
+            'loadingResults' => false,
         ]);
     }
+
 
     /**
      * Show the form for creating a new resource.

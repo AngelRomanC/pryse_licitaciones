@@ -19,7 +19,7 @@ class TipoDeDocumentoController extends Controller
     public function index()
     {
         // Obtener todas las empresas ordenadas por ID y paginadas
-        $tipoDeDocumentos = TipoDeDocumento::orderBy('id')
+        $tipoDeDocumentos = TipoDeDocumento::orderBy('id',"desc")
             ->paginate(8)
             ->withQueryString();
 

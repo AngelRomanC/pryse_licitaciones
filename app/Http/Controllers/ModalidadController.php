@@ -18,7 +18,7 @@ class ModalidadController extends Controller
     }
     public function index()
     {
-        $modalidades = Modalidad::orderBy('id')
+        $modalidades = Modalidad::orderBy('id',"desc")
         ->paginate(8)
         ->withQueryString();
 

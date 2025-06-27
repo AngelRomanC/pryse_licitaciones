@@ -18,12 +18,12 @@ class DepartamentoController extends Controller
     public function index()
     {
         // Obtener todas las empresas ordenadas por ID y paginadas
-        $departamentos = Departamento::orderBy('id')
+        $departamentos = Departamento::orderBy('id',"desc")
             ->paginate(8)
             ->withQueryString();
 
         return Inertia::render("Departamento/Index", [
-            'titulo' => 'Lista de Áreas',
+            'titulo' => 'Lista de Departamentos',
             'departamentos' => $departamentos,
             'routeName' => $this->routeName
         ]);
@@ -35,7 +35,7 @@ class DepartamentoController extends Controller
     public function create()
     {
         return Inertia::render("Departamento/Create", [
-            'titulo' => 'Detalles de Área',
+            'titulo' => 'Detalles de Departamento',
             'routeName' => $this->routeName,
         ]);
     }
@@ -78,7 +78,7 @@ class DepartamentoController extends Controller
     public function edit(Departamento $departamento)
     {
         return Inertia::render("Departamento/Edit", [
-            'titulo' => 'Editar área',
+            'titulo' => 'Editar Departamento',
             'departamento' => $departamento,
             'routeName' => $this->routeName
         ]);
