@@ -69,7 +69,7 @@ class Kernel extends HttpKernel
         //Nuevo middleware de spatie
         'allows'   => \App\Http\Middleware\Allows::class,
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
-        'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
+        'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class, //cambiado laravel 11
         'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
     ];
 }
