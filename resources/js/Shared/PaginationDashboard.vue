@@ -1,15 +1,15 @@
 <template>
-  <div v-if="total > 1" class="p-3 lg:px-6 border-t border-gray-100 dark:border-slate-800">
+  <div v-if="pages.length > 1" class="p-3 lg:px-6 border-t border-gray-100 dark:border-slate-800">
     <BaseLevel>
       <BaseButtons>
         <BaseButton
-          v-for="page in total"
-          :key="page"
-          :active="page === currentPage"
-          :label="page"
-          :href="links[page]?.url"
-          @click.prevent="handleClick(page)"
-          :color="page === currentPage ? 'lightDark' : 'whiteDark'"
+          v-for="(link, index) in pages"
+          :key="index"
+          :active="link.active"
+          :label="link.label"
+          :href="link.url"
+          @click.prevent="handleClick(link)"
+          :color="link.active ? 'lightDark' : 'whiteDark'"
           small
         />
       </BaseButtons>
@@ -29,7 +29,7 @@ import BaseButtons from "@/components/BaseButtons.vue"
 import BaseButton from "@/components/BaseButton.vue"
 import Loading from 'vue-loading-overlay'
 import 'vue-loading-overlay/dist/css/index.css'
-import { ref } from "vue"
+import { ref, computed } from "vue"
 
 export default {
   props: {
@@ -38,7 +38,7 @@ export default {
     currentPage: Number,
     pageParam: {
       type: String,
-      default: 'page' // para que pueda ser 'page' o 'page_legal'
+      default: 'page'
     },
     routeName: {
       type: String,
@@ -54,19 +54,29 @@ export default {
   setup(props) {
     const isLoading = ref(false)
 
-    function handleClick(page) {
-      const url = props.links[page]?.url
-      if (!url) return
+    // Filtramos solo los enlaces numéricos como en el componente que funciona
+    const pages = computed(() => {
+      return props.links.filter(link => {
+        // Excluimos los enlaces de "Anterior" y "Siguiente"
+        const label = link.label?.toString().trim()
+        return label && !isNaN(label) && link.url
+      })
+    })
 
-      const selectedPage = new URL(url).searchParams.get(props.pageParam)
-
-      // Obtener todos los parámetros actuales de la URL
-      const currentParams = Object.fromEntries(new URLSearchParams(window.location.search).entries())
-
-      // Actualizar solo el parámetro correspondiente (page o page_legal)
-      currentParams[props.pageParam] = selectedPage
-
+    const handleClick = (link) => {
+      if (!link.url || link.active) return
+      
       isLoading.value = true
+      
+      // Obtenemos los parámetros actuales de la URL
+      const currentParams = Object.fromEntries(new URLSearchParams(window.location.search).entries())
+      
+      // Obtenemos el número de página del enlace clickeado
+      const urlParams = new URLSearchParams(new URL(link.url).search)
+      const selectedPage = urlParams.get(props.pageParam)
+      
+      // Actualizamos el parámetro de página correspondiente
+      currentParams[props.pageParam] = selectedPage
 
       router.get(
         route(props.routeName),
@@ -81,7 +91,7 @@ export default {
       )
     }
 
-    return { isLoading, handleClick }
+    return { isLoading, pages, handleClick }
   }
 }
 </script>

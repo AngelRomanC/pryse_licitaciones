@@ -91,7 +91,7 @@ const titulo = "Lista de Empresas";
                     </tr>
                 </tbody>
             </table>
-            <Pagination :currentPage="tipoDeDocumentos.current_page" :links="tipoDeDocumentos.links" :total="tipoDeDocumentos.links.length - 2" />
+            <Pagination :currentPage="tipoDeDocumentos.current_page" :links="tipoDeDocumentos.links" :total="tipoDeDocumentos.last_page" />
         </CardBox>
     </LayoutMain>
 </template>

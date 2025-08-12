@@ -162,10 +162,9 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
             </tbody>
           </table>
         </div>
-        <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 text-right">
           <PaginationDashboard :currentPage="documentos.current_page" :links="documentos.links"
-            :total="documentos.links.length - 2" pageParam="page_tecnico" />
-        </div>
+            :total="documentos.last_page" pageParam="page_tecnico" />
+       
       </CardBox>
 
       <!-- Documentos Legales -->
@@ -251,11 +250,10 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
               </tr>
             </tbody>
           </table>
-        </div>
-        <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 text-right">
+        </div>   
           <PaginationDashboard :currentPage="documentosLegal.current_page" :links="documentosLegal.links"
-            :total="documentosLegal.links.length - 2" pageParam="page_legal"/>
-        </div>
+            :total="documentosLegal.last_page" pageParam="page_legal"/>
+        
       </CardBox>
     </div>
   </LayoutDashboard>

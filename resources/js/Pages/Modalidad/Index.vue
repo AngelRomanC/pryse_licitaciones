@@ -90,7 +90,7 @@ const destroy = (id) => {
                     </tr>
                 </tbody>
             </table>
-            <Pagination :currentPage="modalidades.current_page" :links="modalidades.links" :total="modalidades.links.length - 2" />
+            <Pagination :currentPage="modalidades.current_page" :links="modalidades.links" :total="modalidades.last_page" />
         </CardBox>
     </LayoutMain>
 </template>

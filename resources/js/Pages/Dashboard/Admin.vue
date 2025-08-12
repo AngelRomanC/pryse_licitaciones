@@ -143,7 +143,7 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
           </table>
         </div>
         <PaginationDashboard :currentPage="documentos.current_page" :links="documentos.links"
-          :total="documentos.links.length - 2" pageParam="page_tecnico" />
+          :total="documentos.last_page" pageParam="page_tecnico" />
       </CardBox>
 
       <!-- Documentos Legales -->
@@ -218,7 +218,7 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
           </table>
         </div>
         <PaginationDashboard :currentPage="documentosLegal.current_page" :links="documentosLegal.links"
-          :total="documentosLegal.links.length - 2" pageParam="page_legal"/>
+          :total="documentosLegal.last_page" pageParam="page_legal"/>
       </CardBox>
     </div>
   </LayoutDashboard>

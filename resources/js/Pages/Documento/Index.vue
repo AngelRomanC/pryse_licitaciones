@@ -195,7 +195,7 @@ const resetFilters = () => {
                 </tbody>
             </table>
             <Pagination :currentPage="documentos.current_page" :links="documentos.links"
-                :total="documentos.links.length - 2" />
+                :total="documentos.last_page" />
         </CardBox>
     </LayoutMain>
 </template>

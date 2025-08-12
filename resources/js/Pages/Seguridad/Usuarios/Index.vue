@@ -100,7 +100,7 @@ const eliminarAdmin = (id) => {
                     </tr>
                 </tbody>
             </table>
-            <Pagination :currentPage="admin.current_page" :links="admin.links" :total="admin.links.length - 2" />
+            <Pagination :currentPage="admin.current_page" :links="admin.links" :total="admin.last_page" />
         </CardBox>
 
     </LayoutMain>
