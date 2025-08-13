@@ -17,10 +17,10 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('users')->insert(['name' => 'Admin', 'apellido_paterno' => 'Admin', 'apellido_materno' => 'Admin', 'numero' => '7775420768', 'email' => 'pryselicitaciones@gmail.com', 'email_verified_at' => '2024-01-17 04:50:32', 'password' => Hash::make('Password.1'), 'role' => 'Admin']);     
+        DB::table('users')->insert(['name' => 'Admin', 'apellido_paterno' => 'Admin', 'apellido_materno' => 'Admin', 'numero' => '7775420768', 'email' => 'admin@gmail.com', 'email_verified_at' => '2024-01-17 04:50:32', 'password' => Hash::make('123456789'), 'role' => 'Admin']);     
         //DB::table('users')->insert(['name' => 'Ricardo', 'apellido_paterno' => 'Perez', 'apellido_materno' => 'Gómez', 'numero' => '7775420768', 'email' => 'ricardo@gmail.com', 'email_verified_at' => '2024-01-17 04:50:32', 'password' => Hash::make('Password'), 'role' => 'Usuario']);
 
-        $user1 = User::where('email', 'pryselicitaciones@gmail.com')->first();
+        $user1 = User::where('email', 'admin@gmail.com')->first();
         $user1->assignRole('Admin');
     
         // $user4 = User::where('email', 'ricardo@gmail.com')->first();
