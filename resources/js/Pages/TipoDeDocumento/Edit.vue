@@ -1,5 +1,4 @@
 <script setup>
-import { defineProps } from 'vue';
 import { useForm} from '@inertiajs/vue3';
 import LayoutMain from '@/layouts/LayoutMain.vue';
 import FormField from "@/components/FormField.vue";
