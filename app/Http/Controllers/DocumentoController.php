@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 use ZipArchive;
+use Illuminate\Support\Facades\Auth;
 
 
 
@@ -37,30 +38,27 @@ class DocumentoController extends Controller
     }
     public function index(Request $request)
     {
-
-        //$query = Documento::with(['empresa', 'tipoDeDocumento', 'departamento']);
         $query = Documento::with(['empresa', 'tipoDeDocumento', 'departamento'])
-        ->where('nombre_documento', 'Documento Técnico') // Filtro base para documentos legales
-        ->orderByDesc('created_at'); // o ->latest()
+            ->where('nombre_documento', 'Documento Técnico')
+            ->orderByDesc('created_at');
 
+        // Filtrado por rol
+        $user = auth()->user();
+        if (!$user->hasRole('Admin')) {
+            // Usuario normal: solo documentos de su departamento
+            $query->whereHas('departamento', function ($q) use ($user) {
+                $q->where('id', $user->departamento->departamento_id ?? 0);
+            });
+        }
 
-        // if ($request->filled('search')) {
-        //     $query->where('nombre_documento', 'like', '%' . $request->search . '%');
-        // }
+        // Filtros adicionales
         if ($request->filled('search')) {
             $searchTerm = '%' . $request->search . '%';
-
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('nombre_documento', 'like', $searchTerm)
-                    ->orWhereHas('empresa', function ($q) use ($searchTerm) {
-                        $q->where('nombre', 'like', $searchTerm);
-                    })
-                    ->orWhereHas('tipoDeDocumento', function ($q) use ($searchTerm) {
-                        $q->where('nombre_documento', 'like', $searchTerm);
-                    })
-                    ->orWhereHas('departamento', function ($q) use ($searchTerm) {
-                        $q->where('nombre_departamento', 'like', $searchTerm);
-                    });
+                    ->orWhereHas('empresa', fn($q) => $q->where('nombre', 'like', $searchTerm))
+                    ->orWhereHas('tipoDeDocumento', fn($q) => $q->where('nombre_documento', 'like', $searchTerm))
+                    ->orWhereHas('departamento', fn($q) => $q->where('nombre_departamento', 'like', $searchTerm));
             });
         }
 
@@ -83,13 +81,13 @@ class DocumentoController extends Controller
             'documentos' => $documentos,
             'routeName' => $this->routeName,
             'loadingResults' => false,
-            'empresas' => Empresa::select('id', 'nombre as name')->get(), // Añadido as name
-            'tipos_documento' => TipoDeDocumento::select('id', 'nombre_documento as name')->get(), // Añadido as name
-            'departamentos' => Departamento::select('id', 'nombre_departamento as name')->get(), // Añadido as name
+            'empresas' => Empresa::select('id', 'nombre as name')->get(),
+            'tipos_documento' => TipoDeDocumento::select('id', 'nombre_documento as name')->get(),
+            'departamentos' => Departamento::select('id', 'nombre_departamento as name')->get(),
             'filters' => $request->all(['search', 'empresa', 'tipo_de_documento', 'departamento']),
-
         ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -101,6 +99,8 @@ class DocumentoController extends Controller
         $estados = Estado::select('id', 'nombre as name')->get();
         $departamentos = Departamento::select('id', 'nombre_departamento as name')->get();
         $modalidades = Modalidad::select('id', 'nombre_modalidad as name')->get();
+        $user = auth()->user();
+
 
         return Inertia::render('Documento/Create', [
             'titulo' => 'Crear Documento Técnico',
@@ -110,6 +110,8 @@ class DocumentoController extends Controller
             'estados' => $estados,
             'departamentos' => $departamentos,
             'modalidades' => $modalidades,
+            'departamento_id' => $user->departamento_id, // se pasa directo al form ->
+
         ]);
     }
 
@@ -231,8 +233,11 @@ class DocumentoController extends Controller
      */
     public function edit(Documento $documento)
     {
-        //dd($documento);  // Esto te permite ver qué contiene el objeto.
-
+        $user = Auth::user();
+        // 🔒 Verificar si el usuario puede editar el documento
+        if (!$user->hasRole('Admin') && $user->departamento_id !== $documento->departamento_id) {
+            abort(403, 'No tienes permiso para editar este documento.');
+        }
         $empresas = Empresa::select('id', 'nombre as name')->get();
         $tipos_documento = TipoDeDocumento::select('id', 'nombre_documento as name')->get();
         $estados = Estado::select('id', 'nombre as name')->get();

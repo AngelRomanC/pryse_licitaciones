@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Departamento;
 use App\Models\User;
+use App\Models\UserDepartamento;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
@@ -35,7 +37,7 @@ class UsuarioGeneralController extends Controller
             'routeName' => $this->routeName,
         ]);
     }
-    
+
     public function index(Request $request)
     {
         $query = User::role('Usuario')->with('roles');
@@ -44,8 +46,9 @@ class UsuarioGeneralController extends Controller
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-       // $usuarios = $query->paginate(8)->withQueryString();
-        $usuarios = $query->orderBy('id','desc')->paginate(8)->withQueryString();
+        // $usuarios = $query->paginate(8)->withQueryString();
+        $usuarios = $query->orderBy('id', 'desc')->paginate(8)->withQueryString();
+
 
 
         return Inertia::render("{$this->source}Index", [
@@ -53,14 +56,19 @@ class UsuarioGeneralController extends Controller
             'titulo' => 'Usuarios Generales',
             'routeName' => $this->routeName,
             'filters' => $request->only('search'),
+
         ]);
     }
 
     public function create()
     {
+        $departamentos = Departamento::select('id', 'nombre_departamento as name')->get();
+
         return Inertia::render("{$this->source}Create", [
             'titulo' => 'Crear Usuario de Sistema',
             'routeName' => $this->routeName,
+            'departamentos' => $departamentos,
+
         ]);
     }
 
@@ -80,6 +88,13 @@ class UsuarioGeneralController extends Controller
 
         //$user->assignRole('Usuario');
         $user->assignRole($request->role);
+        
+        if ($request->departamento_id) {
+            UserDepartamento::create([
+                'user_id' => $user->id,
+                'departamento_id' => $request->departamento_id,
+            ]);
+        }
         $user->notify(new CredencialesEstudianteNotification($request->email, $request->password));
 
 
@@ -88,12 +103,15 @@ class UsuarioGeneralController extends Controller
 
     public function edit($id)
     {
-        $usuario = User::findOrFail($id);
+        //$usuario = User::findOrFail($id);
+        $usuario = User::with(['departamento'])->findOrFail($id);
 
         return Inertia::render("{$this->source}Edit", [
             'usuario' => $usuario,
             'titulo' => 'Editar Usuario del Sistema',
             'routeName' => $this->routeName,
+            'departamentos' => Departamento::select('id', 'nombre_departamento as name')->get(),
+
         ]);
     }
 
@@ -104,6 +122,17 @@ class UsuarioGeneralController extends Controller
         $usuario = User::find($id);
 
         $usuario->update($request->all());
+
+        // Actualizar departamento si aplica
+        if ($request->filled('departamento_id')) {
+            UserDepartamento::updateOrCreate(
+                ['user_id' => $usuario->id],
+                ['departamento_id' => $request->departamento_id]
+            );
+        } else {
+            // Si quitas el departamento, lo eliminamos
+            UserDepartamento::where('user_id', $usuario->id)->delete();
+        }
 
         return redirect()->route($this->routeName . 'index')->with('message', 'Usuario actualizado correctamente.');
     }

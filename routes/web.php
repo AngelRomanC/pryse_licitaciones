@@ -103,6 +103,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/licitaciones/{licitacion}/descargar-expediente', [LicitacionController::class, 'descargarExpediente'])->name('licitaciones.descargar');
     // routes/web.php
     Route::post('/verificar-modalidades', [LicitacionController::class, 'verificarModalidades'])->name('licitacion.verificarModalidades');
+    
+    Route::get('/dashboard/vencidos', [DashboardController::class, 'vencidos'])
+        ->name('dashboard.vencidos');
 
 
 });

@@ -18,14 +18,16 @@ import {
   mdiAccountTie,
   mdiPhone,
   mdiMail,
-  mdiLock
+  mdiLock,mdiOfficeBuilding
 } from '@mdi/js'
 
 const props = defineProps({
   routeName: String,
   roles: Array,
   titulo: String,
+  departamentos: Array,
 })
+console.log(props.departamentos);
 
 const form = useForm({
   name: '',
@@ -35,8 +37,8 @@ const form = useForm({
   email: '',
   password: '',
   role: 'Usuario',
+  departamento_id: null,
 })
-
 const submit = () => {
   form.post(route(`${props.routeName}store`))
 }
@@ -45,12 +47,7 @@ const submit = () => {
   <LayoutMain>
     <SectionTitleLineWithButton :title="props.titulo" main />
 
-    <NotificationBar
-      v-if="$page.props.flash.message"
-      color="success"
-      :icon="'mdi-information'"
-      :outline="false"
-    >
+    <NotificationBar v-if="$page.props.flash.message" color="success" :icon="'mdi-information'" :outline="false">
       {{ $page.props.flash.message }}
     </NotificationBar>
 
@@ -68,15 +65,8 @@ const submit = () => {
       </FormField>
 
       <FormField :error="form.errors.numero" label="Número Telefónico">
-        <FormControl
-          v-model="form.numero"
-          type="tel"
-          required
-          maxlength="10"
-          pattern="^\d{10}$"
-          title="El número debe contener exactamente 10 dígitos"
-          :icon="mdiPhone"
-        />
+        <FormControl v-model="form.numero" type="tel" required maxlength="10" pattern="^\d{10}$"
+          title="El número debe contener exactamente 10 dígitos" :icon="mdiPhone" />
       </FormField>
 
       <FormField :error="form.errors.email" label="Correo Electrónico">
@@ -85,6 +75,11 @@ const submit = () => {
 
       <FormField :error="form.errors.password" label="Contraseña">
         <FormControl v-model="form.password" type="password" required :icon="mdiLock" />
+      </FormField>
+
+      <FormField v-if="props.departamentos" label="Departamento" :error="form.errors.departamento_id">
+        <FormControl v-model="form.departamento_id" :options="departamentos" type="select" label-key="nombre"
+          value-key="id" :icon="mdiOfficeBuilding" required />
       </FormField>
 
       <input type="hidden" v-model="form.role" />

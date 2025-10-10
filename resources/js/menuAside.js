@@ -10,6 +10,9 @@ import {
   mdiLibrary,
   mdiFormatListChecks, 
   mdiGavel , 
+  mdiViewDashboard,
+  mdiClipboardList,
+  mdiShieldAccount  
 } from "@mdi/js";
 
 export default [
@@ -95,13 +98,35 @@ export default [
  
 
   //Modulos a Usuario de sistema 
+  // {
+  //   href: "/dashboard",
+  //   to: "/dashboard",
+  //   icon: mdiMonitor,
+  //   label: "Dashboard",
+  //   role: "Usuario" // Vistas 
+  // },
+
   {
-    href: "/dashboard",
-    to: "/dashboard",
-    icon: mdiMonitor,
-    label: "Dashboard",
-    role: "Usuario" // Vistas 
-  },
+  label: "Dashboard",
+  icon: mdiViewDashboard,
+  role: "Usuario",
+  menu: [
+    {
+        href:"/dashboard",
+        label: "Documentos Vigentes",
+        icon: mdiClipboardList,
+        role: "Usuario",
+    }, 
+    {
+      route: "dashboard.vencidos",
+      label: "Documentos Vencidos",
+      icon: mdiShieldAccount,
+      role: "Usuario",
+    },
+    
+   
+  ],
+},
 
   {
     label: "Catálogos",

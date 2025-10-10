@@ -15,13 +15,15 @@ import {
   mdiAccountCircle,
   mdiAccountTie,
   mdiPhone,
-  mdiMail
+  mdiMail,
+  mdiOfficeBuilding
 } from '@mdi/js'
 
 const props = defineProps({
   usuario: Object,
   routeName: String,
   titulo: String,
+  departamentos: Array,
 })
 
 const form = useForm({
@@ -30,8 +32,9 @@ const form = useForm({
   apellido_materno: props.usuario.apellido_materno,
   numero: props.usuario.numero,
   email: props.usuario.email,
-})
+  departamento_id: props.usuario.departamento?.departamento_id ?? '',
 
+})
 const guardar = () => {
   form.put(route(`${props.routeName}update`, props.usuario.id))
 }
@@ -40,12 +43,7 @@ const guardar = () => {
   <LayoutMain>
     <SectionTitleLineWithButton :title="props.titulo" main />
 
-    <NotificationBar
-      v-if="$page.props.flash.message"
-      color="success"
-      :icon="'mdi-information'"
-      :outline="false"
-    >
+    <NotificationBar v-if="$page.props.flash.message" color="success" :icon="'mdi-information'" :outline="false">
       {{ $page.props.flash.message }}
     </NotificationBar>
 
@@ -63,20 +61,17 @@ const guardar = () => {
       </FormField>
 
       <FormField :error="form.errors.numero" label="Número Telefónico">
-        <FormControl
-          v-model="form.numero"
-          required
-          placeholder="Teléfono"
-          type="tel"
-          maxlength="10"
-          pattern="^\d{10}$"
-          title="El número debe contener exactamente 10 dígitos"
-          :icon="mdiPhone"
-        />
+        <FormControl v-model="form.numero" required placeholder="Teléfono" type="tel" maxlength="10" pattern="^\d{10}$"
+          title="El número debe contener exactamente 10 dígitos" :icon="mdiPhone" />
       </FormField>
 
       <FormField :error="form.errors.email" label="Correo Electrónico">
         <FormControl v-model="form.email" type="email" required :icon="mdiMail" />
+      </FormField>
+
+      <FormField label="Departamento" :error="form.errors.departamento_id">
+        <FormControl v-model="form.departamento_id" :options="departamentos" type="select" label-key="name"
+          value-key="id" :icon="mdiOfficeBuilding" required />
       </FormField>
 
       <BaseButtons>

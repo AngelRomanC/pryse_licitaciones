@@ -131,9 +131,18 @@ class User extends Authenticatable
         return $this->hasMany(Grupo_Alumnos::class);
     }
 
-   /* public function notifications()
+    /* public function notifications()
+     {
+         return $this->morphMany(DatabaseNotification::class, 'notifiable')->orderBy('created_at', 'desc');
+     }*/
+    public function departamento()
     {
-        return $this->morphMany(DatabaseNotification::class, 'notifiable')->orderBy('created_at', 'desc');
-    }*/
-    
+        return $this->hasOne(UserDepartamento::class);
+    }
+       // Accesor para obtener directamente el departamento_id para catalago en front edit "UsuarioGeneral create.vue"
+    public function getDepartamentoIdAttribute()
+    {
+        return $this->departamento->departamento_id ?? null;
+    }
+
 }

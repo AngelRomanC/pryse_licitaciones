@@ -22,12 +22,14 @@ const props = defineProps({
     titulo: String,
     documento: Object,
     routeName: String,
-    empresas: Array,       // Debe ser Array
-    tipos_documento: Array, // Debe ser Array
-    estados: Array,         // Debe ser Array
-    departamentos: Array,   // Debe ser Array
-    modalidades: Array      // Debe ser Array
+    empresas: Array,       
+    tipos_documento: Array, 
+    estados: Array,         
+    departamentos: Array,   
+    modalidades: Array,      
+    departamento_id: Number, 
 });
+console.log('Props departamento_id:', props.departamento_id);
 const urlParams = new URLSearchParams(window.location.search);
 const redirectParam = urlParams.get('redirect');
 
@@ -36,7 +38,7 @@ const form = useForm({
     empresa_id: '',
     tipo_de_documento_id: '',
     estado_id: '',
-    departamento_id: '',
+    departamento_id: props.departamento_id || '',
     fecha_revalidacion: '',
     fecha_vigencia: '',
     modalidad_id: [],
@@ -107,7 +109,7 @@ const handleSubmit = () => {
                             catalog-route-name="empresa"
                             return-route="documento.create"
                             :return-id="form.id"
-                            label="Agregar nueva empresa"
+                            label="Agregar nueva Empresa"
                             :icon="mdiPlus"
                           />                
                     </div>
@@ -131,7 +133,7 @@ const handleSubmit = () => {
                             catalog-route-name="tipo-de-documento"
                             return-route="documento.create"
                             :return-id="form.id"
-                            label="Agregar nuevo Docuemento"
+                            label="Agregar nuevo Documento"
                             :icon="mdiPlus"
                         /> 
                     </div>
@@ -161,6 +163,7 @@ const handleSubmit = () => {
                                 label-key="nombre_departamento"
                                 value-key="id"
                                 :icon="mdiOfficeBuilding"
+                                :disabled="!!form.departamento_id"
                                 required
                             />
                         </div>
@@ -168,7 +171,7 @@ const handleSubmit = () => {
                             catalog-route-name="departamento"
                             return-route="documento.create"
                             :return-id="form.id"
-                            label="Agregar nueva empresa"
+                            label="Agregar nuevo Departamento"
                             :icon="mdiPlus"
                           />                
                     </div>
@@ -189,7 +192,7 @@ const handleSubmit = () => {
                             catalog-route-name="modalidad"
                             return-route="documento.create"
                             :return-id="form.id"
-                            label="Agregar nueva empresa"
+                            label="Agregar nueva Modalidad"
                             :icon="mdiPlus"
                           />                
                     </div>
