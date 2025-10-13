@@ -97,7 +97,7 @@ class DepartamentoController extends Controller
     public function update(Request $request, Departamento $departamento)
     {
         $validated = $request->validate([
-            'nombre_departamento' => 'required|string|max:50',
+            'nombre_departamento' => 'required|string|max:100',
             'email' => 'required|email|max:50',
         ]);
         $departamento->update($validated);
