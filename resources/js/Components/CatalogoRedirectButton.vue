@@ -4,10 +4,27 @@ import { computed } from 'vue'
 import BaseButton from '@/Components/BaseButton.vue'
 
 const props = defineProps({
-  catalogRouteName: String, // por ejemplo: 'tipo-documento'
-  returnRoute: String, // por ejemplo: 'documentos.edit'
-  returnId: [String, Number], // el ID del documento actual
-  label: String,
+  mode: {
+    type: String,
+    default: 'create', // "create" | "edit"
+    validator: (v) => ['create', 'edit'].includes(v),
+  },
+  catalogRouteName: {
+    type: String,
+    required: true, // ejemplo: "documento-legal"
+  },
+  returnRoute: {
+    type: String,
+    required: true, // ejemplo: "dashboard.vencidos"
+  },
+  returnId: {
+    type: [String, Number],
+    default: null, // para documentos o entidades
+  },
+  label: {
+    type: String,
+    default: 'Ir al formulario',
+  },
   icon: String,
   color: {
     type: String,
@@ -16,27 +33,43 @@ const props = defineProps({
   small: {
     type: Boolean,
     default: true,
-  }
+  },
+  outline: {
+    type: Boolean,
+    default: false,
+  },
 })
 
+/**
+ * Genera la URL a la que debe volver el usuario
+ */
 const redirectUrl = computed(() => {
   if (props.returnId) {
     return route(props.returnRoute, props.returnId)
   }
-  return route(props.returnRoute)  // Si no hay ID, solo retorna la ruta sin parámetro.
+  return route(props.returnRoute)
 })
 
-function redirectToCatalog() {
-     // Imprime el valor de redirectUrl.value en la consola
-  console.log('Redirect URL:', redirectUrl.value);
-  router.get(route(`${props.catalogRouteName}.create`, {
-    redirect: redirectUrl.value // Pasa la URL de retorno como parámetro.
-  }))
-    
+/**
+ * Redirige a la ruta según el modo (create/edit)
+ */
+function handleRedirect() {
+  let routeName = props.catalogRouteName
+
+  if (props.mode === 'edit') {
+    if (!props.returnId) {
+      console.error('⚠️ Se requiere returnId para usar modo "edit".')
+      return
+    }
+    router.get(route(`${routeName}.edit`, props.returnId), {
+      redirect: redirectUrl.value,
+    })
+  } else {
+    router.get(route(`${routeName}.create`, {
+      redirect: redirectUrl.value,
+    }))
+  }
 }
-
-
-
 </script>
 
 <template>
@@ -44,7 +77,8 @@ function redirectToCatalog() {
     :icon="icon"
     :color="color"
     :small="small"
+    :outline="outline"
     :title="label"
-    @click="redirectToCatalog"
+    @click="handleRedirect"
   />
 </template>

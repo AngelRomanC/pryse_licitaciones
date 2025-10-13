@@ -236,7 +236,9 @@ class DocumentoController extends Controller
         $user = Auth::user();
         // 🔒 Verificar si el usuario puede editar el documento
         if (!$user->hasRole('Admin') && $user->departamento_id !== $documento->departamento_id) {
-            abort(403, 'No tienes permiso para editar este documento.');
+            //abort(403, 'No tienes permiso para editar este documento.');
+            return redirect()->route('dashboard.vencidos')->with('error', 'No tienes permiso para editar este documento.');
+
         }
         $empresas = Empresa::select('id', 'nombre as name')->get();
         $tipos_documento = TipoDeDocumento::select('id', 'nombre_documento as name')->get();
@@ -269,6 +271,7 @@ class DocumentoController extends Controller
             'modalidades' => $modalidades,
             'archivosPrincipales' => $archivosPrincipales,
             'archivosAnexos' => $archivosAnexos,
+            'userRole' => auth()->user()->getRoleNames()->first(),
         ]);
     }
 

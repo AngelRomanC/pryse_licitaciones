@@ -31,7 +31,7 @@ const props = defineProps({
   d1: Array,
   d2: Array,
 });
-
+console.log('Documentos Técnicos-:', props.documentos);
 // Contar total de documentos
 const totalDocumentosTecnicos = computed(() => props.documentos.total);
 const totalDocumentosLegales = computed(() => props.documentosLegal.total);

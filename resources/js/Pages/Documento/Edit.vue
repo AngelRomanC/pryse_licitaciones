@@ -27,13 +27,16 @@ const props = defineProps({
     departamentos: Array,
     modalidades: Array,
     archivosPrincipales: Array,
-    archivosAnexos: Array
-});
+    archivosAnexos: Array,
+    userRole: String,
 
+});
 // Preparar archivos existentes
 const archivosPrincipales = ref(props.archivosPrincipales || []);
 const archivosAnexos = ref(props.archivosAnexos || []);
 
+const urlParams = new URLSearchParams(window.location.search);
+const redirectParam = urlParams.get('redirect');
 const form = useForm({
     nombre_documento: props.documento.nombre_documento,
     empresa_id: props.documento.empresa_id,
@@ -45,7 +48,8 @@ const form = useForm({
     modalidad_id: props.documento.modalidades.map(mod => mod.id),
     nuevos_documentos_principales: [],
     nuevos_documentos_anexos: [],
-    archivos_a_eliminar: []
+    archivos_a_eliminar: [],
+
 });
 
 // Función para mostrar el PDF
@@ -243,6 +247,7 @@ const agregarDocumentosAnexos = (files) => {
                         label-key="name"
                         value-key="id"
                         :icon="mdiMapMarker"
+                        :disabled="!(userRole === 'Admin' || userRole === 'Uusuario')"
                         required
                     />
                 </FormField>
@@ -358,7 +363,8 @@ const agregarDocumentosAnexos = (files) => {
             <template #footer>
                 <BaseButtons>
                     <BaseButton  @click="guardar" type="submit" color="info" outline label="Actualizar" :disabled="form.processing" />
-                    <BaseButton :href="route(`${props.routeName}index`)" type="button" color="danger" outline label="Cancelar" />
+                    <BaseButton :href="redirectParam || route(`${routeName}index`)" type="button" color="danger" outline label="Cancelar" />
+                    
                 </BaseButtons>
             </template>
         </CardBox>

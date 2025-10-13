@@ -29,7 +29,6 @@ const props = defineProps({
     modalidades: Array,      
     departamento_id: Number, 
 });
-console.log('Props departamento_id:', props.departamento_id);
 const urlParams = new URLSearchParams(window.location.search);
 const redirectParam = urlParams.get('redirect');
 

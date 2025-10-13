@@ -150,7 +150,7 @@ class DashboardController extends Controller
             ->where('nombre_documento', 'Documento Técnico')
             ->where('fecha_vigencia', '<', now())
             ->orderBy('fecha_vigencia', 'asc')
-            ->paginate(5, ['*'], 'page_tecnico')
+            ->paginate(5, ['*'], 'page_tecnico_vencidos')
             ->through(fn($documento) => $documento->setAttribute(
                 'dias_restantes',
                 now()->startOfDay()->diffInDays(Carbon::parse($documento->fecha_vigencia)->startOfDay(), false)
@@ -166,7 +166,7 @@ class DashboardController extends Controller
             ->where('nombre_documento', 'Documento Legal')
             ->where('fecha_vigencia', '<', now())
             ->orderBy('fecha_vigencia', 'asc')
-            ->paginate(5, ['*'], 'page_legal')
+            ->paginate(5, ['*'], 'page_legal_vencidos')
             ->through(fn($documentoLegal) => $documentoLegal->setAttribute(
                 'dias_restantes',
                 now()->startOfDay()->diffInDays(Carbon::parse($documentoLegal->fecha_vigencia)->startOfDay(), false)

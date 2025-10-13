@@ -19,6 +19,8 @@ import { onMounted } from 'vue'
 import NotificationBar from "@/Components/NotificationBar.vue";
 import DocumentDetailsModal from "@/Components/DocumentDetailsModal.vue";
 import BaseButton from "@/Components/BaseButton.vue";
+import CatalogoRedirectButton from '@/Components/CatalogoRedirectButton.vue';
+
 
 
 // Registrar los componentes necesarios de Chart.js
@@ -33,7 +35,7 @@ const props = defineProps({
   d1: Array,
   d2: Array,
 });
-
+console.log('Documentos TécnicosVencidos:', props.documentos);
 // Contar total de documentos
 const totalDocumentosTecnicos = computed(() => props.documentos.total);
 const totalDocumentosLegales = computed(() => props.documentosLegal.total);
@@ -123,7 +125,7 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
                       'bg-red-600 text-white': documento.dias_restantes_revalidacion < 0,
                       'bg-red-200 text-red-800': documento.dias_restantes_revalidacion === 0,
                       'bg-blue-100 text-blue-800': documento.dias_restantes_revalidacion > 0
-                    }" class="px-3 py-1 mt-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full">
+                    }" class="px-3 py-1 mt-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full truncate max-w-[120px]">
                       {{
                         documento.dias_restantes_revalidacion < 0 ? `Vencido hace
                         ${Math.abs(documento.dias_restantes_revalidacion)} días` :
@@ -139,7 +141,7 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
                       'bg-red-500 text-white': documento.dias_restantes <= 0,
                       'bg-red-200 text-red-800': documento.dias_restantes > 0 && documento.dias_restantes <= 7,
                       'bg-green-100 text-green-800': documento.dias_restantes > 7
-                    }" class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full">
+                    }" class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full truncate max-w-[120px]">
                       {{
                         documento.dias_restantes < 0 ? `Vencido hace ${Math.abs(documento.dias_restantes)} días` :
                           documento.dias_restantes === 0 ? 'Vence hoy' : `Faltan ${documento.dias_restantes} días` }}
@@ -153,7 +155,7 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
                   <div class="flex items-center space-x-2">
                     <DocumentDetailsModal :documento="documento" :tipo-documento="'documento'" />
                       <BaseButton :icon="mdiArrowRight" color="info" small outline
-                      :href="route('documento-legal.edit', documento.id)"   title="Editar documento" />
+                      :href="route('documento.edit', documento.id)"   title="Editar documento" />
                   </div>
                 </td>
 
@@ -162,7 +164,7 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
           </table>
         </div>
         <PaginationDashboard :currentPage="documentos.current_page" :links="documentos.links"
-          :total="documentos.last_page" pageParam="page_tecnico" />
+          :total="documentos.last_page" pageParam="page_tecnico_vencidos" routeName="dashboard.vencidos"  />
 
       </CardBox>
 
@@ -218,7 +220,7 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
                       'bg-red-600 text-white': documento.dias_restantes_revalidacion < 0,
                       'bg-red-200 text-red-800': documento.dias_restantes_revalidacion === 0,
                       'bg-blue-100 text-blue-800': documento.dias_restantes_revalidacion > 0
-                    }" class="px-3 py-1 mt-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full">
+                    }" class="px-3 py-1 mt-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full truncate max-w-[120px]">
                       {{
                         documento.dias_restantes_revalidacion < 0 ? `Vencido hace
                         ${Math.abs(documento.dias_restantes_revalidacion)} días` :
@@ -234,7 +236,7 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
                       'bg-red-500 text-white': documento.dias_restantes <= 0,
                       'bg-red-200 text-red-800': documento.dias_restantes > 0 && documento.dias_restantes <= 7,
                       'bg-green-100 text-green-800': documento.dias_restantes > 7
-                    }" class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full">
+                    }" class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full truncate max-w-[120px]">
                       {{
                         documento.dias_restantes < 0 ? `Vencido hace ${Math.abs(documento.dias_restantes)} días` :
                           documento.dias_restantes === 0 ? 'Vence hoy' : `Faltan ${documento.dias_restantes} días` }}
@@ -248,6 +250,15 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
                     <DocumentDetailsModal :documento="documento" :tipo-documento="'documento-legal'" />
                     <BaseButton :icon="mdiArrowRight" color="info" small outline
                       :href="route('documento-legal.edit', documento.id)"   title="Editar documento" />
+                      <CatalogoRedirectButton
+                            catalog-route-name="documento-legal"
+                            return-route="dashboard.vencidos"
+                            :return-id="documento.id"
+                            label="Editar Documento"
+                            :icon="mdiArrowRight"
+                            mode="edit"
+                            
+                          />        
                   </div>
                 </td>
 
@@ -257,7 +268,7 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
           </table>
         </div>
         <PaginationDashboard :currentPage="documentosLegal.current_page" :links="documentosLegal.links"
-          :total="documentosLegal.last_page" pageParam="page_legal" />
+          :total="documentosLegal.last_page" pageParam="page_legal_vencidos" routeName="dashboard.vencidos" />
 
       </CardBox>
     </div>

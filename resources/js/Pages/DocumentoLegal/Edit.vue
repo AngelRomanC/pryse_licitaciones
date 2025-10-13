@@ -33,6 +33,9 @@ const props = defineProps({
 const archivosPrincipales = ref(props.archivosPrincipales || []);
 const archivosAnexos = ref(props.archivosAnexos || []);
 
+const urlParams = new URLSearchParams(window.location.search);
+const redirectParam = urlParams.get('redirect');
+
 const form = useForm({
     nombre_documento: props.documento.nombre_documento,
     empresa_id: props.documento.empresa_id,
@@ -340,7 +343,7 @@ const agregarDocumentosAnexos = (files) => {
             <template #footer>
                 <BaseButtons>
                     <BaseButton @click="guardar" type="submit" color="info" outline label="Actualizar" />
-                    <BaseButton :href="route(`${props.routeName}index`)" type="reset" color="danger" outline label="Cancelar" />
+                    <BaseButton :href="redirectParam || route(`${routeName}index`)" type="reset" color="danger" outline label="Cancelar" />
                 </BaseButtons>
             </template>
         </CardBox>
