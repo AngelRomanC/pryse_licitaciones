@@ -95,7 +95,7 @@ class ModalidadController extends Controller
     public function update(Request $request, Modalidad $modalidad)
     {
         $validated = $request->validate([
-            'nombre_modalidad' => 'required|string|max:50',
+            'nombre_modalidad' => 'required|string|max:100',
         ]);
         $modalidad->update($validated);
 
