@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -23,6 +22,7 @@ return new class extends Migration
             $table->foreignId('modalidad_id')->nullable()->constrained(table: 'modalidads')->onDelete('set null'); // Clave foránea
             $table->string('ruta_documento')->nullable();
             $table->string('ruta_documento_anexo')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });
     }

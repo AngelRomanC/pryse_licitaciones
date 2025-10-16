@@ -8,7 +8,7 @@ import BaseButtons from "@/components/BaseButtons.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 import CardBox from "@/components/CardBox.vue";
 
-import { mdiBallotOutline, mdiFileDocumentEdit, mdiText, mdiMapMarker,mdiPhone ,mdiEmail} from "@mdi/js"; //agregado
+import {  mdiFileDocumentEdit } from "@mdi/js"; //agregado
 
 //const props = defineProps(['titulo', 'empresa', 'routeName']); //Recibir la persona por id
 
@@ -28,7 +28,7 @@ const guardar = () => {
 
 <template>
     <LayoutMain :title="titulo">
-        <SectionTitleLineWithButton :icon="mdiBallotOutline" :title="titulo" main>
+        <SectionTitleLineWithButton :icon="mdiFileDocumentEdit" :title="titulo" main>
            
         </SectionTitleLineWithButton>
 

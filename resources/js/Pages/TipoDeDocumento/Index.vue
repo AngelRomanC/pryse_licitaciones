@@ -5,7 +5,7 @@ import BaseButton from '@/components/BaseButton.vue';
 import BaseButtons from "@/components/BaseButtons.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 import Swal from "sweetalert2";
-import { mdiTagEdit, mdiDeleteOutline,mdiInformation} from "@mdi/js";
+import { mdiTagEdit, mdiDeleteOutline,mdiInformation, mdiPlus, mdiFileDocumentMultiple} from "@mdi/js";
 import Pagination from '@/Shared/Pagination.vue';
 import CardBoxComponentEmpty from "@/components/CardBoxComponentEmpty.vue";
 import CardBox from "@/components/CardBox.vue";
@@ -47,8 +47,8 @@ const titulo = "Lista de Empresas";
 
 <template>
     <LayoutMain>
-        <SectionTitleLineWithButton :title="props.titulo" main>
-            <BaseButton :href="route(`${props.routeName}create`)" color="warning" label="Crear" />
+        <SectionTitleLineWithButton :title="props.titulo" main :icon="mdiFileDocumentMultiple">
+            <BaseButton :href="route(`${props.routeName}create`)" color="warning" label="Crear" :icon="mdiPlus"/>
         </SectionTitleLineWithButton>
 
         <SearchBar   v-model="filters.search"  :routeName="routeName"  placeholder="Buscar documento por nombre..."  />

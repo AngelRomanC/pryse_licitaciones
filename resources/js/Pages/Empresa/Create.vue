@@ -7,7 +7,7 @@ import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.
 import CardBox from "@/components/CardBox.vue";
 import FormField from "@/components/FormField.vue";
 import FormControl from "@/components/FormControl.vue";
-import { mdiBallotOutline, mdiAccount, mdiText, mdiMapMarker,mdiPhone ,mdiEmail} from "@mdi/js"; //agregado
+import { mdiBallotOutline, mdiAccount, mdiText, mdiMapMarker,mdiPhone ,mdiEmail, mdiBriefcasePlus} from "@mdi/js"; //agregado
 
 const props = defineProps({
     titulo: String, // Título enviado desde el backend
@@ -37,7 +37,7 @@ const handleSubmit = () => {
 
 <template>
     <LayoutMain :title="titulo">
-        <SectionTitleLineWithButton :icon="mdiBallotOutline" :title="titulo" main />    
+        <SectionTitleLineWithButton :icon="mdiBriefcasePlus" :title="titulo" main />    
          
 
         <CardBox form @submit.prevent="handleSubmit">

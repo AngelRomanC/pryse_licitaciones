@@ -18,7 +18,8 @@ class Documento extends Model
         'fecha_vigencia',
         'modalidad_id',
         'ruta_documento',
-        'ruta_documento_anexo'
+        'ruta_documento_anexo',
+        'user_id',
     ];
 
     public function empresa()
@@ -46,13 +47,28 @@ class Documento extends Model
 
     public function modalidades()
     {
-        return $this->belongsToMany(Modalidad::class, 'documentos_modalidades') ->withTimestamps();
+        return $this->belongsToMany(Modalidad::class, 'documentos_modalidades')->withTimestamps();
 
     }
 
     //relación con archivosPDF
-    public function archivos() {
+    public function archivos()
+    {
         return $this->hasMany(DocumentoArchivo::class);
+    }
+    // ✅ Relación con el usuario creador
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+    protected static function booted()
+    {
+        static::creating(function ($documento) {
+            // Solo asigna auth()->id() si user_id no está definido
+            if (empty($documento->user_id)) {
+                $documento->user_id = auth()->id();
+            }
+        });
     }
 
 }

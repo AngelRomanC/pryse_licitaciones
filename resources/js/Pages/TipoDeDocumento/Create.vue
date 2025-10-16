@@ -7,7 +7,7 @@ import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.
 import CardBox from "@/components/CardBox.vue";
 import FormField from "@/components/FormField.vue";
 import FormControl from "@/components/FormControl.vue";
-import { mdiBallotOutline, mdiFileDocumentCheckOutline, mdiText, mdiMapMarker,mdiPhone ,mdiEmail} from "@mdi/js"; //agregado
+import { mdiBallotOutline, mdiFileDocumentCheckOutline, mdiFileDocumentPlus, mdiMapMarker,mdiPhone ,mdiEmail} from "@mdi/js"; //agregado
 
 const props = defineProps({
     titulo: String, 
@@ -30,7 +30,7 @@ const handleSubmit = () => {
 
 <template>
     <LayoutMain :title="titulo">
-        <SectionTitleLineWithButton :icon="mdiBallotOutline" :title="titulo" main>
+        <SectionTitleLineWithButton :icon="mdiFileDocumentPlus" :title="titulo" main>
 
         </SectionTitleLineWithButton>
 

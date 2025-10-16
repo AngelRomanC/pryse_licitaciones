@@ -1,9 +1,9 @@
 import {
   mdiMonitor,
   mdiSecurity,
-  mdiBookshelf,
+  mdiBriefcase,
   mdiFileDocumentOutline,
-  mdiAccountTie ,mdiAccountSchool,
+  mdiAccountTie ,
   mdiAccountGroup,
   mdiScaleBalance,
   mdiFileSign,
@@ -12,7 +12,8 @@ import {
   mdiGavel , 
   mdiViewDashboard,
   mdiClipboardList,
-  mdiShieldAccount  
+  mdiShieldAccount ,
+  mdiOfficeBuilding 
 } from "@mdi/js";
 
 export default [
@@ -21,7 +22,7 @@ export default [
     to: "/dashboard",
     icon: mdiMonitor,
     label: "Dashboard",
-    role: "Admin" //Vistas 
+    role: "Admin" 
   },
 
   {
@@ -53,7 +54,7 @@ export default [
       {
         href:"/empresa",
         label: "Empresa",
-        icon: mdiBookshelf,
+        icon: mdiBriefcase,
         role: "Admin",
       }, 
       {
@@ -65,7 +66,7 @@ export default [
       {
         href:"/departamento",
         label: "Departamento",
-        icon: mdiAccountGroup,
+        icon: mdiOfficeBuilding,
         role: "Admin",
       }, 
       {

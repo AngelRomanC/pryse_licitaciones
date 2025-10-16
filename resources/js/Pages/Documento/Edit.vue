@@ -8,7 +8,7 @@ import BaseButton from "@/components/BaseButton.vue";
 import BaseButtons from "@/components/BaseButtons.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 import CardBox from "@/components/CardBox.vue";
-import { mdiBallotOutline, mdiFileDocument, mdiMapMarker, mdiOfficeBuilding, mdiCalendar, mdiEye, mdiTrashCan, mdiPlus } from "@mdi/js";
+import { mdiFileEdit , mdiFileDocument, mdiMapMarker, mdiOfficeBuilding, mdiCalendar, mdiEye, mdiTrashCan, mdiPlus } from "@mdi/js";
 import FormControlV7 from '@/Components/FormControlV7.vue';
 import FileUploader from '@/Components/FileUploader.vue';
 import Swal from 'sweetalert2';
@@ -181,7 +181,7 @@ const agregarDocumentosAnexos = (files) => {
 
 <template>
     <LayoutMain :title="titulo">
-        <SectionTitleLineWithButton :icon="mdiBallotOutline" :title="titulo" main />
+        <SectionTitleLineWithButton :icon="mdiFileEdit " :title="titulo" main />
         <CardBox form @submit.prevent="guardar" enctype="multipart/form-data">
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                  <!-- Nombre del Documento -->

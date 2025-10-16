@@ -5,7 +5,7 @@ import BaseButton from '@/components/BaseButton.vue';
 import BaseButtons from "@/components/BaseButtons.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 import Swal from "sweetalert2";
-import { mdiTagEdit, mdiDeleteOutline, mdiInformation, mdiMagnify, mdiFilterVariant } from "@mdi/js";
+import { mdiFileDocument, mdiBriefcase, mdiOfficeBuilding, mdiTagEdit, mdiDeleteOutline, mdiInformation, mdiMagnify, mdiFilterVariant, mdiFileCog, mdiPlus } from "@mdi/js";
 import Pagination from '@/Shared/Pagination.vue';
 import CardBoxComponentEmpty from "@/components/CardBoxComponentEmpty.vue";
 import CardBox from "@/components/CardBox.vue";
@@ -73,8 +73,8 @@ const resetFilters = () => {
 
 <template>
     <LayoutMain>
-        <SectionTitleLineWithButton :title="props.titulo" main>
-            <BaseButton :href="route(`${props.routeName}create`)" color="warning" label="Crear" />
+        <SectionTitleLineWithButton :title="props.titulo" main :icon="mdiFileCog" >
+            <BaseButton :href="route(`${props.routeName}create`)" color="warning" label="Crear" :icon="mdiPlus" />
         </SectionTitleLineWithButton>
 
         <NotificationBar v-if="$page.props.flash.success" color="success" :icon="mdiInformation" :outline="false">
@@ -87,7 +87,10 @@ const resetFilters = () => {
 
         <!-- Filtros de búsqueda -->
         <CardBox class="mb-6">
-            <div :class="`grid grid-cols-1 md:grid-cols-${$page.props.auth.user.role === 'Admin' ? 4 : 3} gap-4`">
+                <div :class="[
+                    'grid grid-cols-1 gap-4',
+                    $page.props.auth.user.role === 'Admin' ? 'md:grid-cols-4' : 'md:grid-cols-3'
+                ]">
                 <!-- Búsqueda general -->
                 <FormField label="Búsqueda general">
                     <FormControl
@@ -107,6 +110,7 @@ const resetFilters = () => {
                         placeholder="Todas las empresas"
                         label-key="nombre"
                         value-key="id"
+                        :icon="mdiBriefcase"
                     />
                 </FormField>
 
@@ -119,6 +123,7 @@ const resetFilters = () => {
                         placeholder="Todos los documentos"
                         label-key="nombre_documento"
                         value-key="id"
+                        :icon="mdiFileDocument"
                     />
                 </FormField>
 
@@ -131,6 +136,7 @@ const resetFilters = () => {
                         placeholder="Todos los departamentos"
                         label-key="nombre_departamento"
                         value-key="id"
+                        :icon="mdiOfficeBuilding"
                     />
                 </FormField>
             </div>

@@ -7,7 +7,7 @@ import SectionTitleLineWithButton from "@/Components/SectionTitleLineWithButton.
 import CardBox from "@/Components/CardBox.vue";
 import FormField from "@/Components/FormField.vue";
 import FormControl from "@/Components/FormControl.vue";
-import { mdiBallotOutline, mdiFormatListChecks, mdiOfficeBuilding, mdiFileDocument, mdiMapMarker, mdiCalendar,mdiPlus } from "@mdi/js";
+import { mdiFilePlus , mdiFormatListChecks, mdiOfficeBuilding, mdiFileDocument, mdiMapMarker, mdiCalendar,mdiPlus } from "@mdi/js";
 import FileUploader from '@/Components/FileUploader.vue';
 import CatalogoRedirectButton from '@/Components/CatalogoRedirectButton.vue';
 import { ref } from 'vue'
@@ -62,7 +62,7 @@ const handleSubmit = () => {
 
 <template>
     <LayoutMain :title="titulo">
-        <SectionTitleLineWithButton :icon="mdiBallotOutline" :title="titulo" main/>
+        <SectionTitleLineWithButton :icon="mdiFilePlus " :title="titulo" main/>
 
         <CardBox form @submit.prevent="handleSubmit" enctype="multipart/form-data">
 

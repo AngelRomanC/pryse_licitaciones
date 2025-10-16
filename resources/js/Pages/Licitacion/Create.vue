@@ -7,7 +7,7 @@ import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.
 import CardBox from "@/components/CardBox.vue";
 import FormField from "@/components/FormField.vue";
 import FormControl from "@/components/FormControl.vue";
-import { mdiBallotOutline, mdiOfficeBuilding, mdiFileDocument, mdiPlus, mdiMapMarker, mdiCalendar } from "@mdi/js";
+import { mdiFilePlus , mdiOfficeBuilding, mdiFileDocument, mdiPlus, mdiMapMarker, mdiCalendar } from "@mdi/js";
 import CatalogoRedirectButton from '@/Components/CatalogoRedirectButton.vue';
 import MultiSelectEstados from '@/Components/MultiSelectEstados.vue';
 import TransferList from '@/Components/TransferList.vue';
@@ -229,7 +229,7 @@ const handleSubmit = async () => {
 
 <template>
   <LayoutMain title="Crear Licitación">
-    <SectionTitleLineWithButton :icon="mdiBallotOutline" title="Crear Licitación" main />
+    <SectionTitleLineWithButton :icon="mdiFilePlus " title="Crear Licitación" main />
 
     <CardBox form @submit.prevent="handleSubmit" enctype="multipart/form-data">
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">

@@ -1,19 +1,19 @@
 <script setup>
 import { router } from '@inertiajs/vue3';
-import LayoutMain from '@/layouts/LayoutMain.vue';
-import BaseButton from '@/components/BaseButton.vue';
-import BaseButtons from "@/components/BaseButtons.vue";
-import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
+import LayoutMain from '@/Layouts/LayoutMain.vue';
+import BaseButton from '@/Components/BaseButton.vue';
+import BaseButtons from "@/Components/BaseButtons.vue";
+import SectionTitleLineWithButton from "@/Components/SectionTitleLineWithButton.vue";
 import Swal from "sweetalert2";
-import { mdiTagEdit, mdiDeleteOutline,mdiInformation, mdiMagnify, mdiFilterVariant } from "@mdi/js";
+import { mdiBriefcase, mdiFileDocument, mdiOfficeBuilding, mdiTagEdit, mdiDeleteOutline,mdiInformation, mdiMagnify, mdiFilterVariant, mdiScaleBalance , mdiPlus } from "@mdi/js";
 import Pagination from '@/Shared/Pagination.vue';
-import CardBoxComponentEmpty from "@/components/CardBoxComponentEmpty.vue";
-import CardBox from "@/components/CardBox.vue";
-import NotificationBar from "@/components/NotificationBar.vue";
+import CardBoxComponentEmpty from "@/Components/CardBoxComponentEmpty.vue";
+import CardBox from "@/Components/CardBox.vue";
+import NotificationBar from "@/Components/NotificationBar.vue";
 import moment from "moment";
 import { ref, watch } from 'vue';
-import FormField from "@/components/FormField.vue";
-import FormControl from "@/components/FormControl.vue";
+import FormField from "@/Components/FormField.vue";
+import FormControl from "@/Components/FormControl.vue";
 
 
 
@@ -83,8 +83,8 @@ const resetFilters = () => {
 
 <template>
     <LayoutMain>
-        <SectionTitleLineWithButton :title="props.titulo" main>
-            <BaseButton :href="route(`${props.routeName}create`)" color="warning" label="Crear" />
+        <SectionTitleLineWithButton :title="props.titulo" main  :icon="mdiScaleBalance ">
+            <BaseButton :href="route(`${props.routeName}create`)" color="warning" label="Crear" :icon="mdiPlus"/>
         </SectionTitleLineWithButton>
 
         <NotificationBar v-if="$page.props.flash.success" color="success" :icon="mdiInformation" :outline="false">
@@ -96,7 +96,10 @@ const resetFilters = () => {
         </NotificationBar>
               <!-- Filtros de búsqueda -->
         <CardBox class="mb-6">
-            <div :class="`grid grid-cols-1 md:grid-cols-${$page.props.auth.user.role === 'Admin' ? 4 : 3} gap-4`">
+                 <div :class="[
+                    'grid grid-cols-1 gap-4',
+                    $page.props.auth.user.role === 'Admin' ? 'md:grid-cols-4' : 'md:grid-cols-3'
+                ]">
                 <!-- Búsqueda general -->
                 <FormField label="Búsqueda general">
                     <FormControl
@@ -116,6 +119,9 @@ const resetFilters = () => {
                         placeholder="Todas las empresas"
                         label-key="nombre"
                         value-key="id"
+                       :icon="mdiBriefcase"
+
+                        
                     />
                 </FormField>
 
@@ -128,6 +134,7 @@ const resetFilters = () => {
                         placeholder="Todos los documentos"
                         label-key="nombre_documento"
                         value-key="id"
+                        :icon="mdiFileDocument"
                     />
                 </FormField>
 
@@ -140,6 +147,7 @@ const resetFilters = () => {
                         placeholder="Todos los departamentos"
                         label-key="nombre_departamento"
                         value-key="id"
+                        :icon="mdiOfficeBuilding"
                     />
                 </FormField>
             </div>
