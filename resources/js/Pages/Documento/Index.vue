@@ -161,10 +161,10 @@ const resetFilters = () => {
                 <thead>
                     <tr>
                         <th />
-                        <th class="border p-2">Nombre de Documento</th>
                         <th class="border p-2">Empresa</th>
                         <th class="border p-2">Documento</th>                        
-                        <th class="border p-2">Departamento</th>                        
+                        <th class="border p-2">Departamento</th> 
+                        <th class="border p-2">Creador:</th>                                               
                         <th class="border p-2">Revalidación</th>
                         <th class="border p-2">Vigencia</th>
                         <th class="border p-2">Acciones</th>                       
@@ -174,11 +174,16 @@ const resetFilters = () => {
                 <tbody>
                     <tr v-for="documento in documentos.data" :key="documento.id">
                         <td class="align-items-center"></td>
-                        <td data-label="Nombre de Documento" class="border p-2">{{ documento.nombre_documento }}</td>
                         <td data-label="Empresa" class="border p-2">{{ documento.empresa ? documento.empresa.nombre : 'Sin nombre' }}</td>
                         <td data-label="Documento" class="border p-2">{{ documento.tipo_de_documento.nombre_documento}}</td>
                         <td data-label="Departamento" class="border p-2">{{ documento.departamento.nombre_departamento}}</td>
-                        <td data-label="Fecha Revalidación" class="border p-2">{{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }} </td>
+                        <td data-label="Creador" class="border p-2">
+                            {{ 
+                                documento.usuario ? 
+                                `${documento.usuario.name} ${documento.usuario.apellido_paterno || ''} ${documento.usuario.apellido_materno || ''}`.trim() 
+                                : 'Registro histórico - Creador no disponible' 
+                            }}
+                        </td>                        <td data-label="Fecha Revalidación" class="border p-2">{{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }} </td>
                         <td data-label="Fecha Vigencia" class="border p-2">{{ moment(documento.fecha_vigencia).format("DD/MM/YYYY") }}</td>                      
 
                         <td class="before:hidden lg:w-1 whitespace-nowrap">

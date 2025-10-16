@@ -37,7 +37,7 @@ class DocumentoController extends Controller
     }
     public function index(Request $request)
     {
-        $query = Documento::with(['empresa', 'tipoDeDocumento', 'departamento'])
+        $query = Documento::with(['empresa', 'tipoDeDocumento', 'departamento', 'usuario']) // Cargar relación con usuario
             ->where('nombre_documento', 'Documento Técnico')
             ->orderByDesc('created_at');
 

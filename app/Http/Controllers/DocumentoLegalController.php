@@ -40,7 +40,7 @@ class DocumentoLegalController extends Controller
     public function index(Request $request)
     {
 
-        $query = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento'])
+        $query = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento', 'usuario']) // Cargar relación con usuario
             ->where('nombre_documento', 'Documento Legal') // Filtro base para documentos legales
             ->orderByDesc('created_at'); // o ->latest()
 
