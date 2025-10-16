@@ -1,19 +1,19 @@
 <script setup>
 import { useForm,Link } from '@inertiajs/vue3';
-import LayoutMain from '@/layouts/LayoutMain.vue';
-import BaseButton from '@/components/BaseButton.vue';
-import BaseButtons from "@/components/BaseButtons.vue";
-import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
-import CardBox from "@/components/CardBox.vue";
-import FormField from "@/components/FormField.vue";
-import FormControl from "@/components/FormControl.vue";
+import LayoutMain from '@/Layouts/LayoutMain.vue';
+import BaseButton from '@/Components/BaseButton.vue';
+import BaseButtons from "@/Components/BaseButtons.vue";
+import SectionTitleLineWithButton from "@/Components/SectionTitleLineWithButton.vue";
+import CardBox from "@/Components/CardBox.vue";
+import FormField from "@/Components/FormField.vue";
+import FormControl from "@/Components/FormControl.vue";
 import { mdiBallotOutline, mdiFormatListChecks, mdiOfficeBuilding, mdiFileDocument, mdiMapMarker, mdiCalendar,mdiPlus } from "@mdi/js";
 import FormControlV7 from '@/Components/FormControlV7.vue';
 import FileUploader from '@/Components/FileUploader.vue';
 import CatalogoRedirectButton from '@/Components/CatalogoRedirectButton.vue';
 
 import { ref } from 'vue'
-import LoadingOverlay from '@/components/LoadingOverlay.vue';
+import LoadingOverlay from '@/Components/LoadingOverlay.vue';
 
 
 const isUploading = ref(false)
@@ -110,6 +110,7 @@ const handleSubmit = () => {
                             :return-id="form.id"
                             label="Agregar nueva Empresa"
                             :icon="mdiPlus"
+                            v-if="$page.props.auth.user.role === 'Admin'"
                           />                
                     </div>
                 </FormField>
@@ -134,6 +135,7 @@ const handleSubmit = () => {
                             :return-id="form.id"
                             label="Agregar nuevo Documento"
                             :icon="mdiPlus"
+                            v-if="$page.props.auth.user.role === 'Admin'"
                         /> 
                     </div>
                 </FormField>
@@ -172,6 +174,7 @@ const handleSubmit = () => {
                             :return-id="form.id"
                             label="Agregar nuevo Departamento"
                             :icon="mdiPlus"
+                            v-if="$page.props.auth.user.role === 'Admin'"
                           />                
                     </div>
                 </FormField>
@@ -193,6 +196,7 @@ const handleSubmit = () => {
                             :return-id="form.id"
                             label="Agregar nueva Modalidad"
                             :icon="mdiPlus"
+                            v-if="$page.props.auth.user.role === 'Admin'"
                           />                
                     </div>
                 </FormField>

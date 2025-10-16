@@ -21,4 +21,10 @@ class UserDepartamento extends Model
     {
         return $this->belongsTo(Departamento::class);
     }
+    
+    //Relación para obtener información del departamento en Dashboard Vencidos etc..
+    public function infoDepartamento()
+    {
+        return $this->belongsTo(Departamento::class, 'departamento_id', 'id');
+    }
 }

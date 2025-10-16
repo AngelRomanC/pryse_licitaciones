@@ -25,7 +25,6 @@ const props = defineProps({
   titulo: String,
   departamentos: Array,
 })
-
 const form = useForm({
   name: props.usuario.name,
   apellido_paterno: props.usuario.apellido_paterno,

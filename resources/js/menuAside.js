@@ -94,18 +94,9 @@ export default [
     label: "Licitaciones",
     icon: mdiGavel ,
     role: "Admin",
-  }, 
- 
+  },  
 
-  //Modulos a Usuario de sistema 
-  // {
-  //   href: "/dashboard",
-  //   to: "/dashboard",
-  //   icon: mdiMonitor,
-  //   label: "Dashboard",
-  //   role: "Usuario" // Vistas 
-  // },
-
+  // Modulos de Usuario.
   {
   label: "Dashboard",
   icon: mdiViewDashboard,
@@ -128,37 +119,7 @@ export default [
   ],
 },
 
-  {
-    label: "Catálogos",
-    icon: mdiLibrary ,
-    role: "Usuario",
-    menu: [
-      {
-        href:"/empresa",
-        label: "Empresa",
-        icon: mdiBookshelf,
-        role: "Usuario",
-      }, 
-      {
-        href:"/tipo-de-documento",
-        label: "Documento",
-        icon: mdiFileDocumentOutline,
-        role: "Usuario",
-      }, 
-      {
-        href:"/departamento",
-        label: "Departamento",
-        icon: mdiAccountGroup,
-        role: "Usuario",
-      }, 
-      {
-        href:"/modalidad",
-        label: "Modalidades",
-        icon: mdiFormatListChecks,
-        role: "Usuario",
-      }, 
-    ]
-  },
+
   {
     href:"/documento",
     label: "Documentos Técnicos ",
@@ -169,12 +130,6 @@ export default [
     href:"/documento-legal",
     label: "Documentos Legales ",
     icon: mdiScaleBalance,
-    role: "Usuario",
-  }, 
-  {
-    href:"/licitacion",
-    label: "Licitaciones",
-    icon: mdiGavel ,
     role: "Usuario",
   }, 
 ];

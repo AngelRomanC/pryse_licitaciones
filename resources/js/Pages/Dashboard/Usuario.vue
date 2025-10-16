@@ -5,44 +5,25 @@ import LayoutDashboard from "@/Layouts/LayoutDashboard.vue";
 import SectionMain from "@/Components/SectionMain.vue";
 import SectionTitleLineWithButton from "@/Components/SectionTitleLineWithButton.vue";
 import PaginationDashboard from '@/Shared/PaginationDashboard.vue';
-import { Chart as ChartJS, CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement, ArcElement, PointElement, LineElement } from 'chart.js';
-import { Bar, Doughnut } from 'vue-chartjs';
-import CardBoxComponentEmpty from "@/components/CardBoxComponentEmpty.vue";
-import CardBox from "@/components/CardBox.vue";
+import CardBox from "@/Components/CardBox.vue";
 import moment from "moment";
-import Swal from 'sweetalert2';
-import { mdiEye } from "@mdi/js";
+import { mdiArrowRight, mdiFileDocumentOutline } from "@mdi/js";
 import TechnicalDocumentsCard from '@/Components/TechnicalDocumentsCard.vue';
 import LegalDocumentsCard from '@/Components/LegalDocumentsCard.vue';
-import LicitacionDocumentsCard from '@/Components/LicitacionDocumentsCard.vue';
-import { onMounted } from 'vue'
-import NotificationBar from "@/components/NotificationBar.vue";
-import DocumentDetailsModal from "@/components/DocumentDetailsModal.vue";
-
-// Registrar los componentes necesarios de Chart.js
-ChartJS.register(CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement, ArcElement, PointElement, LineElement);
+import NotificationBar from "@/Components/NotificationBar.vue";
+import DocumentDetailsModal from "@/Components/DocumentDetailsModal.vue";
+import CatalogoRedirectButton from '@/Components/CatalogoRedirectButton.vue';
 
 const props = defineProps({
-  users: Number,
   documentos: Object,
   documentosLegal: Object,
   titulo: String,
+  titulo1: String,
   titulo2: String,
-  d1: Array,
-  d2: Array,
 });
-console.log('Documentos Técnicos-:', props.documentos);
 // Contar total de documentos
 const totalDocumentosTecnicos = computed(() => props.documentos.total);
 const totalDocumentosLegales = computed(() => props.documentosLegal.total);
-
-//checar la relacion archivos
-// onMounted(() => {
-//   props.documentosLegal.data.forEach((doc, index) => {
-//     console.log(`Archivos del  documento #${index + 1}:`, doc.archivos);
-//   });
-// });
-
 </script>
 
 <template>
@@ -50,34 +31,26 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
   <Head title="Dashboard Usuario" />
   <LayoutDashboard>
     <SectionMain>
-      <SectionTitleLineWithButton title="Bienvenido al Dashboard de Usuario" main class="mb-8" />
+      <SectionTitleLineWithButton :title=props.titulo main class="mb-8" :icon="mdiFileDocumentOutline" />
     </SectionMain>
-    
-     <NotificationBar v-if="$page.props.flash.success" color="success" :icon="mdiInformation" :outline="false">
-            {{ $page.props.flash.success }}
-        </NotificationBar>
 
-        <NotificationBar v-if="$page.props.flash.error" color="danger" :icon="mdiInformation" :outline="false">
-            {{ $page.props.flash.error }}
-        </NotificationBar>
+    <NotificationBar v-if="$page.props.flash.success" color="success" :icon="mdiInformation" :outline="false">
+      {{ $page.props.flash.success }}
+    </NotificationBar>
+
+    <NotificationBar v-if="$page.props.flash.error" color="danger" :icon="mdiInformation" :outline="false">
+      {{ $page.props.flash.error }}
+    </NotificationBar>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      
-      <TechnicalDocumentsCard 
-        :count="totalDocumentosTecnicos" 
-        tooltip="Haz clic para crear un nuevo documento técnico"
-      />
 
-      <LegalDocumentsCard 
-        :count="totalDocumentosLegales" 
-        tooltip="Haz clic para crear un nuevo documento legal"
-      />   
-      <LicitacionDocumentsCard 
-        :count="totalDocumentosLegales" 
-        tooltip="Haz clic para crear un nuevo documento legal"
-      />  
-    </div>
+      <TechnicalDocumentsCard :count="totalDocumentosTecnicos" label="Documentos Técnicos Vigentes"
+        tooltip="Haz clic para crear un nuevo documento técnico" />
+
+      <LegalDocumentsCard :count="totalDocumentosLegales" label="Documentos Legales Vigentes" tooltip="Haz clic para crear un nuevo documento legal" />
     
+    </div>
+
     <!-- Secciones de Documentos -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <CardBox>
@@ -89,7 +62,7 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
                 d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm2 10a1 1 0 10-2 0v3a1 1 0 102 0v-3zm2-3a1 1 0 011 1v5a1 1 0 11-2 0v-5a1 1 0 011-1zm4-1a1 1 0 10-2 0v7a1 1 0 102 0V8z"
                 clip-rule="evenodd" />
             </svg>
-            {{ titulo }}
+            {{ titulo1 }}
           </h2>
         </div>
         <div class="overflow-x-auto">
@@ -103,7 +76,7 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Revalidación</th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Vigencia</th>
+                  Vigencia</th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Ver</th>
               </tr>
@@ -112,8 +85,9 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
               <tr v-for="documento in documentos.data" :key="documento.id"
                 class="hover:bg-gray-50 transition-colors duration-150"
                 :class="{ 'bg-red-50': documento.dias_restantes <= 7 }">
-               
-                <td data-label="Nombre de Documento" class="px-6 py-4  whitespace-normal text-sm font-medium text-gray-900">
+
+                <td data-label="Nombre de Documento"
+                  class="px-6 py-4  whitespace-normal text-sm font-medium text-gray-900">
                   {{ documento.tipo_de_documento.nombre_documento }}
                 </td>
                 <td data-label="Departamento" class="px-6 py-4 whitespace-normal text-sm text-gray-500">
@@ -122,39 +96,39 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
 
                 <td data-label="Fecha Revalidación" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <div class="flex flex-col">
-                      <div>{{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }}</div>
-                      <span
-                        :class="{
-                          'bg-red-500 text-white': documento.dias_restantes_revalidacion <= 0,
-                          'bg-red-200 text-red-800': documento.dias_restantes_revalidacion > 0 && documento.dias_restantes_revalidacion <= 7,
-                          'bg-green-100 text-green-800': documento.dias_restantes_revalidacion > 7
-                        }"
-                         class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full"
-                         >
-                        {{ documento.dias_restantes_revalidacion <= 0 ? 'Vencido' : `${documento.dias_restantes_revalidacion} días` }}
-                      </span>
-                    </div>
+                    <div>{{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }}</div>
+                    <span :class="{
+                      'bg-red-500 text-white': documento.dias_restantes_revalidacion <= 0,
+                      'bg-red-200 text-red-800': documento.dias_restantes_revalidacion > 0 && documento.dias_restantes_revalidacion <= 7,
+                      'bg-green-100 text-green-800': documento.dias_restantes_revalidacion > 7
+                    }" class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full">
+                      {{ documento.dias_restantes_revalidacion <= 0 ? 'Vencido' :
+                        `${documento.dias_restantes_revalidacion} días` }} </span>
+                  </div>
                 </td>
 
                 <td data-label="Fecha Vigencia" class="px-6 py-4 text-sm text-gray-500">
-                    <div class="flex flex-col">
-                      <div>{{ moment(documento.fecha_vigencia).format("DD/MM/YYYY") }}</div>
-                      <span
-                        :class="{
-                          'bg-red-500 text-white': documento.dias_restantes <= 0,
-                          'bg-red-200 text-red-800': documento.dias_restantes > 0 && documento.dias_restantes <= 7,
-                          'bg-green-100 text-green-800': documento.dias_restantes > 7
-                        }"
-                         class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full"
-                         >
-                        {{ documento.dias_restantes <= 0 ? 'Vencido' : `${documento.dias_restantes} días` }}
-                      </span>
-                    </div>
-                  </td>
+                  <div class="flex flex-col">
+                    <div>{{ moment(documento.fecha_vigencia).format("DD/MM/YYYY") }}</div>
+                    <span :class="{
+                      'bg-red-500 text-white': documento.dias_restantes <= 0,
+                      'bg-red-200 text-red-800': documento.dias_restantes > 0 && documento.dias_restantes <= 7,
+                      'bg-green-100 text-green-800': documento.dias_restantes > 7
+                    }" class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full">
+                      {{ documento.dias_restantes <= 0 ? 'Vencido' : `${documento.dias_restantes} días` }} </span>
+                  </div>
+                </td>
 
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="flex items-center space-x-2">             
-                        <DocumentDetailsModal :documento="documento" :tipo-documento="'documento'" />
+                  <div class="flex items-center space-x-2">
+                    <DocumentDetailsModal :documento="documento" :tipo-documento="'documento'" />
+                    <CatalogoRedirectButton
+                      v-if="$page.props.auth.user.departamento.departamento_id === documento.departamento_id"
+                      catalog-route-name="documento" return-route="dashboard" :return-id="documento.id"
+                      label="Editar Documento" :icon="mdiArrowRight" outline mode="edit" color="success" />
+                    <CatalogoRedirectButton v-else catalog-route-name="documento-legal" return-route="dashboard"
+                      :return-id="documento.id" label="No puedes editar este Documento" :icon="mdiArrowRight"
+                      color="danger" outline mode="edit" :disabled="true" class="opacity-50 cursor-not-allowed" />
 
                   </div>
                 </td>
@@ -162,9 +136,9 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
             </tbody>
           </table>
         </div>
-          <PaginationDashboard :currentPage="documentos.current_page" :links="documentos.links"
-            :total="documentos.last_page" pageParam="page_tecnico" />
-       
+        <PaginationDashboard :currentPage="documentos.current_page" :links="documentos.links"
+          :total="documentos.last_page" pageParam="page_tecnico" />
+
       </CardBox>
 
       <!-- Documentos Legales -->
@@ -202,58 +176,61 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
               <tr v-for="documento in documentosLegal.data" :key="documento.id"
                 class="hover:bg-gray-50 transition-colors duration-150"
                 :class="{ 'bg-red-50': documento.dias_restantes <= 7 }">
-                
-                <td data-label="Nombre de Documento" class="px-6 py-4 whitespace-normal text-sm font-medium text-gray-900">
+
+                <td data-label="Nombre de Documento"
+                  class="px-6 py-4 whitespace-normal text-sm font-medium text-gray-900">
                   {{ documento.tipo_de_documento.nombre_documento }}
                 </td>
-                
+
                 <td data-label="Departamento" class="px-6 py-4 whitespace-normal text-sm text-gray-500">
                   {{ documento.departamento.nombre_departamento }}
                 </td>
                 <td data-label="Fecha Revalidación" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <div class="flex flex-col">
-                      <div>{{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }}</div>
-                      <span
-                        :class="{
-                          'bg-red-500 text-white': documento.dias_restantes_revalidacion <= 0,
-                          'bg-red-200 text-red-800': documento.dias_restantes_revalidacion > 0 && documento.dias_restantes_revalidacion <= 7,
-                          'bg-green-100 text-green-800': documento.dias_restantes_revalidacion > 7
-                        }"
-                         class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full"
-                         >
-                        {{ documento.dias_restantes_revalidacion <= 0 ? 'Vencido' : `${documento.dias_restantes_revalidacion} días` }}
-                      </span>
-                    </div>
+                    <div>{{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }}</div>
+                    <span :class="{
+                      'bg-red-500 text-white': documento.dias_restantes_revalidacion <= 0,
+                      'bg-red-200 text-red-800': documento.dias_restantes_revalidacion > 0 && documento.dias_restantes_revalidacion <= 7,
+                      'bg-green-100 text-green-800': documento.dias_restantes_revalidacion > 7
+                    }" class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full">
+                      {{ documento.dias_restantes_revalidacion <= 0 ? 'Vencido' :
+                        `${documento.dias_restantes_revalidacion} días` }} </span>
+                  </div>
                 </td>
                 <td data-label="Fecha Vigencia" class="px-6 py-4 text-sm text-gray-500">
-                    <div class="flex flex-col">
-                      <div>{{ moment(documento.fecha_vigencia).format("DD/MM/YYYY") }}</div>
-                      <span
-                        :class="{
-                          'bg-red-500 text-white': documento.dias_restantes <= 0,
-                          'bg-red-200 text-red-800': documento.dias_restantes > 0 && documento.dias_restantes <= 7,
-                          'bg-green-100 text-green-800': documento.dias_restantes > 7
-                        }"
-                         class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full"
-                         >
-                        {{ documento.dias_restantes <= 0 ? 'Vencido' : `${documento.dias_restantes} días` }}
-                      </span>
-                    </div>
-                  </td>
+                  <div class="flex flex-col">
+                    <div>{{ moment(documento.fecha_vigencia).format("DD/MM/YYYY") }}</div>
+                    <span :class="{
+                      'bg-red-500 text-white': documento.dias_restantes <= 0,
+                      'bg-red-200 text-red-800': documento.dias_restantes > 0 && documento.dias_restantes <= 7,
+                      'bg-green-100 text-green-800': documento.dias_restantes > 7
+                    }" class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full">
+                      {{ documento.dias_restantes <= 0 ? 'Vencido' : `${documento.dias_restantes} días` }} </span>
+                  </div>
+                </td>
 
 
-                <td class="px-6 py-4 whitespace-nowrap">          
-                    <DocumentDetailsModal :documento="documento" :tipo-documento="'documento-legal'" />
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center space-x-2">
+                    <DocumentDetailsModal :documento="documento" :tipo-documento="'documento'" />
+                    <CatalogoRedirectButton
+                      v-if="$page.props.auth.user.departamento.departamento_id === documento.departamento_id"
+                      catalog-route-name="documento" return-route="dashboard" :return-id="documento.id"
+                      label="Editar Documento" :icon="mdiArrowRight" outline mode="edit" color="success" />
+                    <CatalogoRedirectButton v-else catalog-route-name="documento-legal" return-route="dashboard"
+                      :return-id="documento.id" label="No puedes editar este Documento" :icon="mdiArrowRight"
+                      color="danger" outline mode="edit" :disabled="true" class="opacity-50 cursor-not-allowed" />
 
+                  </div>
                 </td>
 
               </tr>
             </tbody>
           </table>
-        </div>   
-          <PaginationDashboard :currentPage="documentosLegal.current_page" :links="documentosLegal.links"
-            :total="documentosLegal.last_page" pageParam="page_legal"/>
-        
+        </div>
+        <PaginationDashboard :currentPage="documentosLegal.current_page" :links="documentosLegal.links"
+          :total="documentosLegal.last_page" pageParam="page_legal" />
+
       </CardBox>
     </div>
   </LayoutDashboard>

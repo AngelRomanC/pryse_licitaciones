@@ -48,7 +48,7 @@ class HandleInertiaRequests extends Middleware
                 'danger' => $request->session()->get('danger'),
                 'error'   => $request->session()->get('error'),
                 'isBanned' => $request->session()->get('isBanned'),
-                    'alerta_modalidades' => fn () => $request->session()->get('alerta_modalidades'),
+                'alerta_modalidades' => fn () => $request->session()->get('alerta_modalidades'),
 
             ],
         ];

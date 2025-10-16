@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Departamento;
 use App\Models\Documento;
 use App\Models\DocumentoLegal;
+use App\Models\Licitacion;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -61,11 +63,14 @@ class DashboardController extends Controller
                 'documentosLegal' => $documentosLegal,
                 'titulo' => "Documentos Técnicos",
                 'titulo2' => "Documentos Legales",
+                'licitaciones' => Licitacion::count(),
 
             ]);
 
         } else {
             // Definir relaciones comunes para cargar
+            $user = Auth::user()->load('departamento.infoDepartamento');
+
             $relacionesDocumentos = ['empresa', 'tipoDeDocumento', 'estado', 'departamento', 'modalidades', 'archivos'];
             $relacionesDocumentosLegales = ['empresa', 'tipoDeDocumento', 'departamento', 'archivos'];
 
@@ -104,35 +109,14 @@ class DashboardController extends Controller
                     ))
                 ->withQueryString();
 
-            // Obtener todos los documentos (para la gráfica) y calcular días restantes
-            $documentosAll = Documento::with($relacionesDocumentos)
-                ->where('nombre_documento', 'Documento Técnico')
-                ->orderBy('id')
-                ->get()
-                ->map(fn($documento) => $documento->setAttribute(
-                    'dias_restantes',
-                    now()->startOfDay()->diffInDays(Carbon::parse($documento->fecha_vigencia)->startOfDay(), false)
-
-                ));
-
-            $documentosLegalAll = DocumentoLegal::with($relacionesDocumentosLegales)
-                ->where('nombre_documento', 'Documento Legal')
-                ->orderBy('id')
-                ->get()
-                ->map(fn($documentoLegal) => $documentoLegal->setAttribute(
-                    'dias_restantes',
-                    now()->startOfDay()->diffInDays(Carbon::parse($documentoLegal->fecha_vigencia)->startOfDay(), false)
-
-                ));
 
             return Inertia::render('Dashboard/Usuario', [
-                'message' => 'Bienvenido al Dashboard de Usuario',
+                'message2' => 'Bienvenido al Dashboard de Usuario',
+                'titulo' => "Bienvenido al Dashboard de Usuario - {$user->departamento?->infoDepartamento?->nombre_departamento}",
                 'documentos' => $documentos,
                 'documentosLegal' => $documentosLegal,
-                'titulo' => "Documentos Técnicos",
+                'titulo1' => "Documentos Técnicos",
                 'titulo2' => "Documentos Legales",
-                'd1' => $documentosAll,
-                'd2' => $documentosLegalAll,
             ]);
         }
 
@@ -140,7 +124,7 @@ class DashboardController extends Controller
 
     public function vencidos(): Response
     {
-        $user = Auth::user();
+        $user = Auth::user()->load('departamento.infoDepartamento');
 
         $relacionesDocumentos = ['empresa', 'tipoDeDocumento', 'estado', 'departamento', 'modalidades', 'archivos'];
         $relacionesDocumentosLegales = ['empresa', 'tipoDeDocumento', 'departamento', 'archivos'];
@@ -178,7 +162,8 @@ class DashboardController extends Controller
             ->withQueryString();
 
         return Inertia::render('Dashboard/Vencidos', [
-            'titulo' => 'Documentos Técnicos Vencidos',
+            'titulo' => "Bienvenido al Dashboard de Usuario - {$user->departamento?->infoDepartamento?->nombre_departamento}",
+            'titulo1' => 'Documentos Técnicos Vencidos',
             'titulo2' => 'Documentos Legales Vencidos',
             'documentos' => $documentosVencidos,
             'documentosLegal' => $documentosLegalVencidos,

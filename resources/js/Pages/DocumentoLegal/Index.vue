@@ -96,7 +96,7 @@ const resetFilters = () => {
         </NotificationBar>
               <!-- Filtros de búsqueda -->
         <CardBox class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div :class="`grid grid-cols-1 md:grid-cols-${$page.props.auth.user.role === 'Admin' ? 4 : 3} gap-4`">
                 <!-- Búsqueda general -->
                 <FormField label="Búsqueda general">
                     <FormControl
@@ -132,7 +132,7 @@ const resetFilters = () => {
                 </FormField>
 
                 <!-- Filtro por departamento -->
-                <FormField label="Departamento">
+                <FormField v-if="$page.props.auth.user.role === 'Admin'" label="Departamento">
                     <FormControl
                         v-model="filters.departamento"
                         :options="departamentos"

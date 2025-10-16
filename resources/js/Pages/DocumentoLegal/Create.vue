@@ -1,17 +1,17 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
-import LayoutMain from '@/layouts/LayoutMain.vue';
-import BaseButton from '@/components/BaseButton.vue';
-import BaseButtons from "@/components/BaseButtons.vue";
-import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
-import CardBox from "@/components/CardBox.vue";
-import FormField from "@/components/FormField.vue";
-import FormControl from "@/components/FormControl.vue";
+import LayoutMain from '@/Layouts/LayoutMain.vue';
+import BaseButton from '@/Components/BaseButton.vue';
+import BaseButtons from "@/Components/BaseButtons.vue";
+import SectionTitleLineWithButton from "@/Components/SectionTitleLineWithButton.vue";
+import CardBox from "@/Components/CardBox.vue";
+import FormField from "@/Components/FormField.vue";
+import FormControl from "@/Components/FormControl.vue";
 import { mdiBallotOutline, mdiFormatListChecks, mdiOfficeBuilding, mdiFileDocument, mdiMapMarker, mdiCalendar,mdiPlus } from "@mdi/js";
 import FileUploader from '@/Components/FileUploader.vue';
 import CatalogoRedirectButton from '@/Components/CatalogoRedirectButton.vue';
 import { ref } from 'vue'
-import LoadingOverlay from '@/components/LoadingOverlay.vue';
+import LoadingOverlay from '@/Components/LoadingOverlay.vue';
 
 const isUploading = ref(false)
 
@@ -19,11 +19,12 @@ const props = defineProps({
     titulo: String,
     documento: Object,
     routeName: String,
-    empresas: Array,       // Debe ser Array
-    tipos_documento: Array, // Debe ser Array
-    estados: Array,         // Debe ser Array
-    departamentos: Array,   // Debe ser Array
-    modalidades: Array      // Debe ser Array
+    empresas: Array,       
+    tipos_documento: Array, 
+    estados: Array,         
+    departamentos: Array,   
+    modalidades: Array,      
+    departamento_id: Number, 
 });
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -34,7 +35,8 @@ const form = useForm({
     empresa_id: '',
     tipo_de_documento_id: '',
     //estado_id: '',
-    departamento_id: '',
+    //departamento_id: '',
+    departamento_id: props.departamento_id || '',
     fecha_revalidacion: '',
     fecha_vigencia: '',
     //modalidad_id: [],
@@ -102,6 +104,7 @@ const handleSubmit = () => {
                             :return-id="form.id"
                             label="Agregar nueva empresa"
                             :icon="mdiPlus"
+                            v-if="$page.props.auth.user.role === 'Admin'"
                           />                
                     </div>
                 </FormField>
@@ -127,6 +130,7 @@ const handleSubmit = () => {
                             :return-id="form.id"
                             label="Agregar nuevo Docuemento"
                             :icon="mdiPlus"
+                            v-if="$page.props.auth.user.role === 'Admin'"
                         /> 
                     </div>
                 </FormField>
@@ -142,6 +146,7 @@ const handleSubmit = () => {
                                 label-key="nombre_departamento"
                                 value-key="id"
                                 :icon="mdiOfficeBuilding"
+                                :disabled="!!form.departamento_id"
                                 required
                             />
                         </div>
@@ -151,6 +156,9 @@ const handleSubmit = () => {
                             :return-id="form.id"
                             label="Agregar nueva empresa"
                             :icon="mdiPlus"
+                            v-if="$page.props.auth.user.role === 'Admin'"
+                            
+                            
                           />                
                     </div>
                 </FormField>

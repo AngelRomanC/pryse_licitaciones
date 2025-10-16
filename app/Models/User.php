@@ -139,10 +139,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserDepartamento::class);
     }
-       // Accesor para obtener directamente el departamento_id para catalago en front edit "UsuarioGeneral create.vue"
+    // Accesor para obtener directamente el departamento_id para catalago en front edit "UsuarioGeneral create.vue"
     public function getDepartamentoIdAttribute()
     {
         return $this->departamento->departamento_id ?? null;
     }
-
 }

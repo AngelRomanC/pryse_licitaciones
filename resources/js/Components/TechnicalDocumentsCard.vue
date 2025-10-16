@@ -14,7 +14,7 @@
           </svg>
         </div>
         <div>
-          <h3 class="text-sm font-medium text-gray-500">Documentos Técnicos</h3>
+          <h3 class="text-sm font-medium text-gray-500">{{label}}</h3>
           <p class="text-2xl font-bold text-indigo-600">{{ count }}</p>
         </div>
       </div>
@@ -23,7 +23,7 @@
   
   <script setup>
   import { router } from '@inertiajs/vue3';
-  import CardBox from "@/components/CardBox.vue";
+  import CardBox from "@/Components/CardBox.vue";
 
   
   const props = defineProps({
@@ -34,7 +34,11 @@
     tooltip: {
       type: String,
       default: 'Crear nuevo documento técnico'
-    }
+    },
+      label: {
+    type: String,
+    default: 'Documentos Técnicos',
+  },
   });
   
   // const redirectToCreate = () => {
@@ -44,8 +48,8 @@
   // };
 
 const redirectToCreate = () => {
-  router.get(route('documento.index', {
-    redirect: route('dashboard') // O el nombre correcto de tu ruta de dashboard
+  router.get(route('documento.create', {
+    redirect: route('dashboard') 
   }))
 };
 

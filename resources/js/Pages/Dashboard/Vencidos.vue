@@ -5,47 +5,28 @@ import LayoutDashboard from "@/Layouts/LayoutDashboard.vue";
 import SectionMain from "@/Components/SectionMain.vue";
 import SectionTitleLineWithButton from "@/Components/SectionTitleLineWithButton.vue";
 import PaginationDashboard from '@/Shared/PaginationDashboard.vue';
-import { Chart as ChartJS, CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement, ArcElement, PointElement, LineElement, } from 'chart.js';
-import { Bar, Doughnut } from 'vue-chartjs';
-import CardBoxComponentEmpty from "@/Components/CardBoxComponentEmpty.vue";
 import CardBox from "@/Components/CardBox.vue";
 import moment from "moment";
-import Swal from 'sweetalert2';
-import { mdiEye, mdiArrowRight } from "@mdi/js";
+import { mdiArrowRight, mdiInformation, mdiFileDocumentOutline } from "@mdi/js";
 import TechnicalDocumentsCard from '@/Components/TechnicalDocumentsCard.vue';
 import LegalDocumentsCard from '@/Components/LegalDocumentsCard.vue';
 import LicitacionDocumentsCard from '@/Components/LicitacionDocumentsCard.vue';
-import { onMounted } from 'vue'
 import NotificationBar from "@/Components/NotificationBar.vue";
 import DocumentDetailsModal from "@/Components/DocumentDetailsModal.vue";
-import BaseButton from "@/Components/BaseButton.vue";
 import CatalogoRedirectButton from '@/Components/CatalogoRedirectButton.vue';
 
-
-
-// Registrar los componentes necesarios de Chart.js
-ChartJS.register(CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement, ArcElement, PointElement, LineElement);
 
 const props = defineProps({
   users: Number,
   documentos: Object,
   documentosLegal: Object,
   titulo: String,
+  titulo1: String,
   titulo2: String,
-  d1: Array,
-  d2: Array,
 });
-console.log('Documentos TécnicosVencidos:', props.documentos);
-// Contar total de documentos
+
 const totalDocumentosTecnicos = computed(() => props.documentos.total);
 const totalDocumentosLegales = computed(() => props.documentosLegal.total);
-
-//checar la relacion archivos
-// onMounted(() => {
-//   props.documentosLegal.data.forEach((doc, index) => {
-//     console.log(`Archivos del  documento #${index + 1}:`, doc.archivos);
-//   });
-// });
 
 </script>
 
@@ -54,9 +35,8 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
   <Head title="Dashboard Usuario" />
   <LayoutDashboard>
     <SectionMain>
-      <SectionTitleLineWithButton title="Bienvenido al Dashboard de Usuario" main class="mb-8" />
+      <SectionTitleLineWithButton :title=props.titulo main class="mb-8" :icon="mdiFileDocumentOutline" />
     </SectionMain>
-
     <NotificationBar v-if="$page.props.flash.success" color="success" :icon="mdiInformation" :outline="false">
       {{ $page.props.flash.success }}
     </NotificationBar>
@@ -67,11 +47,11 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
 
-      <TechnicalDocumentsCard :count="totalDocumentosTecnicos"
+      <TechnicalDocumentsCard :count="totalDocumentosTecnicos" label="Documentos Técnicos Vencidos"
         tooltip="Haz clic para crear un nuevo documento técnico" />
 
-      <LegalDocumentsCard :count="totalDocumentosLegales" tooltip="Haz clic para crear un nuevo documento legal" />
-      <LicitacionDocumentsCard :count="totalDocumentosLegales" tooltip="Haz clic para crear un nuevo documento legal" />
+      <LegalDocumentsCard :count="totalDocumentosLegales" label="Documentos Legales Vencidos" tooltip="Haz clic para crear un nuevo documento legal" />
+
     </div>
 
     <!-- Secciones de Documentos -->
@@ -85,7 +65,7 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
                 d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm2 10a1 1 0 10-2 0v3a1 1 0 102 0v-3zm2-3a1 1 0 011 1v5a1 1 0 11-2 0v-5a1 1 0 011-1zm4-1a1 1 0 10-2 0v7a1 1 0 102 0V8z"
                 clip-rule="evenodd" />
             </svg>
-            {{ titulo }}
+            {{ titulo1 }}
           </h2>
         </div>
         <div class="overflow-x-auto">
@@ -125,7 +105,8 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
                       'bg-red-600 text-white': documento.dias_restantes_revalidacion < 0,
                       'bg-red-200 text-red-800': documento.dias_restantes_revalidacion === 0,
                       'bg-blue-100 text-blue-800': documento.dias_restantes_revalidacion > 0
-                    }" class="px-3 py-1 mt-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full truncate max-w-[120px]">
+                    }"
+                      class="px-3 py-1 mt-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full truncate max-w-[120px]">
                       {{
                         documento.dias_restantes_revalidacion < 0 ? `Vencido hace
                         ${Math.abs(documento.dias_restantes_revalidacion)} días` :
@@ -141,7 +122,8 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
                       'bg-red-500 text-white': documento.dias_restantes <= 0,
                       'bg-red-200 text-red-800': documento.dias_restantes > 0 && documento.dias_restantes <= 7,
                       'bg-green-100 text-green-800': documento.dias_restantes > 7
-                    }" class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full truncate max-w-[120px]">
+                    }"
+                      class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full truncate max-w-[120px]">
                       {{
                         documento.dias_restantes < 0 ? `Vencido hace ${Math.abs(documento.dias_restantes)} días` :
                           documento.dias_restantes === 0 ? 'Vence hoy' : `Faltan ${documento.dias_restantes} días` }}
@@ -154,8 +136,14 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="flex items-center space-x-2">
                     <DocumentDetailsModal :documento="documento" :tipo-documento="'documento'" />
-                      <BaseButton :icon="mdiArrowRight" color="info" small outline
-                      :href="route('documento.edit', documento.id)"   title="Editar documento" />
+                    <CatalogoRedirectButton
+                      v-if="$page.props.auth.user.departamento.departamento_id === documento.departamento_id"
+                      catalog-route-name="documento" return-route="dashboard.vencidos" :return-id="documento.id"
+                      label="Editar Documento" :icon="mdiArrowRight" outline mode="edit" color="success" />
+                    <CatalogoRedirectButton v-else catalog-route-name="documento-legal"
+                      return-route="dashboard.vencidos" :return-id="documento.id"
+                      label="No puedes editar este Documento" :icon="mdiArrowRight" color="danger" outline mode="edit"
+                      :disabled="true" class="opacity-50 cursor-not-allowed" />
                   </div>
                 </td>
 
@@ -164,7 +152,7 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
           </table>
         </div>
         <PaginationDashboard :currentPage="documentos.current_page" :links="documentos.links"
-          :total="documentos.last_page" pageParam="page_tecnico_vencidos" routeName="dashboard.vencidos"  />
+          :total="documentos.last_page" pageParam="page_tecnico_vencidos" routeName="dashboard.vencidos" />
 
       </CardBox>
 
@@ -220,7 +208,8 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
                       'bg-red-600 text-white': documento.dias_restantes_revalidacion < 0,
                       'bg-red-200 text-red-800': documento.dias_restantes_revalidacion === 0,
                       'bg-blue-100 text-blue-800': documento.dias_restantes_revalidacion > 0
-                    }" class="px-3 py-1 mt-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full truncate max-w-[120px]">
+                    }"
+                      class="px-3 py-1 mt-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full truncate max-w-[120px]">
                       {{
                         documento.dias_restantes_revalidacion < 0 ? `Vencido hace
                         ${Math.abs(documento.dias_restantes_revalidacion)} días` :
@@ -236,7 +225,8 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
                       'bg-red-500 text-white': documento.dias_restantes <= 0,
                       'bg-red-200 text-red-800': documento.dias_restantes > 0 && documento.dias_restantes <= 7,
                       'bg-green-100 text-green-800': documento.dias_restantes > 7
-                    }" class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full truncate max-w-[120px]">
+                    }"
+                      class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full truncate max-w-[120px]">
                       {{
                         documento.dias_restantes < 0 ? `Vencido hace ${Math.abs(documento.dias_restantes)} días` :
                           documento.dias_restantes === 0 ? 'Vence hoy' : `Faltan ${documento.dias_restantes} días` }}
@@ -245,20 +235,17 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
                 </td>
 
 
-                <td class="px-6 py-4 whitespace-nowrap text-center">
-                  <div class="flex justify-center items-center gap-2">
+                <td class="px-6 py-4 whitespace-nowrap ">
+                  <div class="flex items-center gap-2">
                     <DocumentDetailsModal :documento="documento" :tipo-documento="'documento-legal'" />
-                    <BaseButton :icon="mdiArrowRight" color="info" small outline
-                      :href="route('documento-legal.edit', documento.id)"   title="Editar documento" />
-                      <CatalogoRedirectButton
-                            catalog-route-name="documento-legal"
-                            return-route="dashboard.vencidos"
-                            :return-id="documento.id"
-                            label="Editar Documento"
-                            :icon="mdiArrowRight"
-                            mode="edit"
-                            
-                          />        
+                    <CatalogoRedirectButton
+                      v-if="$page.props.auth.user.departamento.departamento_id === documento.departamento_id"
+                      catalog-route-name="documento-legal" return-route="dashboard.vencidos" :return-id="documento.id"
+                      label="Editar Documento" :icon="mdiArrowRight" outline mode="edit" color="success" />
+                    <CatalogoRedirectButton v-else catalog-route-name="documento-legal"
+                      return-route="dashboard.vencidos" :return-id="documento.id"
+                      label="No puedes editar este Documento" :icon="mdiArrowRight" color="danger" outline mode="edit"
+                      :disabled="true" class="opacity-50 cursor-not-allowed" />
                   </div>
                 </td>
 

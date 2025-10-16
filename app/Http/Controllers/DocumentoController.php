@@ -11,7 +11,6 @@ use App\Models\Estado;
 use App\Models\Modalidad;
 use App\Models\TipoDeDocumento;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
@@ -99,7 +98,7 @@ class DocumentoController extends Controller
         $estados = Estado::select('id', 'nombre as name')->get();
         $departamentos = Departamento::select('id', 'nombre_departamento as name')->get();
         $modalidades = Modalidad::select('id', 'nombre_modalidad as name')->get();
-        $user = auth()->user();
+        
 
 
         return Inertia::render('Documento/Create', [
@@ -110,7 +109,7 @@ class DocumentoController extends Controller
             'estados' => $estados,
             'departamentos' => $departamentos,
             'modalidades' => $modalidades,
-            'departamento_id' => $user->departamento_id, // se pasa directo al form ->
+            'departamento_id' => auth()->user()->departamento_id, // se pasa directo al form ->
 
         ]);
     }

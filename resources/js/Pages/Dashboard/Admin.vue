@@ -1,23 +1,18 @@
 <script setup>
 import { Head } from "@inertiajs/vue3";
-import { computed, ref, onMounted, watch } from "vue";
-import { useMainStore } from "@/stores/main";
+import { computed } from "vue";
 import LayoutDashboard from "@/Layouts/LayoutDashboard.vue";
 import SectionMain from "@/Components/SectionMain.vue";
 import SectionTitleLineWithButton from "@/Components/SectionTitleLineWithButton.vue";
-import CardBox from "@/components/CardBox.vue";
-import { Chart as ChartJS, CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement } from 'chart.js';
+import CardBox from "@/Components/CardBox.vue";
 import PaginationDashboard from '@/Shared/PaginationDashboard.vue';
 import moment from "moment";
 import UsersCard from '@/Components/UsersCard.vue';
 import TechnicalDocumentsCard from '@/Components/TechnicalDocumentsCard.vue';
 import LegalDocumentsCard from '@/Components/LegalDocumentsCard.vue';
-import NotificationBar from "@/components/NotificationBar.vue";
-import DocumentDetailsModal from "@/components/DocumentDetailsModal.vue";
-
-
-// Registrar los componentes necesarios de Chart.js
-ChartJS.register(CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement);
+import NotificationBar from "@/Components/NotificationBar.vue";
+import DocumentDetailsModal from "@/Components/DocumentDetailsModal.vue";
+import LicitacionDocumentsCard from '@/Components/LicitacionDocumentsCard.vue';
 
 const props = defineProps({
   users: Number,
@@ -26,13 +21,8 @@ const props = defineProps({
   titulo: String,
   titulo2: String,
   latestUsers: Object,
+  licitaciones: Number,
 });
-//checar la relacion archivos
-// onMounted(() => {
-//   props.documentosLegal.data.forEach((doc, index) => {
-//     console.log(`Archivos del  documento #${index + 1}:`, doc.archivos);
-//   });
-// });
 
 // Contar total de documentos
 const totalDocumentosTecnicos = computed(() => props.documentos.total);
@@ -57,17 +47,17 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
 
     <!-- Estadísticas Principales -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
-      <!-- Usuarios Registrados -->
-      <UsersCard :latest-users="latestUsers" :users="users" title="Detalles de usuarios registrados" />
+      <UsersCard :latest-users="latestUsers"
+       :users="users" title="Detalles de usuarios registrados" /> 
 
-
-      <!-- Documentos Técnicos -->
       <TechnicalDocumentsCard :count="totalDocumentosTecnicos"
         tooltip="Haz clic para crear un nuevo documento técnico" />
 
-      <LegalDocumentsCard :count="totalDocumentosLegales" tooltip="Haz clic para crear un nuevo documento legal" />
+      <LegalDocumentsCard :count="totalDocumentosLegales" 
+        tooltip="Haz clic para crear un nuevo documento legal" />
 
-
+      <LicitacionDocumentsCard  :count="licitaciones" 
+        tooltip="Haz clic para crear una licitación" />
     </div>
 
 
@@ -218,7 +208,7 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
           </table>
         </div>
         <PaginationDashboard :currentPage="documentosLegal.current_page" :links="documentosLegal.links"
-          :total="documentosLegal.last_page" pageParam="page_legal"/>
+          :total="documentosLegal.last_page" pageParam="page_legal" />
       </CardBox>
     </div>
   </LayoutDashboard>

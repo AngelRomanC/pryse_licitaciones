@@ -8,16 +8,15 @@ use App\Models\Departamento;
 use App\Models\Documento;
 use App\Models\DocumentoLegal;
 use App\Models\Empresa;
-use App\Models\Estado;
-use App\Models\Modalidad;
 use App\Models\TipoDeDocumento;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 use App\Models\DocumentoArchivo;
 use ZipArchive;
+use Illuminate\Support\Facades\Auth;
+
 
 
 
@@ -41,10 +40,18 @@ class DocumentoLegalController extends Controller
     public function index(Request $request)
     {
 
-        //$query = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento']);
         $query = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento'])
             ->where('nombre_documento', 'Documento Legal') // Filtro base para documentos legales
             ->orderByDesc('created_at'); // o ->latest()
+
+        // Filtrado por rol
+        $user = auth()->user();
+        if (!$user->hasRole('Admin')) {
+            // Usuario normal: solo documentos de su departamento
+            $query->whereHas('departamento', function ($q) use ($user) {
+                $q->where('id', $user->departamento->departamento_id ?? 0);
+            });
+        }
 
 
         if ($request->filled('search')) {
@@ -108,7 +115,8 @@ class DocumentoLegalController extends Controller
             'tipos_documento' => $tipos_documento,
             //'estados' => $estados,
             'departamentos' => $departamentos,
-            //'modalidades' => $modalidades,
+            'departamento_id' => auth()->user()->departamento_id,
+
         ]);
     }
 
@@ -225,7 +233,13 @@ class DocumentoLegalController extends Controller
      */
     public function edit(DocumentoLegal $documentoLegal)
     {
-        //dd($documento);  // Esto te permite ver qué contiene el objeto.
+        $user = Auth::user();
+        // 🔒 Verificar si el usuario puede editar el documento
+        if (!$user->hasRole('Admin') && $user->departamento_id !== $documentoLegal->departamento_id) {
+            //abort(403, 'No tienes permiso para editar este documento.');
+            return redirect()->route('dashboard.vencidos')->with('error', 'No tienes permiso para editar este documento.');
+
+        }
         $empresas = Empresa::select('id', 'nombre as name')->get();
         $tipos_documento = TipoDeDocumento::select('id', 'nombre_documento as name')->get();
         $departamentos = Departamento::select('id', 'nombre_departamento as name')->get();
@@ -253,37 +267,8 @@ class DocumentoLegalController extends Controller
      */
     public function update(UpdateDocumentoLegalRequest $request, DocumentoLegal $documentoLegal)
     {
-        // logger('Archivos pdf en updateControlador:', $request->allFiles());
-        // Log::info('Datos recibidos en update:', $request->all());
-        //dd(vars: $request->all(), $request->allFiles());
-
-        // Validar los datos recibidos
-        // $validated = $request->validate(
-        //     [
-        //         'nombre_documento' => 'required|string|max:255',
-        //         'empresa_id' => 'required|exists:empresas,id',
-        //         'tipo_de_documento_id' => 'required|exists:tipo_de_documentos,id',
-        //         'departamento_id' => 'required|exists:departamentos,id',
-        //         'fecha_revalidacion' => 'required|date',
-        //         'fecha_vigencia' => 'required|date',
-        //         'nuevos_documentos_principales' => 'nullable|array',
-        //         'nuevos_documentos_principales.*' => 'file|mimes:pdf|max:102400',
-        //         'nuevos_documentos_anexos' => 'nullable|array',
-        //         'nuevos_documentos_anexos.*' => 'file|mimes:pdf|max:102400',
-        //         'archivos_a_eliminar' => 'nullable|array', // Para manejar eliminación de archivos existentes
-        //         'archivos_a_eliminar.*' => 'integer|exists:documento_archivos,id'
-        //     ],
-        //     [
-        //         // Mensajes personalizados
-        //         'nuevos_documentos_principales.*.max' => 'Cada archivo principal debe pesar máximo 100 MB.',
-        //         'nuevos_documentos_principales.*.mimes' => 'Los archivos principales deben ser PDF.',
-        //         'nuevos_documentos_anexos.*.max' => 'Cada archivo anexo debe pesar máximo 100 MB.',
-        //         'nuevos_documentos_anexos.*.mimes' => 'Los archivos anexos deben ser PDF.',
-        //     ]
-        // );
+      
         $validated = $request->validated();
-
-
         // Si no se sube archivo, conservar el archivo actual
         $documentoLegal->update([
             'nombre_documento' => $validated['nombre_documento'],
@@ -337,8 +322,6 @@ class DocumentoLegalController extends Controller
                 'fecha_vigencia' => $validated['fecha_vigencia'],
             ]
         );
-
-
 
         // Redirigir con mensaje de éxito
         return redirect()->route($this->routeName . 'index')->with('success', 'Documento actualizado con éxito.');
