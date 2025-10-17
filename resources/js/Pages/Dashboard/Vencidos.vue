@@ -10,10 +10,11 @@ import moment from "moment";
 import { mdiArrowRight, mdiInformation, mdiFileDocumentOutline } from "@mdi/js";
 import TechnicalDocumentsCard from '@/Components/TechnicalDocumentsCard.vue';
 import LegalDocumentsCard from '@/Components/LegalDocumentsCard.vue';
-import LicitacionDocumentsCard from '@/Components/LicitacionDocumentsCard.vue';
 import NotificationBar from "@/Components/NotificationBar.vue";
 import DocumentDetailsModal from "@/Components/DocumentDetailsModal.vue";
 import CatalogoRedirectButton from '@/Components/CatalogoRedirectButton.vue';
+import CardBoxComponentEmpty from "@/Components/CardBoxComponentEmpty.vue";
+
 
 
 const props = defineProps({
@@ -50,7 +51,8 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
       <TechnicalDocumentsCard :count="totalDocumentosTecnicos" label="Documentos Técnicos Vencidos"
         tooltip="Haz clic para crear un nuevo documento técnico" />
 
-      <LegalDocumentsCard :count="totalDocumentosLegales" label="Documentos Legales Vencidos" tooltip="Haz clic para crear un nuevo documento legal" />
+      <LegalDocumentsCard :count="totalDocumentosLegales" label="Documentos Legales Vencidos"
+        tooltip="Haz clic para crear un nuevo documento legal" />
 
     </div>
 
@@ -68,91 +70,101 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
             {{ titulo1 }}
           </h2>
         </div>
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Documento</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Departamento</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Revalidación</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Vigencia</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Ver</th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr v-for="documento in documentos.data" :key="documento.id"
-                class="hover:bg-gray-50 transition-colors duration-150"
-                :class="{ 'bg-red-50': documento.dias_restantes <= 7 }">
+        <template v-if="documentos.data.length > 0">
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Documento</th>
+                  <th scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Departamento</th>
+                  <th scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Revalidación</th>
+                  <th scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Vigencia</th>
+                  <th scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Ver</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr v-for="documento in documentos.data" :key="documento.id"
+                  class="hover:bg-gray-50 transition-colors duration-150"
+                  :class="{ 'bg-red-50': documento.dias_restantes <= 7 }">
 
-                <td data-label="Nombre de Documento"
-                  class="px-6 py-4  whitespace-normal text-sm font-medium text-gray-900">
-                  {{ documento.tipo_de_documento.nombre_documento }}
-                </td>
-                <td data-label="Departamento" class="px-6 py-4 whitespace-normal text-sm text-gray-500">
-                  {{ documento.departamento.nombre_departamento }}
-                </td>
+                  <td data-label="Nombre de Documento"
+                    class="px-6 py-4  whitespace-normal text-sm font-medium text-gray-900">
+                    {{ documento.tipo_de_documento.nombre_documento }}
+                  </td>
+                  <td data-label="Departamento" class="px-6 py-4 whitespace-normal text-sm text-gray-500">
+                    {{ documento.departamento.nombre_departamento }}
+                  </td>
 
-                <!-- ♻️ Fecha de Revalidación -->
-                <td data-label="Fecha Revalidación" class="px-6 py-4 text-sm text-gray-500">
-                  <div class="flex flex-col">
-                    <div>{{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }}</div>
-                    <span :class="{
-                      'bg-red-600 text-white': documento.dias_restantes_revalidacion < 0,
-                      'bg-red-200 text-red-800': documento.dias_restantes_revalidacion === 0,
-                      'bg-blue-100 text-blue-800': documento.dias_restantes_revalidacion > 0
-                    }"
-                      class="px-3 py-1 mt-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full truncate max-w-[120px]">
-                      {{
-                        documento.dias_restantes_revalidacion < 0 ? `Vencido hace
-                        ${Math.abs(documento.dias_restantes_revalidacion)} días` :
-                          documento.dias_restantes_revalidacion === 0 ? 'Vence hoy' : `Faltan
-                        ${documento.dias_restantes_revalidacion} días` }} </span>
-                  </div>
-                </td>
+                  <!-- ♻️ Fecha de Revalidación -->
+                  <td data-label="Fecha Revalidación" class="px-6 py-4 text-sm text-gray-500">
+                    <div class="flex flex-col">
+                      <div>{{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }}</div>
+                      <span :class="{
+                        'bg-red-600 text-white': documento.dias_restantes_revalidacion < 0,
+                        'bg-red-200 text-red-800': documento.dias_restantes_revalidacion === 0,
+                        'bg-blue-100 text-blue-800': documento.dias_restantes_revalidacion > 0
+                      }"
+                        class="px-3 py-1 mt-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full truncate max-w-[120px]">
+                        {{
+                          documento.dias_restantes_revalidacion < 0 ? `Vencido hace
+                          ${Math.abs(documento.dias_restantes_revalidacion)} días` :
+                            documento.dias_restantes_revalidacion === 0 ? 'Vence hoy' : `Faltan
+                          ${documento.dias_restantes_revalidacion} días` }} </span>
+                    </div>
+                  </td>
 
-                <td data-label="Fecha Vigencia" class="px-6 py-4 text-sm text-gray-500">
-                  <div class="flex flex-col">
-                    <div>{{ moment(documento.fecha_vigencia).format("DD/MM/YYYY") }}</div>
-                    <span :class="{
-                      'bg-red-500 text-white': documento.dias_restantes <= 0,
-                      'bg-red-200 text-red-800': documento.dias_restantes > 0 && documento.dias_restantes <= 7,
-                      'bg-green-100 text-green-800': documento.dias_restantes > 7
-                    }"
-                      class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full truncate max-w-[120px]">
-                      {{
-                        documento.dias_restantes < 0 ? `Vencido hace ${Math.abs(documento.dias_restantes)} días` :
-                          documento.dias_restantes === 0 ? 'Vence hoy' : `Faltan ${documento.dias_restantes} días` }}
-                        </span>
-                  </div>
-                </td>
+                  <td data-label="Fecha Vigencia" class="px-6 py-4 text-sm text-gray-500">
+                    <div class="flex flex-col">
+                      <div>{{ moment(documento.fecha_vigencia).format("DD/MM/YYYY") }}</div>
+                      <span :class="{
+                        'bg-red-500 text-white': documento.dias_restantes <= 0,
+                        'bg-red-200 text-red-800': documento.dias_restantes > 0 && documento.dias_restantes <= 7,
+                        'bg-green-100 text-green-800': documento.dias_restantes > 7
+                      }"
+                        class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full truncate max-w-[120px]">
+                        {{
+                          documento.dias_restantes < 0 ? `Vencido hace ${Math.abs(documento.dias_restantes)} días` :
+                            documento.dias_restantes === 0 ? 'Vence hoy' : `Faltan ${documento.dias_restantes} días` }}
+                          </span>
+                    </div>
+                  </td>
 
 
 
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="flex items-center space-x-2">
-                    <DocumentDetailsModal :documento="documento" :tipo-documento="'documento'" />
-                    <CatalogoRedirectButton
-                      v-if="$page.props.auth.user.departamento.departamento_id === documento.departamento_id"
-                      catalog-route-name="documento" return-route="dashboard.vencidos" :return-id="documento.id"
-                      label="Editar Documento" :icon="mdiArrowRight" outline mode="edit" color="success" />
-                    <CatalogoRedirectButton v-else catalog-route-name="documento-legal"
-                      return-route="dashboard.vencidos" :return-id="documento.id"
-                      label="No puedes editar este Documento" :icon="mdiArrowRight" color="danger" outline mode="edit"
-                      :disabled="true" class="opacity-50 cursor-not-allowed" />
-                  </div>
-                </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center space-x-2">
+                      <DocumentDetailsModal :documento="documento" :tipo-documento="'documento'" />
+                      <CatalogoRedirectButton
+                        v-if="$page.props.auth.user.departamento.departamento_id === documento.departamento_id"
+                        catalog-route-name="documento" return-route="dashboard.vencidos" :return-id="documento.id"
+                        label="Editar Documento" :icon="mdiArrowRight" outline mode="edit" color="success" />
+                      <CatalogoRedirectButton v-else catalog-route-name="documento-legal"
+                        return-route="dashboard.vencidos" :return-id="documento.id"
+                        label="No puedes editar este Documento" :icon="mdiArrowRight" color="danger" outline mode="edit"
+                        :disabled="true" class="opacity-50 cursor-not-allowed" />
+                    </div>
+                  </td>
 
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <PaginationDashboard :currentPage="documentos.current_page" :links="documentos.links"
-          :total="documentos.last_page" pageParam="page_tecnico_vencidos" routeName="dashboard.vencidos" />
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <PaginationDashboard :currentPage="documentos.current_page" :links="documentos.links"
+            :total="documentos.last_page" pageParam="page_tecnico_vencidos" routeName="dashboard.vencidos" />
+        </template>
+        <template v-else>
+          <CardBoxComponentEmpty description="No hay documentos técnicos registrados por el momento." />
+        </template>
 
       </CardBox>
 
@@ -171,91 +183,104 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
             {{ titulo2 }}
           </h2>
         </div>
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Documento</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Departamento</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Revalidación</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Vigencia</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Ver</th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr v-for="documento in documentosLegal.data" :key="documento.id"
-                class="hover:bg-gray-50 transition-colors duration-150"
-                :class="{ 'bg-red-50': documento.dias_restantes <= 7 }">
 
-                <td data-label="Nombre de Documento"
-                  class="px-6 py-4 whitespace-normal text-sm font-medium text-gray-900">
-                  {{ documento.tipo_de_documento.nombre_documento }}
-                </td>
+        <template v-if="documentos.data.length > 0">
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Documento</th>
+                  <th scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Departamento</th>
+                  <th scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Revalidación</th>
+                  <th scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Vigencia</th>
+                  <th scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Ver</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr v-for="documento in documentosLegal.data" :key="documento.id"
+                  class="hover:bg-gray-50 transition-colors duration-150"
+                  :class="{ 'bg-red-50': documento.dias_restantes <= 7 }">
 
-                <td data-label="Departamento" class="px-6 py-4 whitespace-normal text-sm text-gray-500">
-                  {{ documento.departamento.nombre_departamento }}
-                </td>
-                <!-- ♻️ Fecha de Revalidación -->
-                <td data-label="Fecha Revalidación" class="px-6 py-4 text-sm text-gray-500">
-                  <div class="flex flex-col">
-                    <div>{{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }}</div>
-                    <span :class="{
-                      'bg-red-600 text-white': documento.dias_restantes_revalidacion < 0,
-                      'bg-red-200 text-red-800': documento.dias_restantes_revalidacion === 0,
-                      'bg-blue-100 text-blue-800': documento.dias_restantes_revalidacion > 0
-                    }"
-                      class="px-3 py-1 mt-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full truncate max-w-[120px]">
-                      {{
-                        documento.dias_restantes_revalidacion < 0 ? `Vencido hace
-                        ${Math.abs(documento.dias_restantes_revalidacion)} días` :
-                          documento.dias_restantes_revalidacion === 0 ? 'Vence hoy' : `Faltan
-                        ${documento.dias_restantes_revalidacion} días` }} </span>
-                  </div>
-                </td>
+                  <td data-label="Nombre de Documento"
+                    class="px-6 py-4 whitespace-normal text-sm font-medium text-gray-900">
+                    {{ documento.tipo_de_documento.nombre_documento }}
+                  </td>
 
-                <td data-label="Fecha Vigencia" class="px-6 py-4 text-sm text-gray-500">
-                  <div class="flex flex-col">
-                    <div>{{ moment(documento.fecha_vigencia).format("DD/MM/YYYY") }}</div>
-                    <span :class="{
-                      'bg-red-500 text-white': documento.dias_restantes <= 0,
-                      'bg-red-200 text-red-800': documento.dias_restantes > 0 && documento.dias_restantes <= 7,
+                  <td data-label="Departamento" class="px-6 py-4 whitespace-normal text-sm text-gray-500">
+                    {{ documento.departamento.nombre_departamento }}
+                  </td>
+                  <!-- ♻️ Fecha de Revalidación -->
+                  <td data-label="Fecha Revalidación" class="px-6 py-4 text-sm text-gray-500">
+                    <div class="flex flex-col">
+                      <div>{{ moment(documento.fecha_revalidacion).format("DD/MM/YYYY") }}</div>
+                      <span :class="{
+                        'bg-red-600 text-white': documento.dias_restantes_revalidacion < 0,
+                        'bg-red-200 text-red-800': documento.dias_restantes_revalidacion === 0,
+                        'bg-blue-100 text-blue-800': documento.dias_restantes_revalidacion > 0
+                      }"
+                        class="px-3 py-1 mt-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full truncate max-w-[120px]">
+                        {{
+                          documento.dias_restantes_revalidacion < 0 ? `Vencido hace
+                          ${Math.abs(documento.dias_restantes_revalidacion)} días` :
+                          documento.dias_restantes_revalidacion===0 ? 'Vence hoy' : `Faltan
+                          ${documento.dias_restantes_revalidacion} días` }} </span>
+                    </div>
+                  </td>
+
+                  <td data-label="Fecha Vigencia" class="px-6 py-4 text-sm text-gray-500">
+                    <div class="flex flex-col">
+                      <div>{{ moment(documento.fecha_vigencia).format("DD/MM/YYYY") }}</div>
+                      <span :class="{
+                        'bg-red-500 text-white': documento.dias_restantes <= 0,
+                        'bg-red-200 text-red-800': documento.dias_restantes > 0 && documento.dias_restantes <= 7,
                       'bg-green-100 text-green-800': documento.dias_restantes > 7
                     }"
-                      class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full truncate max-w-[120px]">
-                      {{
+                        class="px-3 py-1 inline-flex justify-center text-xs leading-5 font-semibold rounded-full truncate max-w-[120px]">
+                        {{
                         documento.dias_restantes < 0 ? `Vencido hace ${Math.abs(documento.dias_restantes)} días` :
-                          documento.dias_restantes === 0 ? 'Vence hoy' : `Faltan ${documento.dias_restantes} días` }}
-                        </span>
-                  </div>
-                </td>
+                          documento.dias_restantes===0 ? 'Vence hoy' : `Faltan ${documento.dias_restantes} días` }}
+                          </span>
+                    </div>
+                  </td>
 
 
-                <td class="px-6 py-4 whitespace-nowrap ">
-                  <div class="flex items-center gap-2">
-                    <DocumentDetailsModal :documento="documento" :tipo-documento="'documento-legal'" />
-                    <CatalogoRedirectButton
-                      v-if="$page.props.auth.user.departamento.departamento_id === documento.departamento_id"
-                      catalog-route-name="documento-legal" return-route="dashboard.vencidos" :return-id="documento.id"
-                      label="Editar Documento" :icon="mdiArrowRight" outline mode="edit" color="success" />
-                    <CatalogoRedirectButton v-else catalog-route-name="documento-legal"
-                      return-route="dashboard.vencidos" :return-id="documento.id"
-                      label="No puedes editar este Documento" :icon="mdiArrowRight" color="danger" outline mode="edit"
-                      :disabled="true" class="opacity-50 cursor-not-allowed" />
-                  </div>
-                </td>
+                  <td class="px-6 py-4 whitespace-nowrap ">
+                    <div class="flex items-center gap-2">
+                      <DocumentDetailsModal :documento="documento" :tipo-documento="'documento-legal'" />
+                      <CatalogoRedirectButton
+                        v-if="$page.props.auth.user.departamento.departamento_id === documento.departamento_id"
+                        catalog-route-name="documento-legal" return-route="dashboard.vencidos" :return-id="documento.id"
+                        label="Editar Documento" :icon="mdiArrowRight" outline mode="edit" color="success" />
+                      <CatalogoRedirectButton v-else catalog-route-name="documento-legal"
+                        return-route="dashboard.vencidos" :return-id="documento.id"
+                        label="No puedes editar este Documento" :icon="mdiArrowRight" color="danger" outline mode="edit"
+                        :disabled="true" class="opacity-50 cursor-not-allowed" />
+                    </div>
+                  </td>
 
 
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <PaginationDashboard :currentPage="documentosLegal.current_page" :links="documentosLegal.links"
-          :total="documentosLegal.last_page" pageParam="page_legal_vencidos" routeName="dashboard.vencidos" />
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <PaginationDashboard :currentPage="documentosLegal.current_page" :links="documentosLegal.links"
+            :total="documentosLegal.last_page" pageParam="page_legal_vencidos" routeName="dashboard.vencidos" />
+        </template>
+
+        <template v-else>
+          <CardBoxComponentEmpty description="No hay documentos legales registrados por el momento." />
+        </template>
+
 
       </CardBox>
     </div>
