@@ -47,6 +47,12 @@ export default [
     isRol: true,
   },
   {
+    icon: mdiThemeLightDark,
+    label: 'Light/Dark',
+    isDesktopNoLabel: true,
+    isToggleLightDark: true,
+  },
+  {
     icon: mdiLogout,
     label: "Log out",
     isDesktopNoLabel: true,
