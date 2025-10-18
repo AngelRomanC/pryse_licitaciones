@@ -22,14 +22,25 @@ class StoreUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
             'apellido_paterno' => ['required', 'string', 'max:255'],
             'apellido_materno' => ['required', 'string', 'max:255'],
             'numero' => ['required', 'digits:10'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required']
+            'password' => ['required', 'string', 'min:8'],
+            
+            'roles' => ['required', 'array'],
+            'roles.*' => ['integer', 'exists:roles,id'],
         ];
+        // 🔹 Validación dinámica: si el rol es “Usuario”, el departamento es obligatorio
+        if (in_array('2', $this->roles)) {
+            $rules['departamento_id'] = ['required', 'exists:departamentos,id'];
+        } else {
+            $rules['departamento_id'] = ['nullable', 'exists:departamentos,id'];
+        }
+        return $rules;
+
     }
 
     public function messages()
@@ -43,6 +54,13 @@ class StoreUserRequest extends FormRequest
             'email' => 'El campo Correo Electronico es obligatorio.',
             'email.unique' => 'El correo electrónico ya está registrado.',
             'password' => 'El campo contraseña  es obligatorio.',
+            'password.min' => 'Debe tener al menos 8 caracteres',
+
+
+            'roles.required' => 'Debes asignar al menos un rol al usuario.',
+            'roles.array' => 'El formato de roles no es válido.',
+            'roles.*.exists' => 'Alguno de los roles seleccionados no existe en el sistema.',
+            'departamento_id.required' => 'El campo departamento es obligatorio cuando el rol es Usuario.',
 
         ];
     }

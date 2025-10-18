@@ -2,23 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Usuario;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Http\Requests\UpdateUsuarioRequest;
-
-use App\Notifications\CredencialesEstudianteNotification;
-use Spatie\Permission\Models\Permission;
+use App\Models\Departamento;
+use App\Models\UserDepartamento;
+use App\Notifications\CredentialsNotification;
 use Spatie\Permission\Models\Role;
 use App\Models\User;
-//use App\Models\Alumno;
-use App\Models\Profesor;
-use App\Models\Modulo;
 use Inertia\Response;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Cache;
+
 use Illuminate\Support\Facades\Hash;
 
 
@@ -26,137 +20,113 @@ class UserController extends Controller
 {
     protected string $routeName;
     protected string $source;
-    protected string $module = 'usuarios';
+    protected string $module = 'users';
     protected User $model;
 
     public function __construct()
     {
-        $this->routeName = "usuarios.";
-        $this->source    = "Seguridad/Usuarios/";
-        $this->model     = new User();
-         $this->middleware("permission:{$this->module}.index")->only(['index', 'show']);
-         $this->middleware("permission:{$this->module}.store")->only(['store', 'create']);
-         $this->middleware("permission:{$this->module}.update")->only(['edit', 'update']);
-         $this->middleware("permission:{$this->module}.delete")->only(['destroy']);
-        
+        $this->routeName = "users.";
+        $this->source = "Seguridad/Usuarios/";
+        $this->model = new User();
+        $this->middleware("permission:{$this->module}.index")->only(['index', 'show']);
+        $this->middleware("permission:{$this->module}.store")->only(['store', 'create']);
+        $this->middleware("permission:{$this->module}.update")->only(['edit', 'update']);
+        $this->middleware("permission:{$this->module}.delete")->only(['destroy']);
+
     }
 
-    public function index2(Request $request): Response
+
+    public function index(Request $request): Response
     {
 
-        
-        //$admin = User::where('role', 'Admin')->get();
-        $admin = User::where('role', 'Admin')->paginate(8); // Puedes ajustar el 10 al número de elementos por página que desees
+        $query = User::query()->with('roles');
 
+        if ($request->has('search') && $request->search !== null) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
 
-        // $usuarios = $this->model::with('roles')
-        //     ->orderBy('id')
-        //     ->paginate(30)
-        //     ->withQueryString();
-
-
+        $users = $query->orderBy('id', 'desc')->paginate(8)->withQueryString();
 
         return Inertia::render("{$this->source}Index", [
-            'titulo'   => ' Usuarios Admin',
-            //'usuarios' => $usuarios,
-            'admin' => $admin,
-            //'profiles' => Role::get(['id', 'name']),
+            'titulo' => 'Usuarios ',
+            'users' => $users,
             'routeName' => $this->routeName,
-            //'loadingResults' => false,
+            'filters' => $request->only(['search']),
         ]);
     }
-public function index(Request $request): Response
-{
-    $query = User::where('role', 'Admin');
-
-    // Aplicar búsqueda si hay un parámetro `search`
-    if ($request->has('search') && $request->search !== null) {
-        $query->where('name', 'like', '%' . $request->search . '%');
-    }
-
-    $admin = $query->orderBy('id','desc')->paginate(8)->withQueryString();
-
-    return Inertia::render("{$this->source}Index", [
-        'titulo'   => 'Usuarios Admin',
-        'admin'    => $admin,
-        'routeName'=> $this->routeName,
-        'filters'  => $request->only(['search']), // Para mantener el valor en el input
-    ]);
-}
 
     public function create()
     {
+
         return Inertia::render("Seguridad/Usuarios/Create", [
-            'titulo'      => 'Agregar Usuario Admin',
-            'routeName'      => $this->routeName,
-            'roles' => Role::pluck('name'),
+            'titulo' => 'Agregar Usuario ',
+            'routeName' => $this->routeName,
+            'roles' => Role::orderBy('name')->select('id', 'name', )->get(),
+            'departamentos' => Departamento::orderBy('name')->select('id', 'nombre_departamento as name')->get(),
         ]);
     }
 
     public function store(StoreUserRequest $request)
-
     {
+        $newUser = User::create($request->validated());
+        $newUser->syncRoles($request->roles);
         
-        $newUser = user::create([
-            'name' => $request->input('name'),
-            'apellido_paterno' => $request->input('apellido_paterno'),
-            'apellido_materno' => $request->input('apellido_materno'),
-            'numero' => $request->input('numero'),
-            'email' => $request->input('email'),
-            'password' => Hash::make($request->input('password')),
-            'role' => $request->input('role'),
-
-
-        ])->assignRole($request['role']);
-
-        $newUser->notify(instance: new CredencialesEstudianteNotification($request->email, $request->password));
-
-        return redirect()->route("usuarios.index")->with('success', 'Usuario Admin generado con éxito');
-    }
-
-
-
-
-
-
-    public function edit($id)
-    {
-
-        $usuario = User::find($id);
-
-        return Inertia::render("Seguridad/Usuarios/Edit", [
-            'titulo'   => 'Modificar Usuario Admin',
-            'usuario'  => $usuario,
-            'routeName' => $this->routeName,
-        ]);
-    }
-
-    public function update(UpdateUserRequest $request, $id)
-    {
-        $usuario = User::find($id);
-
-        if (!$usuario) {
-            abort(404, 'Usuario no encontrado');
+        if ($request->departamento_id) {
+            UserDepartamento::create([
+                'user_id' => $newUser->id,
+                'departamento_id' => $request->departamento_id,
+            ]);
         }
 
-        // Actualiza los datos del usuario
-        $usuario->update($request->all());
+        $newUser->notify(instance: new CredentialsNotification(
+            $request->email,
+            $request->password
+        ));
 
-      
-
-        return redirect()->route("usuarios.index")->with('success', '¡Usuario Admin actualizado correctamente!');
+        return redirect()->route("{$this->routeName}index")->with('success', '¡Usuario creado con éxito!');
     }
+    public function edit(User $user)
+    {
+        $user->load('roles:id,name','departamento');
 
+        return Inertia::render("Seguridad/Usuarios/Edit", [
+            'titulo' => 'Modificar Usuario ',
+            'usuario' => $user,
+            'routeName' => $this->routeName,
+            'roles' => Role::orderBy('name')->select('id', 'name', )->get(),
+            'departamentos' => Departamento::orderBy('name')->select('id', 'nombre_departamento as name')->get(),
+        ]);
+    }
+    public function update(UpdateUserRequest $request, User $user)
+    {
+        $data = $request->validated();
 
+        if (empty($data['password'])) {
+            unset($data['password']);
+        }
+
+        $user->update($data);
+        $user->syncRoles($request->roles);
+
+         // Actualizar departamento si aplica
+        if ($request->filled('departamento_id')) {
+            UserDepartamento::updateOrCreate(
+                ['user_id' => $user->id],
+                ['departamento_id' => $request->departamento_id]
+            );
+        } else {
+            // Si quitas el departamento, lo eliminamos
+            UserDepartamento::where('user_id', $user->id)->delete();
+        }
+
+        return redirect()->route("{$this->routeName}index")->with('success', '¡Usuario actualizado correctamente!');
+    }
 
     public function destroy($id)
     {
-
         $usuario = User::find($id);
         $usuario->delete();
 
-
-
-        return redirect()->route('usuarios.index')->with('success', 'Usuario eliminado con éxito');
+        return redirect()->route("{$this->routeName}index")->with('success', '¡Usuario eliminado con éxito!');
     }
 }

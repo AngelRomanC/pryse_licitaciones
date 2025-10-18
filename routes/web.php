@@ -4,12 +4,18 @@ use App\Http\Controllers\DocumentoLegalController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\LicitacionController;
 use App\Http\Controllers\ModalidadController;
+use App\Http\Controllers\ModuleController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TipoDeDocumentoController;
 use App\Http\Controllers\DocumentoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UsuarioGeneralController;
 use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+
+
 
 //use App\Http\Controllers\ModuleController; //checar si se ocupan borrado
 //use App\Http\Controllers\PerfilesController;  borardpo
@@ -69,6 +75,7 @@ Route::middleware('auth')->group(function () {
 
     //Alumno
     Route::resource('alumno', AlumnoController::class)->parameters(['alumno' => 'alumno']);
+    
 
     //BACKUP
     Route::resource('respaldo', RespaldoController::class)->parameters(['respaldo' => 'respaldo']);
@@ -103,9 +110,25 @@ Route::middleware('auth')->group(function () {
     Route::get('/licitaciones/{licitacion}/descargar-expediente', [LicitacionController::class, 'descargarExpediente'])->name('licitaciones.descargar');
     // routes/web.php
     Route::post('/verificar-modalidades', [LicitacionController::class, 'verificarModalidades'])->name('licitacion.verificarModalidades');
-    
+
     Route::get('/dashboard/vencidos', [DashboardController::class, 'vencidos'])
         ->name('dashboard.vencidos');
+
+    // Agregar esta ruta dentro del grupo de rutas autenticadas
+    Route::post('/user/set-active-role', [AuthenticatedSessionController::class, 'setActiveRole'])
+        ->name('user.set-active-role');
+
+    // Ruta para la vista de selección de rol después del login
+    Route::get('/select-role', function () {
+        return Inertia::render('Auth/RoleSelect');
+    })->name('role.select');
+
+    //Seguridad
+    Route::resource('roles', RoleController::class)->names('roles');
+    Route::resource('permissions', PermissionController::class);
+    Route::resource('modules', ModuleController::class);
+    Route::resource('users', controller: UserController::class);
+
 
 
 });

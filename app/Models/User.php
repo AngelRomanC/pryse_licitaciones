@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 //laravel permission
 use Spatie\Permission\Traits\HasRoles;
+use App\Traits\DateFormat;
+
 
 
 
@@ -25,6 +27,8 @@ class User extends Authenticatable
     // use TwoFactorAuthenticatable;
     use HasRoles;
     use Notifiable;
+    use DateFormat;
+
 
 
     /**
@@ -61,6 +65,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+    protected $appends = ['created_at_formatted'];
 
     //laravel permission
 
@@ -96,7 +101,13 @@ class User extends Authenticatable
     public function getRolesArray(): Collection
     {
         return $this->roles()->get()->mapWithKeys(function ($role) {
-            return [$role['name'] => true];
+            return [
+                $role['name'] => [
+                    'active' => true,
+                    'description' => $role['description'], // Descripción desde la DB
+                    'id' => $role['id'] // ID del rol
+                ]
+            ];
         });
     }
 
@@ -143,5 +154,9 @@ class User extends Authenticatable
     public function getDepartamentoIdAttribute()
     {
         return $this->departamento->departamento_id ?? null;
+    }
+      public function getCreatedAtFormattedAttribute()
+    {
+        return $this->textFormatDate($this->created_at);
     }
 }

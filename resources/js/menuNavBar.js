@@ -10,7 +10,7 @@ import {
   mdiThemeLightDark,
   mdiGithub,
   mdiReact,
-  mdiBell,
+  mdiAccountSwitch,
 } from "@mdi/js";
 
 import { usePage } from "@inertiajs/vue3";
@@ -51,6 +51,12 @@ export default [
     label: 'Light/Dark',
     isDesktopNoLabel: true,
     isToggleLightDark: true,
+  },
+  {
+    icon: mdiAccountSwitch,
+    label: "Cambiar Rol",
+    isDesktopNoLabel: true,
+    isSwitchRole: true,
   },
   {
     icon: mdiLogout,

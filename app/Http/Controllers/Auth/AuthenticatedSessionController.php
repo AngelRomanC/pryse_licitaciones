@@ -35,6 +35,20 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+        // Obtener el usuario autenticado
+        $user = $request->user();
+
+        // Verificar si el usuario tiene más de un rol
+        $roles = $user->roles()->get();
+        if ($roles->count() > 1) {
+            // Si tiene múltiples roles, redirigir a la vista de selección de rol
+            return redirect()->route('role.select');
+        }
+
+        // Si solo tiene un rol, establecerlo como activo automáticamente
+        if ($roles->count() == 1) {
+            session(['active_role' => $roles->first()->name]);
+        }
 
         return redirect()->intended(RouteServiceProvider::HOME);
     }
@@ -51,5 +65,17 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+    public function setActiveRole(Request $request): RedirectResponse
+    {
+        $role = $request->input('role');
+
+        // Verificar que el usuario tenga este rol
+        if ($request->user()->hasRole($role)) {
+            // Guardar el rol activo en la sesión
+            session(['active_role' => $role]);
+        }
+
+        return redirect()->back();
     }
 }

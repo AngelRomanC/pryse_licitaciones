@@ -13,7 +13,12 @@ import {
   mdiViewDashboard,
   mdiClipboardList,
   mdiShieldAccount ,
-  mdiOfficeBuilding 
+  mdiOfficeBuilding,
+  mdiAccountMultiple,
+  mdiViewModule,
+  mdiKeyChain,
+  mdiShieldKey 
+
 } from "@mdi/js";
 
 export default [
@@ -45,6 +50,38 @@ export default [
       
     ]
   },
+  {
+  label: "Seguridad",
+  icon: mdiShieldKey,
+  role: "Admin",
+  menu: [
+    {
+        href:"/users",
+        label: "Usuarios",
+        icon: mdiAccountMultiple,
+        role: "Admin",
+    }, 
+    {
+      route: "roles.index",
+      label: "Roles",
+      icon: mdiShieldAccount,
+      role: "Admin",
+    },
+    
+    {
+      route: "modules.index",
+      label: "Módulos",
+      icon: mdiViewModule,
+      role: "Admin",
+    },
+    {
+      route: "permissions.index",
+      label: "Permisos",
+      icon: mdiKeyChain,
+      role: "Admin",
+    }, 
+  ],
+},
      
   {
     label: "Catálogos",

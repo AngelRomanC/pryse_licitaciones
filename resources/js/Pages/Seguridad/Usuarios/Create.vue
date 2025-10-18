@@ -1,116 +1,103 @@
-<script>
-import { Link, useForm } from '@inertiajs/vue3';
+<script setup>
+import { ref, defineProps, computed, watch } from 'vue';
+import { useForm } from '@inertiajs/vue3';
+import LayoutMain from '@/Layouts/LayoutMain.vue';
+import FormField from "@/Components/FormField.vue";
+import FormControl from "@/Components/FormControl.vue";
+import FormControlCheckbox from "@/Components/FormControlCheckbox.vue";
+import BaseDivider from "@/Components/BaseDivider.vue";
+import BaseButton from "@/Components/BaseButton.vue";
+import BaseButtons from "@/Components/BaseButtons.vue";
+import SectionTitleLineWithButton from "@/Components/SectionTitleLineWithButton.vue";
+import CardBox from "@/Components/CardBox.vue";
+import NotificationBar from "@/Components/NotificationBar.vue";
 import {
-  mdiBallotOutline,
   mdiAccount,
   mdiAccountCircle,
   mdiAccountTie,
   mdiPhone,
   mdiMail,
-  mdiLock
+  mdiLock,
+  mdiOfficeBuilding
 } from "@mdi/js";
 
-import LayoutMain from '@/layouts/LayoutMain.vue';
-import FormField from "@/components/FormField.vue";
-import FormControl from "@/components/FormControl.vue";
-import BaseDivider from "@/components/BaseDivider.vue";
-import BaseButton from "@/components/BaseButton.vue";
-import BaseButtons from "@/components/BaseButtons.vue";
-import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
-import CardBox from "@/components/CardBox.vue";
+const props = defineProps({
+  titulo: String,
+  routeName: String,
+  roles: Array,
+  departamentos: Array,
+});
+console.log('Departamentos prop:', props.roles);
+const safeRoles = computed(() => props.roles || []);
 
-export default {
-  props: {
-    titulo: { type: String, required: true },
-    routeName: { type: String, required: true },
-    roles: { type: Object, required: true },
-  },
-  components: {
-    LayoutMain,
-    FormField,
-    FormControl,
-    BaseDivider,
-    BaseButton,
-    BaseButtons,
-    CardBox,
-    SectionTitleLineWithButton
-  },
-  setup() {
-    const handleSubmit = () => {
-      form.post(route('usuarios.store'));
-    };
+const safeDepartamentos = computed(() => props.departamentos || []);
+// Encuentra el ID del rol "usuario"
+const usuarioRoleId = computed(() => {
+  const usuarioRole = safeRoles.value.find(role => 
+    role.name.toLowerCase() === 'usuario'
+  );
+  return usuarioRole ? usuarioRole.id : null;
+});
 
-    const form = useForm({
-      name: '',
-      apellido_paterno: '',
-      apellido_materno: '',
-      numero: '',
-      email: '',
-      password: '',
-      role: 'Admin',
-    });
+const form = useForm({
+  name: '',
+  apellido_paterno: '',
+  apellido_materno: '',
+  numero: '',
+  email: '',
+  password: '',
+  departamento_id: null,
+  roles: [],
+});
+// Computed para saber si el rol "usuario" está seleccionado
+const isUsuarioRoleSelected = computed(() => {
+  return form.roles.includes(usuarioRoleId.value);
+});
 
-    return {
-      handleSubmit,
-      form,
-      mdiBallotOutline,
-      mdiAccount,
-      mdiAccountCircle,
-      mdiAccountTie,
-      mdiPhone,
-      mdiMail,
-      mdiLock
-    };
+// Watch para limpiar departamento_id cuando se deselecciona el rol usuario
+watch(isUsuarioRoleSelected, (newValue) => {
+  if (!newValue) {
+    form.departamento_id = null; // Limpiar departamento si se quita el rol usuario
   }
-}
+});
+const guardar = () => {
+  console.log('Submitting form with data:', form.roles);
+  form.post(route(`${props.routeName}store`));
+};
 </script>
 
 <template>
   <LayoutMain :title="titulo">
-    <SectionTitleLineWithButton :icon="mdiBallotOutline" :title="titulo" main>
-      <a :href="`${route(routeName + 'index')}`">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-             class="bi bi-x" viewBox="0 0 16 16">
-          <path
-            d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-        </svg>
-      </a>
-    </SectionTitleLineWithButton>
+    <SectionTitleLineWithButton :title="props.titulo" main />
 
-    <CardBox form @submit.prevent="handleSubmit">
-      <FormField :error="form.errors.name">
-        <FormControl
-          v-model="form.name"
-          required
-          placeholder="Nombre"
-          :icon="mdiAccount"
-        />
+    <NotificationBar 
+      v-if="$page.props.flash.message" 
+      color="success" 
+      :icon="'mdi-information'" 
+      :outline="false"
+    >
+      {{ $page.props.flash.message }}
+    </NotificationBar>
+
+    <CardBox form @submit.prevent="guardar">
+      <FormField :error="form.errors.name" label="Nombre">
+        <FormControl v-model="form.name" type="text" required :icon="mdiAccount" />
       </FormField>
 
-      <FormField :error="form.errors.apellido_paterno">
-        <FormControl
-          v-model="form.apellido_paterno"
-          required
-          placeholder="Apellido paterno"
-          :icon="mdiAccountCircle"
-        />
+      <FormField :error="form.errors.apellido_paterno" label="Apellido Paterno">
+        <FormControl v-model="form.apellido_paterno" type="text" required :icon="mdiAccountCircle" />
       </FormField>
 
-      <FormField :error="form.errors.apellido_materno">
-        <FormControl
-          v-model="form.apellido_materno"
-          required
-          placeholder="Apellido materno"
-          :icon="mdiAccountTie"
-        />
+      <FormField :error="form.errors.apellido_materno" label="Apellido Materno">
+        <FormControl v-model="form.apellido_materno" type="text" required :icon="mdiAccountTie" />
       </FormField>
 
-      <FormField :error="form.errors.numero">
+      <FormField :error="form.errors.numero" label="Número Telefónico">
         <FormControl
           v-model="form.numero"
+          type="tel"
           required
           placeholder="Teléfono"
-          type="tel"
           maxlength="10"
           pattern="^\d{10}$"
           title="El número debe contener exactamente 10 dígitos"
@@ -118,16 +105,11 @@ export default {
         />
       </FormField>
 
-      <FormField :error="form.errors.email">
-        <FormControl
-          v-model="form.email"
-          required
-          placeholder="Correo electrónico"
-          :icon="mdiMail"
-        />
+      <FormField :error="form.errors.email" label="Correo Electrónico">
+        <FormControl v-model="form.email" type="email" required :icon="mdiMail" />
       </FormField>
-
-      <FormField :error="form.errors.password">
+      
+      <FormField :error="form.errors.password" label="Password">
         <FormControl
           v-model="form.password"
           type="password"
@@ -135,12 +117,67 @@ export default {
           placeholder="Contraseña"
           :icon="mdiLock"
         />
+      </FormField>  
+
+      <BaseDivider />
+
+   
+
+      <BaseDivider />
+
+      <!-- Selección de Roles -->
+      <FormField label="Asignar Roles" :error="form.errors.roles">
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+          <label v-for="role in safeRoles" :key="role.id" class="flex items-center space-x-2 cursor-pointer">
+            <input
+              type="checkbox"
+              :value="role.id"
+              v-model="form.roles"
+              class="form-checkbox text-blue-600"
+            />
+            <span>{{ role.name }}</span>
+          </label>
+        </div>
+
+        <!-- Mostrar roles seleccionados -->
+        <div v-if="form.roles.length > 0" class="mt-4 p-3 bg-blue-50 rounded-lg">
+          <p class="text-sm font-medium text-blue-800">Roles seleccionados:</p>
+          <div class="flex flex-wrap gap-2 mt-2">
+            <span
+              v-for="roleId in form.roles"
+              :key="roleId"
+              class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
+            >
+              {{ safeRoles.find(r => r.id === roleId)?.name }}
+            </span>
+          </div>
+        </div>
+      </FormField>
+
+      <!-- Departamentos solo si se elige el rol usuario -->
+      <FormField 
+        v-if="isUsuarioRoleSelected && safeDepartamentos.length > 0" 
+        label="Departamento" 
+        :error="form.errors.departamento_id"
+      >
+        <FormControl
+          v-model="form.departamento_id"
+          :options="safeDepartamentos"
+          type="select"
+          label-key="name"
+          value-key="id"
+          :icon="mdiOfficeBuilding"
+          required
+        />
+        <p class="text-xs text-gray-500 mt-1">
+          * Campo requerido para el rol "Usuario"
+        </p>
       </FormField>
 
       <template #footer>
         <BaseButtons>
-          <BaseButton @click="handleSubmit" type="submit" color="info" outline label="Crear" />
-          <BaseButton :href="route(`${routeName}index`)" type="reset" color="danger" outline label="Cancelar" />
+          <BaseButton @click="guardar" type="submit" color="info" outline label="Guardar" />
+          <BaseButton :href="route(`${props.routeName}index`)" type="reset" color="danger" outline label="Cancelar" />
         </BaseButtons>
       </template>
     </CardBox>

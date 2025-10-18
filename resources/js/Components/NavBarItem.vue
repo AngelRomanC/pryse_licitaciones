@@ -10,6 +10,9 @@ import UserAvatarCurrentUser from "@/components/UserAvatarCurrentUser.vue";
 import NavBarMenuList from "@/components/NavBarMenuList.vue";
 import BaseDivider from "@/components/BaseDivider.vue";
 import axios from "axios";
+import RoleSelector from "@/Components/RoleSelector.vue";
+
+
 
 const props = defineProps({
   item: {
@@ -74,21 +77,33 @@ const itemLabel = computed(() => {
     const nombreCompleto = `${currentUser.name} ${currentUser.apellido_paterno} ${currentUser.apellido_materno}`;
     return nombreCompleto;
   } else if (props.item.isRol) {
-    const roles = usePage().props.auth.user.roles;
-    if (roles.length > 0) {
-      return roles[0].name;
-    } else {
-      return "Sin Rol"; // Cuando el user no tiene rol
+    // Obtener el rol activo de las props de auth
+    const activeRole = usePage().props.auth.active_role;
+    if (activeRole) {
+      return activeRole;
     }
+    
+    // Si no hay rol activo, mostrar el primer rol disponible
+    const roles = usePage().props.auth.roles;
+    const firstRole = Object.keys(roles)[0];
+    return firstRole || "Sin Rol";
   } else {
     return props.item.label;
   }
 });
 
 const isDropdownActive = ref(false);
+// Agregar estado para el selector de roles
+const showRoleSelector = ref(false);
 
 const menuClick = (event) => {
   emit("menu-click", event, props.item);
+
+    if (props.item.isSwitchRole) {
+    // Mostrar el selector de roles
+    showRoleSelector.value = true;
+    return;
+  }
 
   if (props.item.menu) {
     isDropdownActive.value = !isDropdownActive.value;
@@ -162,4 +177,10 @@ onBeforeUnmount(() => {
       <NavBarMenuList :menu="item.menu" @menu-click="menuClickDropdown" />
     </div>
   </component>
+    
+  <!-- Agregar el selector de roles -->
+  <RoleSelector 
+    :show="showRoleSelector" 
+    @close="showRoleSelector = false" 
+  />
 </template>
