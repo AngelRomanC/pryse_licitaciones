@@ -13,6 +13,8 @@ import LegalDocumentsCard from '@/Components/LegalDocumentsCard.vue';
 import NotificationBar from "@/Components/NotificationBar.vue";
 import DocumentDetailsModal from "@/Components/DocumentDetailsModal.vue";
 import LicitacionDocumentsCard from '@/Components/LicitacionDocumentsCard.vue';
+import { mdiInformation, mdiFileDocumentOutline } from "@mdi/js";
+
 
 const props = defineProps({
   users: Number,
@@ -34,7 +36,7 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
   <Head title="Dashboard Admin" />
   <LayoutDashboard>
     <SectionMain>
-      <SectionTitleLineWithButton title="Bienvenido al Dashboard de Administrador" main class="mb-8" />
+      <SectionTitleLineWithButton title="Bienvenido al Dashboard de Administrador" main class="mb-8" :icon="mdiFileDocumentOutline"/>
     </SectionMain>
 
     <NotificationBar v-if="$page.props.flash.success" color="success" :icon="mdiInformation" :outline="false">
