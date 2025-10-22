@@ -148,6 +148,8 @@ const handleSubmit = () => {
                                 :icon="mdiOfficeBuilding"
                                 :disabled="!($page.props.auth.active_role === 'Admin') && !!form.departamento_id"                            
                                 required
+                                :title="!($page.props.auth.active_role === 'Admin') && !!form.departamento_id ? 'Campo bloqueado: solo Admin puede modificarlo' : ''"
+
                             />
                         </div>
                         <CatalogoRedirectButton
@@ -190,6 +192,8 @@ const handleSubmit = () => {
                 :error="form.errors.ruta_documento"
                 accept="application/pdf"
                 multiple
+                class="w-full border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-blue-400 transition-colors cursor-pointer"
+
                 />
 
                 <!-- Campo: Documentos Anexos -->
@@ -198,7 +202,7 @@ const handleSubmit = () => {
                 v-model="form.ruta_documento_anexo"
                 :error="form.errors.ruta_documento_anexo"
                 accept="application/pdf"
-                
+                class="w-full border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-blue-400 transition-colors cursor-pointer"                
                 /> 
                        
             </div>

@@ -166,6 +166,8 @@ const handleSubmit = () => {
                                 :icon="mdiOfficeBuilding"
                                 :disabled="!($page.props.auth.active_role === 'Admin') && !!form.departamento_id"                                
                                 required
+                                :title="!($page.props.auth.active_role === 'Admin') && !!form.departamento_id ? 'Campo bloqueado: solo Admin puede modificarlo' : ''"
+
                             />
                         </div>
                         <CatalogoRedirectButton

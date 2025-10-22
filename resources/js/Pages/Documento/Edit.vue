@@ -248,6 +248,8 @@ const agregarDocumentosAnexos = (files) => {
                         :icon="mdiMapMarker"
                         :disabled="$page.props.auth.active_role !== 'Admin'"
                         required
+                        :title="!($page.props.auth.active_role === 'Admin') && !!form.departamento_id ? 'Campo bloqueado: solo Admin puede modificarlo' : ''"
+
                     />
                 </FormField>
 
