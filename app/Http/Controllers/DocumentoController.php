@@ -109,7 +109,9 @@ class DocumentoController extends Controller
             'estados' => $estados,
             'departamentos' => $departamentos,
             'modalidades' => $modalidades,
-            'departamento_id' => auth()->user()->departamento_id, // se pasa directo al form ->
+            //'departamento_id' => auth()->user()->departamento_id, // se pasa directo al form ->
+            'departamento_id' => session('active_role') === 'Usuario' ? auth()->user()->departamento_id : null,
+
 
         ]);
     }
@@ -270,7 +272,6 @@ class DocumentoController extends Controller
             'modalidades' => $modalidades,
             'archivosPrincipales' => $archivosPrincipales,
             'archivosAnexos' => $archivosAnexos,
-            'userRole' => auth()->user()->getRoleNames()->first(),
         ]);
     }
 

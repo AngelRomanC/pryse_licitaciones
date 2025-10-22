@@ -104,7 +104,7 @@ const handleSubmit = () => {
                             :return-id="form.id"
                             label="Agregar nueva empresa"
                             :icon="mdiPlus"
-                            v-if="$page.props.auth.user.role === 'Admin'"
+                            v-if="$page.props.auth.active_role === 'Admin'"
                           />                
                     </div>
                 </FormField>
@@ -130,7 +130,7 @@ const handleSubmit = () => {
                             :return-id="form.id"
                             label="Agregar nuevo Docuemento"
                             :icon="mdiPlus"
-                            v-if="$page.props.auth.user.role === 'Admin'"
+                            v-if="$page.props.auth.active_role === 'Admin'"
                         /> 
                     </div>
                 </FormField>
@@ -146,7 +146,7 @@ const handleSubmit = () => {
                                 label-key="nombre_departamento"
                                 value-key="id"
                                 :icon="mdiOfficeBuilding"
-                                :disabled="!!form.departamento_id"
+                                :disabled="!($page.props.auth.active_role === 'Admin') && !!form.departamento_id"                            
                                 required
                             />
                         </div>
@@ -156,7 +156,7 @@ const handleSubmit = () => {
                             :return-id="form.id"
                             label="Agregar nueva empresa"
                             :icon="mdiPlus"
-                            v-if="$page.props.auth.user.role === 'Admin'"
+                            v-if="$page.props.auth.active_role === 'Admin'"
                             
                             
                           />                

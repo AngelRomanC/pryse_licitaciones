@@ -242,6 +242,7 @@ const agregarDocumentosAnexos = (files) => {
                         label-key="name"
                         value-key="id"
                         :icon="mdiMapMarker"
+                        :disabled="$page.props.auth.active_role !== 'Admin'"
                         required
                     />
                 </FormField>              

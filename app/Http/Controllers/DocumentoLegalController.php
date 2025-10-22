@@ -35,7 +35,6 @@ class DocumentoLegalController extends Controller
         $this->middleware("permission:{$this->module}.store")->only(['store', 'create']);
         $this->middleware("permission:{$this->module}.update")->only(['edit', 'update']);
         $this->middleware("permission:{$this->module}.delete")->only(['destroy']);
-
     }
     public function index(Request $request)
     {
@@ -115,7 +114,8 @@ class DocumentoLegalController extends Controller
             'tipos_documento' => $tipos_documento,
             //'estados' => $estados,
             'departamentos' => $departamentos,
-            'departamento_id' => auth()->user()->departamento_id,
+            'departamento_id' => session('active_role') === 'Usuario' ? auth()->user()->departamento_id : null,
+
 
         ]);
     }
@@ -238,7 +238,6 @@ class DocumentoLegalController extends Controller
         if (!$user->hasRole('Admin') && $user->departamento_id !== $documentoLegal->departamento_id) {
             //abort(403, 'No tienes permiso para editar este documento.');
             return redirect()->route('dashboard.vencidos')->with('error', 'No tienes permiso para editar este documento.');
-
         }
         $empresas = Empresa::select('id', 'nombre as name')->get();
         $tipos_documento = TipoDeDocumento::select('id', 'nombre_documento as name')->get();
@@ -267,7 +266,7 @@ class DocumentoLegalController extends Controller
      */
     public function update(UpdateDocumentoLegalRequest $request, DocumentoLegal $documentoLegal)
     {
-      
+
         $validated = $request->validated();
         // Si no se sube archivo, conservar el archivo actual
         $documentoLegal->update([
@@ -392,5 +391,4 @@ class DocumentoLegalController extends Controller
 
         return back()->with('error', 'No se pudo crear el archivo ZIP');
     }
-
 }

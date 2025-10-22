@@ -28,7 +28,6 @@ const props = defineProps({
     modalidades: Array,
     archivosPrincipales: Array,
     archivosAnexos: Array,
-    userRole: String,
 
 });
 // Preparar archivos existentes
@@ -247,7 +246,7 @@ const agregarDocumentosAnexos = (files) => {
                         label-key="name"
                         value-key="id"
                         :icon="mdiMapMarker"
-                        :disabled="!(userRole === 'Admin' || userRole === 'Uusuario')"
+                        :disabled="$page.props.auth.active_role !== 'Admin'"
                         required
                     />
                 </FormField>

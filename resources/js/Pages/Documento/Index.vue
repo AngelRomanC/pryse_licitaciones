@@ -164,7 +164,7 @@ const resetFilters = () => {
                         <th class="border p-2">Empresa</th>
                         <th class="border p-2">Documento</th>                        
                         <th class="border p-2">Departamento</th> 
-                        <th class="border p-2">Creador:</th>                                               
+                        <th class="border p-2">Creador</th>                                               
                         <th class="border p-2">Revalidación</th>
                         <th class="border p-2">Vigencia</th>
                         <th class="border p-2">Acciones</th>                       
