@@ -27,7 +27,6 @@ const props = defineProps({
   roles: Array,
   departamentos: Array,
 });
-console.log('Departamentos prop:', props.roles);
 const safeRoles = computed(() => props.roles || []);
 
 const safeDepartamentos = computed(() => props.departamentos || []);
