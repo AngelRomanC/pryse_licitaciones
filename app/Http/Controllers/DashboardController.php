@@ -19,7 +19,7 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->hasRole('Admin')) {
+        if (session('active_role') === 'Admin')  {
             $documentos = Documento::with(['empresa', 'tipoDeDocumento', 'estado', 'departamento', 'modalidades', 'archivos'])
                 ->where('nombre_documento', 'Documento Técnico')
                 ->orderBy('fecha_vigencia', 'asc')
@@ -111,7 +111,6 @@ class DashboardController extends Controller
 
 
             return Inertia::render('Dashboard/Usuario', [
-                'message2' => 'Bienvenido al Dashboard de Usuario',
                 'titulo' => "Bienvenido al Dashboard de Usuario - {$user->departamento?->infoDepartamento?->nombre_departamento}",
                 'documentos' => $documentos,
                 'documentosLegal' => $documentosLegal,

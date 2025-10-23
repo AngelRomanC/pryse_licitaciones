@@ -31,26 +31,6 @@ export default [
   },
 
   {
-    label: "Gestión de Usuarios",
-    icon: mdiAccountGroup ,
-    role: "Admin",
-    menu: [
-      {
-        href:"/usuarios",
-        label: "Admin",
-        icon: mdiSecurity,
-        role: "Admin",
-      }, 
-      {
-        href:"/usuarios-sistema",
-        label: "Usuario",
-        icon: mdiAccountTie   ,
-        role: "Admin",
-      }, 
-      
-    ]
-  },
-  {
   label: "Seguridad",
   icon: mdiShieldKey,
   role: "Admin",

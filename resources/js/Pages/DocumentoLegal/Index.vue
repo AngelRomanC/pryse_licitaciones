@@ -98,7 +98,7 @@ const resetFilters = () => {
         <CardBox class="mb-6">
                  <div :class="[
                     'grid grid-cols-1 gap-4',
-                    $page.props.auth.user.role === 'Admin' ? 'md:grid-cols-4' : 'md:grid-cols-3'
+                    $page.props.auth.active_role === 'Admin' ? 'md:grid-cols-4' : 'md:grid-cols-3'
                 ]">
                 <!-- Búsqueda general -->
                 <FormField label="Búsqueda general">
@@ -139,7 +139,7 @@ const resetFilters = () => {
                 </FormField>
 
                 <!-- Filtro por departamento -->
-                <FormField v-if="$page.props.auth.user.role === 'Admin'" label="Departamento">
+                <FormField v-if="$page.props.auth.active_role === 'Admin'" label="Departamento">
                     <FormControl
                         v-model="filters.departamento"
                         :options="departamentos"

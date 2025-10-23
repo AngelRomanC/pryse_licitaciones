@@ -42,7 +42,7 @@
   //   });
   // };
   const redirectToCreate = () => {
-  router.get(route('licitacion.index', {
+  router.get(route('licitacion.create', {
     redirect: route('dashboard') // O el nombre correcto de tu ruta de dashboard
   }))
 };
