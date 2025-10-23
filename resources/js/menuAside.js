@@ -29,7 +29,7 @@ export default [
     label: "Dashboard",
     role: "Admin" 
   },
-
+  
   {
   label: "Seguridad",
   icon: mdiShieldKey,

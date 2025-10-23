@@ -43,7 +43,7 @@ class DocumentoController extends Controller
 
         // Filtrado por rol
         $user = auth()->user();
-        if (!$user->hasRole('Admin')) {
+        if (session('active_role') !== 'Admin') {
             // Usuario normal: solo documentos de su departamento
             $query->whereHas('departamento', function ($q) use ($user) {
                 $q->where('id', $user->departamento->departamento_id ?? 0);

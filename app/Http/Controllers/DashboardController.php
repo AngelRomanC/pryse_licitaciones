@@ -22,6 +22,7 @@ class DashboardController extends Controller
         if (session('active_role') === 'Admin')  {
             $documentos = Documento::with(['empresa', 'tipoDeDocumento', 'estado', 'departamento', 'modalidades', 'archivos'])
                 ->where('nombre_documento', 'Documento Técnico')
+                ->where('fecha_vigencia', '>=', now())
                 ->orderBy('fecha_vigencia', 'asc')
                 ->paginate(5, ['*'], 'page_tecnico')
                 ->through(
@@ -40,6 +41,7 @@ class DashboardController extends Controller
 
             $documentosLegal = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento', 'archivos'])
                 ->where('nombre_documento', 'Documento Legal')
+                ->where('fecha_vigencia', '>=', now())
                 ->orderBy('fecha_vigencia', 'asc')
                 ->paginate(5, ['*'], pageName: 'page_legal')
                 ->through(
@@ -55,6 +57,26 @@ class DashboardController extends Controller
                 )
                 ->withQueryString();
 
+                $documentosVencidos = Documento::with(['empresa', 'tipoDeDocumento', 'estado', 'departamento', 'modalidades', 'archivos'])
+                ->where('fecha_vigencia', '<', now())
+                ->orderBy('fecha_vigencia', 'asc')
+                ->paginate(5, ['*'], 'page_tecnico_vencidos')
+                ->through(fn($doc) => $doc->setAttribute('dias_restantes', now()->startOfDay()->diffInDays(Carbon::parse($doc->fecha_vigencia)->startOfDay(), false))     ->setAttribute(
+                            'dias_restantes_revalidacion',
+                            now()->startOfDay()->diffInDays(Carbon::parse($doc->fecha_revalidacion)->startOfDay(), false)
+                        ));
+
+            $documentosLegalVencidos = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento', 'archivos'])
+                ->where('fecha_vigencia', '<', now())
+                ->orderBy('fecha_vigencia', 'asc')
+                ->paginate(5, ['*'], 'page_legal_vencidos')
+                ->through(fn($doc) => $doc->setAttribute('dias_restantes', now()->startOfDay()->diffInDays(Carbon::parse($doc->fecha_vigencia)->startOfDay(), false))
+              ->setAttribute(
+                            'dias_restantes_revalidacion',
+                            now()->startOfDay()->diffInDays(Carbon::parse($doc->fecha_revalidacion)->startOfDay(), false)
+                        ));
+
+
 
             return Inertia::render('Dashboard/Admin', [
                 'users' => User::count(),
@@ -64,6 +86,8 @@ class DashboardController extends Controller
                 'titulo' => "Documentos Técnicos",
                 'titulo2' => "Documentos Legales",
                 'licitaciones' => Licitacion::count(),
+                'documentosVencidos' => $documentosVencidos,
+                'documentosLegalVencidos' => $documentosLegalVencidos,
 
             ]);
 

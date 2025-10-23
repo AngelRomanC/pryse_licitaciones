@@ -25,6 +25,8 @@ const props = defineProps({
   titulo1: String,
   titulo2: String,
 });
+console.log(props.documentosLegal);
+console.log("legales",props.documentos);
 
 const totalDocumentosTecnicos = computed(() => props.documentos.total);
 const totalDocumentosLegales = computed(() => props.documentosLegal.total);
@@ -71,6 +73,7 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
           </h2>
         </div>
         <template v-if="documentos.data.length > 0">
+
           <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50">
@@ -184,7 +187,7 @@ const totalDocumentosLegales = computed(() => props.documentosLegal.total);
           </h2>
         </div>
 
-        <template v-if="documentos.data.length > 0">
+        <template v-if="documentosLegal.data.length > 0">
           <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50">
