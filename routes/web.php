@@ -11,7 +11,6 @@ use App\Http\Controllers\TipoDeDocumentoController;
 use App\Http\Controllers\DocumentoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UsuarioGeneralController;
-use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
@@ -73,8 +72,6 @@ Route::middleware('auth')->group(function () {
     Route::post('actualizarPerfil', [UserController::class, 'updatePerfil'])->name('usuarios.update-perfil');
 
 
-    //Alumno
-    Route::resource('alumno', AlumnoController::class)->parameters(['alumno' => 'alumno']);
     
 
     //BACKUP
@@ -98,7 +95,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('modalidad', ModalidadController::class);
     Route::resource('documento', controller: DocumentoController::class);
     Route::resource('documento-legal', controller: DocumentoLegalController::class);
-    Route::resource('usuarios-sistema', controller: UsuarioGeneralController::class);
 
     // routes/web.php
     Route::get('/documento/{documento}/descargar-todos', [DocumentoController::class, 'descargarTodos'])->name('documento.descargar-todos');
