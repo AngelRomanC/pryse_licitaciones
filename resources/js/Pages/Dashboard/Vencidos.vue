@@ -25,8 +25,7 @@ const props = defineProps({
   titulo1: String,
   titulo2: String,
 });
-console.log(props.documentosLegal);
-console.log("legales",props.documentos);
+
 
 const totalDocumentosTecnicos = computed(() => props.documentos.total);
 const totalDocumentosLegales = computed(() => props.documentosLegal.total);

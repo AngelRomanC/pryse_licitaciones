@@ -24,7 +24,6 @@ const toggleSubmenu = () => {
 const logout = () => {
     router.post('logout');
 }
-// console.log(submenu1.value)
 const goToMateriaIndex = () => {
     router.push({ name: 'materia.index' });
 };

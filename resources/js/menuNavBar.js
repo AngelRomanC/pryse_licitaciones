@@ -16,10 +16,6 @@ import {
 import { usePage } from "@inertiajs/vue3";
 import axios from 'axios';
 
-
-console.log('glooooooooooooooo')
-
-
 export default [
 
 

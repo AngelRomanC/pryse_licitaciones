@@ -57,7 +57,6 @@ const initializeRoles = () => {
       description: roleData.description // ← Esto ya no será undefined
     };
   });
-  //console.log(userRoles.value);
 
   // Establecer rol seleccionado: primero sessionStorage, luego el activo, luego el primero disponible
   const sessionRole = sessionStorage.getItem('activeRole');

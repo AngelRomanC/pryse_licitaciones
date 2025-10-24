@@ -18,7 +18,7 @@ export function useDBF(fecha)
 {
     if(fecha === null)
         return '';
-    console.log(fecha);
+    //console.log(fecha);
     return moment(fecha).format('YYYY-MM-DD');
 }
 

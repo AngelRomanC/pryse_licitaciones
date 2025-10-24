@@ -48,9 +48,6 @@ const form = useForm({
     archivos_a_eliminar: []
 });
 
-// console.log("nombre doc disponibles:", props.nombre_documento);
-// console.log("empresaa seleccionadas:", form.empresa_id);
-// console.log('Documento a editar:', props.documento);
 
 // Función para mostrar el PDF en SweetAlert2
 const mostrarArchivo = (ruta) => {
@@ -162,7 +159,6 @@ const guardar = () => {
                 isUploading.value = false;
                 form.setError(errors); // <- ASÍ se vinculan manualmente
 
-            console.log('Errores de validación:', errors);
         }
     });
 };

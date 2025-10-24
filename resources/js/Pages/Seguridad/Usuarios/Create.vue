@@ -60,7 +60,6 @@ watch(isUsuarioRoleSelected, (newValue) => {
   }
 });
 const guardar = () => {
-  console.log('Submitting form with data:', form.roles);
   form.post(route(`${props.routeName}store`));
 };
 </script>

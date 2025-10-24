@@ -162,7 +162,6 @@ const guardar = () => {
                 isUploading.value = false;
                 form.setError(errors); // <- ASÍ se vinculan manualmente
 
-            console.log('Errores de validación:', errors);
         }
     });
 };

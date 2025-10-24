@@ -23,7 +23,6 @@ const filters = ref({
     search: props.filters?.search ?? '',
 })
 const eliminarAdmin = (id) => {
-    console.log(id)
     Swal.fire({
         title: "¿Esta seguro?",
         text: "Esta acción no se puede revertir",

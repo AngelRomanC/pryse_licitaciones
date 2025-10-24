@@ -18,8 +18,8 @@
           class="p-4 max-w-full bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
           <p class="text-xl">{{ notification.data.materia }}</p>
           <p> {{ notification.data.profesor }}</p>
-          
-          <p class="text-xl"> {{ notification.data.message2}}</p>
+
+          <p class="text-xl"> {{ notification.data.message2 }}</p>
           <p> {{ notification.data.materia2 }}</p>
           <p> {{ notification.data.alumno }}</p>
 
@@ -27,13 +27,14 @@
           <p> {{ notification.data.message }}</p>
 
           <BaseButtons class="justify-between mt-4">
-            <BaseButton @click="markAsRead(notification.id)" small :icon="mdiRead" label="Marcar como leída" color="info"/>
-         <!--    <BaseButton @click="deleteNotification(notification.id)" small :icon="mdiTrashCan" label="Eliminar" color="danger"/> -->
+            <BaseButton @click="markAsRead(notification.id)" small :icon="mdiRead" label="Marcar como leída"
+              color="info" />
+            <!--    <BaseButton @click="deleteNotification(notification.id)" small :icon="mdiTrashCan" label="Eliminar" color="danger"/> -->
           </BaseButtons>
         </div>
       </div>
     </CardBox>
-    
+
     <!-- <button @click="markAsRead(notification.id)">Marcar como leída</button>
     <button @click="deleteNotification(notification.id)">Eliminar</button> -->
     <!-- <ul>
@@ -105,11 +106,11 @@ export default {
         if (result.isConfirmed) {
           axios.put(`/notificaciones/${id}/marcar-como-leida`)
             .then(response => {
-            //  router.visit('/notificaciones');
+              //  router.visit('/notificaciones');
 
               loadNotifications();
               Swal.fire('¡Notificación marcada como leída!', '', 'success');
-            
+
             })
             .catch(error => {
               console.error('Error al marcar la notificación como leída:', error);

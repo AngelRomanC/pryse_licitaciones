@@ -27,13 +27,8 @@ const props = defineProps({
     departamentos: Array,   // Nuevo prop para departamentos
     filters: Object, // Recibimos los filtros iniciales
 });
-import { onMounted } from 'vue';
 
-// onMounted(() => {
-//     console.log('empresas:', props.empresas);
-//     console.log('tipos_documento:', props.tipos_documento);
-//     console.log('departamentos:', props.departamentos);
-// });
+
 // Filtros reactivos
 const filters = ref({
     empresa:  props.filters.empresa || '',

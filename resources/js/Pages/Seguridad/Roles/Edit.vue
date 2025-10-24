@@ -22,7 +22,6 @@ const form = useForm({
     description: props.role.description || '', // Agregar el campo descripción
     permissions: props.role.permissions?.map(p => p.name) || []
 });
-console.log(props.role.description);
 const submit = () => {
     form.put(route(props.routeName + 'update', props.role.id));
 };

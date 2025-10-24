@@ -57,7 +57,8 @@ class DashboardController extends Controller
                 )
                 ->withQueryString();
 
-                $documentosVencidos = Documento::with(['empresa', 'tipoDeDocumento', 'estado', 'departamento', 'modalidades', 'archivos'])
+            $documentosVencidos = Documento::with(['empresa', 'tipoDeDocumento', 'estado', 'departamento', 'modalidades', 'archivos'])
+                ->where('nombre_documento', 'Documento Técnico')
                 ->where('fecha_vigencia', '<', now())
                 ->orderBy('fecha_vigencia', 'asc')
                 ->paginate(5, ['*'], 'page_tecnico_vencidos')
@@ -67,6 +68,7 @@ class DashboardController extends Controller
                         ));
 
             $documentosLegalVencidos = DocumentoLegal::with(['empresa', 'tipoDeDocumento', 'departamento', 'archivos'])
+                ->where('nombre_documento', 'Documento Legal')
                 ->where('fecha_vigencia', '<', now())
                 ->orderBy('fecha_vigencia', 'asc')
                 ->paginate(5, ['*'], 'page_legal_vencidos')

@@ -7,7 +7,7 @@ import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.
 import CardBox from "@/components/CardBox.vue";
 import FormField from "@/components/FormField.vue";
 import FormControl from "@/components/FormControl.vue";
-import { mdiFileEdit , mdiOfficeBuilding, mdiFileDocument, mdiPlus, mdiMapMarker, mdiCalendar } from "@mdi/js";
+import { mdiFileEdit, mdiOfficeBuilding, mdiFileDocument, mdiPlus, mdiMapMarker, mdiCalendar } from "@mdi/js";
 import CatalogoRedirectButton from '@/Components/CatalogoRedirectButton.vue';
 import MultiSelectEstados from '@/Components/MultiSelectEstados.vue';
 import MultiSelectEmpresas from '@/Components/MultiSelectEmpresas.vue';
@@ -43,8 +43,7 @@ const form = useForm({
     .filter(a => a.pivot.tipo === 'tecnico')
     .map(a => a.id),
 });
-// console.log('Legales seleccionados:', form.archivos_legales)
-// console.log('Técnicos seleccionados:', form.archivos_tecnicos)
+
 
 const handleSubmit2 = async () => {
   try {
@@ -103,7 +102,6 @@ const handleSubmit2 = async () => {
 
       if (!isConfirmed) return;
     }
-console.log('Datos enviados:', form.data());
 
     form.put(route(`${props.routeName}update`, props.licitacion.id));
 
@@ -164,9 +162,9 @@ const handleSubmit = async () => {
                 `).join('')}
               </div>
               <p class="text-sm text-gray-600">
-                ${form.modalidades_id.length > modalidadesAVerificar.length 
-                  ? 'Nota: La modalidad "Ninguna" no requiere documentos. ' 
-                  : ''}
+                ${form.modalidades_id.length > modalidadesAVerificar.length
+              ? 'Nota: La modalidad "Ninguna" no requiere documentos. '
+              : ''}
                 Puedes continuar con la licitación, pero ${esPlural ? 'estas empresas no podrán' : 'esta empresa no podrá'} participar en las modalidades mencionadas.
               </p>
             </div>
@@ -198,14 +196,13 @@ const handleSubmit = async () => {
       }
     }
 
-    //console.log('Datos enviados:', form.data());
-    
+
     // Realiza la actualización   
     //form.put(route(`${props.routeName}update`, props.licitacion.id));
     form.put(route(`${props.routeName}update`, props.licitacion.id), {
       onFinish: () => {
         isUploading.value = false;
-      },      
+      },
     });
 
 
@@ -227,7 +224,7 @@ const handleSubmit = async () => {
 
 <template>
   <LayoutMain title="Editar Licitación">
-    <SectionTitleLineWithButton :icon="mdiFileEdit " title="Editar Licitación" main />
+    <SectionTitleLineWithButton :icon="mdiFileEdit" title="Editar Licitación" main />
 
     <CardBox form @submit.prevent="handleSubmit" enctype="multipart/form-data">
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -245,22 +242,12 @@ const handleSubmit = async () => {
         <FormField label="Empresas" :error="form.errors.empresa_id">
           <div class="flex items-center gap-2">
             <div class="flex-1">
-              <MultiSelectEmpresas 
-                :empresas="empresas" 
-                v-model="form.empresa_id" 
-                :icon="mdiOfficeBuilding"
-                placeholder="Seleccione empresas participantes" 
-                search-placeholder="Buscar por nombre"
-                no-options-text="No se encontraron empresas" 
-              />
+              <MultiSelectEmpresas :empresas="empresas" v-model="form.empresa_id" :icon="mdiOfficeBuilding"
+                placeholder="Seleccione empresas participantes" search-placeholder="Buscar por nombre"
+                no-options-text="No se encontraron empresas" />
             </div>
-            <CatalogoRedirectButton 
-              catalog-route-name="empresa" 
-              return-route="empresa.create" 
-              :return-id="form.id"
-              label="Agregar empresa" 
-              :icon="mdiPlus" 
-            />
+            <CatalogoRedirectButton catalog-route-name="empresa" return-route="empresa.create" :return-id="form.id"
+              label="Agregar empresa" :icon="mdiPlus" />
           </div>
         </FormField>
 
@@ -270,67 +257,36 @@ const handleSubmit = async () => {
         </FormField>
 
         <!-- Documentos Técnicos -->
-        <Vista3
-          :empresas="empresas"
-          :modelValueEmpresas="form.empresa_id"
-          v-model="form.archivos_tecnicos"
-          type="tecnico"
-          baseUrl="/storage/"
-        />
+        <Vista3 :empresas="empresas" :modelValueEmpresas="form.empresa_id" v-model="form.archivos_tecnicos"
+          type="tecnico" baseUrl="/storage/" />
 
         <!-- Documentos Legales -->
-        <Vista3
-          :empresas="empresas"
-          :modelValueEmpresas="form.empresa_id"
-          v-model="form.archivos_legales"
-          type="legal"
-          baseUrl="/storage/"
-        />
+        <Vista3 :empresas="empresas" :modelValueEmpresas="form.empresa_id" v-model="form.archivos_legales" type="legal"
+          baseUrl="/storage/" />
       </div>
 
       <!-- Modalidades -->
       <FormField label="Modalidades" :error="form.errors.modalidades_id">
         <div class="flex items-center gap-2">
           <div class="flex-1">
-            <FormControlV7
-              v-model="form.modalidades_id"
-              :options="modalidades"
-              label-key="name"
-              value-key="id"
-            />
+            <FormControlV7 v-model="form.modalidades_id" :options="modalidades" label-key="name" value-key="id" />
           </div>
-          <CatalogoRedirectButton
-            catalog-route-name="modalidad"
-            return-route="licitacion.create"
-            :return-id="form.id"
-            label="Agregar nueva empresa"
-            :icon="mdiPlus"
-          />                
+          <CatalogoRedirectButton catalog-route-name="modalidad" return-route="licitacion.create" :return-id="form.id"
+            label="Agregar nueva empresa" :icon="mdiPlus" />
         </div>
       </FormField>
 
       <template #footer>
         <BaseButtons>
-          <BaseButton 
-            @click="handleSubmit" 
-            type="submit" 
-            color="info" 
-            outline 
-            label="Actualizar" 
-            :disabled="form.processing"
-          />
-      
-          <BaseButton 
-            :href="route('licitacion.index')" 
-            type="button" 
-            color="danger" 
-            outline 
-            label="Cancelar" 
-          />
+          <BaseButton @click="handleSubmit" type="submit" color="info" outline label="Actualizar"
+            :disabled="form.processing" />
+
+          <BaseButton :href="route('licitacion.index')" type="button" color="danger" outline label="Cancelar" />
         </BaseButtons>
       </template>
     </CardBox>
   </LayoutMain>
-<LoadingOverlay :visible="isUploading" title="Cargando archivo(s)..." subtitle="Por favor, no cierres esta ventana." />
+  <LoadingOverlay :visible="isUploading" title="Cargando archivo(s)..."
+    subtitle="Por favor, no cierres esta ventana." />
 
 </template>

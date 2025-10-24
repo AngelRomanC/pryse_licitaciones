@@ -22,13 +22,8 @@ const form = useForm({
     description: '',
     module_key: ''
 });
-console.log(props.modules);
 const submit = () => {  
-        console.log('Datos a enviar:', {
-        name: form.name,
-        permissions: form.permissions,
-        todos_los_datos: form.data()
-    });
+        
     form.post(route(props.routeName + 'store'))
 };
 </script>
