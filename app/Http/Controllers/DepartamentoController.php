@@ -9,11 +9,17 @@ use Inertia\Inertia;
 class DepartamentoController extends Controller
 {
     private string $routeName;
+    protected string $module = 'departamento';
+
 
     public function __construct()
     {
         $this->middleware('auth');
         $this->routeName = 'departamento.';
+        $this->middleware("permission:{$this->module}.index")->only(['index', 'show']);
+        $this->middleware("permission:{$this->module}.store")->only(['store', 'create']);
+        $this->middleware("permission:{$this->module}.update")->only(['edit', 'update']);
+        $this->middleware("permission:{$this->module}.delete")->only(['destroy']);
     }
     public function index(Request $request)
     {

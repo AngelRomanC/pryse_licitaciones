@@ -22,8 +22,13 @@ class Module extends Model
     protected static function boot()
     {
         parent::boot();
+        // static::saving(function ($rec) {
+        //     $rec->audit_user_id = auth()->user()->id;
+        // });
         static::saving(function ($rec) {
-            $rec->audit_user_id = auth()->user()->id;
+            if (auth()->check()) {
+                $rec->audit_user_id = auth()->id();
+            }
         });
     }
 }

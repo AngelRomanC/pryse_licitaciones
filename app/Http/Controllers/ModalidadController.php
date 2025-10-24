@@ -10,11 +10,18 @@ use Inertia\Inertia;
 class ModalidadController extends Controller
 {
     private string $routeName;
+    protected string $module = 'modalidad';
+
 
     public function __construct()
     {
         $this->middleware('auth');
         $this->routeName = 'modalidad.';
+        $this->middleware("permission:{$this->module}.index")->only(['index', 'show']);
+        $this->middleware("permission:{$this->module}.store")->only(['store', 'create']);
+        $this->middleware("permission:{$this->module}.update")->only(['edit', 'update']);
+        $this->middleware("permission:{$this->module}.delete")->only(['destroy']);
+        
     }
     public function index(Request $request)
     {
