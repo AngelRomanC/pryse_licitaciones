@@ -116,20 +116,6 @@ const guardar = () => {
         <FormControl v-model="form.password" type="password" placeholder="Dejar vacío para no cambiar" :icon="mdiLock" />
       </FormField>
 
-      <!-- Departamentos solo para Procesos -->
-     <FormField v-if="props.departamentos" label="Departamento" :error="form.errors.departamento_id">
-        <FormControl
-            v-model="form.departamento_id"
-            :options="departamentos"
-            type="select"
-            label-key="name"
-            value-key="id"
-            :icon="mdiOfficeBuilding"
-            required
-          />                            
-     </FormField>
-
-
       <BaseDivider />
 
      <BaseDivider />
